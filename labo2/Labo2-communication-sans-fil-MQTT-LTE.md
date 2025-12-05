@@ -1945,41 +1945,479 @@ git push origin prenom-nom/labo2
 
 ## 🔮 Au prochain laboratoire
 
-### Évolution vers une architecture cloud
+### De la breadboard au PCB professionnel
 
-**Labo 3 (aperçu) - Cloud IoT et stockage de données:**
+**Labo 3 (aperçu) - Conception de shield pour LilyGO A7670G:**
 
-Au prochain laboratoire, vous allez faire évoluer votre système local vers le cloud:
+Maintenant que vous maîtrisez la programmation du LilyGO et la communication sans fil, vous allez concevoir votre propre **shield** (carte d'extension) pour créer un système IoT complet et professionnel.
 
-**1. Broker MQTT cloud:**
-- Migration de Mosquitto local vers un broker cloud (AWS IoT Core, HiveMQ Cloud, ou CloudMQTT)
-- Configuration TLS/SSL pour sécuriser les communications
-- Authentification par certificats X.509
+**🎯 Objectif:** Concevoir un PCB personnalisé qui se connecte au LilyGO A7670G et intègre tous les capteurs et actuateurs nécessaires pour un projet IoT autonome.
 
-**2. Base de données TimeSeries:**
-- Stockage des positions GPS dans InfluxDB ou TimescaleDB
-- Requêtes temporelles sur l'historique
-- Agrégations et analyses
+### 📐 Composants du shield
 
-**3. Dashboard web:**
-- Interface Node-RED ou Grafana
-- Carte interactive avec trajet en temps réel
-- Graphiques de métriques (signal, vitesse, altitude)
-- Alertes configurables (géofencing, perte de signal)
+**1. LEDs d'indication:**
+- LED d'alimentation (verte)
+- LED de statut réseau (bleue)
+- LED d'alerte (rouge)
+- LED GPS fix (jaune)
+- Contrôle via GPIO avec résistances appropriées
 
-**4. API REST:**
-- Endpoints pour récupérer l'historique
-- Webhooks pour notifications
-- Intégration avec services tiers
+**2. Boutons tactiles:**
+- Bouton RESET
+- Bouton MODE (changement de mode opération)
+- Bouton USER (fonction programmable)
+- Circuits anti-rebond matériels
 
-**Architecture cible:**
+**3. Accéléromètre (MPU6050 ou ADXL345):**
+- Communication I2C
+- Détection de mouvement, vibrations, chocs
+- Applications: tracking de véhicule, alarme de mouvement, comptage de pas
+- Interruptions matérielles pour économie d'énergie
+
+**4. Interface audio:**
+- **Microphone MEMS** (SPH0645 ou INMP441)
+  - Interface I2S pour audio numérique
+  - Détection de bruit ambiant
+  - Enregistrement vocal pour commandes
+- **Speaker / Buzzer**
+  - Amplificateur classe D (PAM8403 ou similaire)
+  - Alertes sonores
+  - Feedback utilisateur
+
+**5. Alimentation et gestion d'énergie:**
+- Connecteur batterie LiPo
+- Circuit de charge (TP4056 ou similaire)
+- Régulateur 3.3V pour composants
+- Monitoring de tension batterie
+
+**6. Connecteurs et extensions:**
+- Headers pour GPIO disponibles
+- Connecteur I2C externe (expansion)
+- Connecteur UART pour débogage
+- Pads de test pour signaux critiques
+
+### 🛠️ Outils et logiciels
+
+Au prochain laboratoire, vous apprendrez à utiliser:
+
+**KiCad (logiciel de conception PCB open-source):**
+- Création du schéma électrique
+- Sélection des composants et empreintes
+- Routage des pistes
+- Génération des fichiers Gerber
+- Vérification DRC (Design Rule Check)
+
+**Calculs et dimensionnement:**
+- Calcul de résistances de limitation de courant
+- Sélection de condensateurs de découplage
+- Dimensionnement de pistes (largeur selon courant)
+- Impédance de traces pour signaux haute fréquence
+
+**Fabrication:**
+- Génération des fichiers de fabrication (Gerber, drill files)
+- Soumission à un fabricant (JLCPCB, PCBWay, OSH Park)
+- Lecture de devis et spécifications de fabrication
+
+### 📋 Contenu du Labo 3
+
+**Partie 1: Conception du schéma électrique**
+- Dessin du schéma avec KiCad
+- Connexions GPIO du LilyGO A7670G
+- Circuits de conditionnement de signaux
+- Alimentations et découplage
+
+**Partie 2: Layout du PCB**
+- Placement des composants
+- Routage des pistes (2 couches)
+- Plans de masse et d'alimentation
+- Zones critiques (RF, analogique, numérique)
+
+**Partie 3: Vérification et export**
+- Design Rule Check (DRC)
+- Electrical Rule Check (ERC)
+- Génération des fichiers Gerber
+- Liste de matériel (BOM)
+
+**Partie 4: Prototype sur breadboard**
+- Validation du circuit sur plaquette
+- Tests des capteurs et actuateurs
+- Code Arduino pour le shield
+- Débogage avant fabrication
+
+### 🎓 Compétences développées
+
+À la fin du Labo 3, vous serez capable de:
+- ✅ Lire et comprendre un schéma électrique complexe
+- ✅ Concevoir un PCB à 2 couches avec KiCad
+- ✅ Sélectionner des composants adaptés (specs, empreintes)
+- ✅ Respecter les contraintes de fabrication PCB
+- ✅ Intégrer plusieurs protocoles de communication (I2C, I2S, GPIO)
+- ✅ Optimiser l'agencement pour performance et EMI
+- ✅ Préparer des fichiers de fabrication professionnels
+
+### 💡 Applications concrètes
+
+Votre shield pourra servir de base pour:
+- **Tracker de véhicule** avec détection de choc (accéléromètre) et alertes sonores
+- **Station météo mobile** avec GPS et reporting vocal
+- **Système de sécurité** avec détection de mouvement et alarme
+- **Logger de transport** avec monitoring de vibrations et conditions
+- **Système d'urgence** avec bouton SOS et localisation GPS
+
+**Architecture finale:**
 ```
-[LilyGO] → [LTE] → [Broker MQTT Cloud] → [InfluxDB]
-                           ↓                  ↓
-                     [Dashboard Web]    [API REST]
-                           ↓                  ↓
-                      [Alertes]         [Webhooks]
+┌─────────────────────────────────────────────┐
+│          Shield PCB personnalisé            │
+│  ┌───────┐ ┌──────┐ ┌─────────┐ ┌────────┐ │
+│  │ LEDs  │ │Boutons│ │Accéléro│ │ Audio  │ │
+│  └───┬───┘ └───┬──┘ └────┬────┘ └───┬────┘ │
+│      │         │         │          │      │
+│      └─────────┴─────────┴──────────┘      │
+│                  GPIO                       │
+└──────────────────┬──────────────────────────┘
+                   │ Headers
+          ┌────────▼────────┐
+          │  LilyGO A7670G  │
+          │  ESP32 + LTE    │
+          │     + GPS       │
+          └─────────────────┘
 ```
+
+<div style="background:#eff6ff; border:1px solid #3b82f6; padding:12px 14px; border-radius:10px;">
+<strong>💡 Préparation recommandée</strong>
+<p>Avant le Labo 3, vous pouvez:</p>
+<ul>
+  <li>Télécharger et installer KiCad (gratuit) : <a href="https://www.kicad.org/">kicad.org</a></li>
+  <li>Regarder des tutoriels KiCad pour vous familiariser avec l'interface</li>
+  <li>Lire les datasheets des composants (MPU6050, INMP441, PAM8403)</li>
+  <li>Explorer les contraintes de fabrication des fabricants de PCB (JLCPCB, etc.)</li>
+  <li>Tester l'accéléromètre MPU6050 ou ADXL345 sur breadboard si disponible</li>
+</ul>
+</div>
+
+<div style="height: 5px; background: linear-gradient(90deg, #22d3ee, #a855f7); border-radius: 999px; margin: 22px 0;"></div>
+
+## 📚 Devoir de préparation (à faire avant le Labo 3)
+
+Pour bien préparer le Labo 3 sur la conception de PCB, vous devez **prototyper le circuit sur plaquette de prototypage (breadboard)** et tester tous les composants avec le LilyGO A7670G.
+
+### 🎯 Objectif du devoir
+
+Créer un prototype fonctionnel sur breadboard qui intègre tous les composants du futur shield:
+- LEDs d'indication
+- Boutons tactiles
+- Accéléromètre (MPU6050 ou ADXL345)
+- Speaker/Buzzer
+- Microphone MEMS (optionnel si disponible)
+
+### 📦 Matériel requis
+
+<div style="background:#ecfeff; border:1px solid #06b6d4; padding:12px 14px; border-radius:10px;">
+<strong>Liste de composants à se procurer:</strong>
+<ul>
+  <li>Plaquette de prototypage (breadboard) 830 points</li>
+  <li>4 LEDs (rouge, verte, bleue, jaune) standard 5mm</li>
+  <li>4 résistances 220Ω ou 330Ω (pour LEDs)</li>
+  <li>3 boutons poussoirs (tactile switch)</li>
+  <li>3 résistances 10kΩ (pull-up/pull-down pour boutons)</li>
+  <li>Module accéléromètre MPU6050 ou ADXL345 (avec breakout board)</li>
+  <li>Buzzer actif 3.3V ou 5V (pour alarmes et tonalités simples)</li>
+  <li>Module amplificateur audio I2S MAX98357A ou PAM8403 (pour speaker)</li>
+  <li>Petit speaker 3W 4Ω ou 8Ω (pour audio et messages vocaux)</li>
+  <li>Microphone MEMS INMP441 ou MAX4466 (optionnel)</li>
+  <li>Fils de connexion jumper mâle-mâle (assortiment)</li>
+  <li>Condensateurs de découplage 0.1µF (optionnel mais recommandé)</li>
+</ul>
+</div>
+
+### 📐 Schéma de connexion
+
+**Pins GPIO du LilyGO A7670G à utiliser:**
+
+| Composant | Pin GPIO | Notes |
+|-----------|----------|-------|
+| LED Rouge | GPIO 12 | Via résistance 220Ω |
+| LED Verte | GPIO 13 | Via résistance 220Ω |
+| LED Bleue | GPIO 14 | Via résistance 220Ω |
+| LED Jaune | GPIO 15 | Via résistance 220Ω |
+| Bouton RESET | GPIO 16 | Pull-up 10kΩ |
+| Bouton MODE | GPIO 17 | Pull-up 10kΩ |
+| Bouton USER | GPIO 18 | Pull-up 10kΩ |
+| Accéléromètre SDA | GPIO 21 | I2C Data (ne pas oublier pull-ups si non présents sur module) |
+| Accéléromètre SCL | GPIO 22 | I2C Clock |
+| Buzzer | GPIO 19 | PWM pour tonalités/alarmes |
+| Speaker (ampli I2S) BCLK | GPIO 26 | I2S Bit Clock |
+| Speaker (ampli I2S) LRCLK | GPIO 25 | I2S Word Select / Frame Sync |
+| Speaker (ampli I2S) DIN | GPIO 23 | I2S Data Input |
+| Microphone I2S WS | GPIO 35 | Word Select (optionnel) |
+| Microphone I2S SD | GPIO 33 | Serial Data (optionnel) |
+| Microphone I2S SCK | GPIO 32 | Serial Clock (optionnel) |
+
+<div style="background:#fef9c3; border:1px solid #facc15; padding:10px 12px; border-radius:10px;">
+<strong>⚠️ Important - Niveaux de tension</strong>
+<ul>
+  <li>Le LilyGO A7670G fonctionne en <strong>3.3V logique</strong></li>
+  <li>Vérifiez que vos modules sont compatibles 3.3V (la plupart le sont)</li>
+  <li>Les LEDs peuvent être alimentées en 3.3V ou 5V (via résistances appropriées)</li>
+  <li>L'accéléromètre MPU6050 fonctionne en 3.3V ou 5V</li>
+  <li><strong>Ne jamais appliquer 5V sur les GPIO du LilyGO!</strong></li>
+</ul>
+</div>
+
+### 🛠️ Tâches à réaliser
+
+**1. Montage du circuit sur breadboard**
+- Disposer les composants de manière organisée
+- Respecter les connexions selon le tableau ci-dessus
+- Utiliser des fils de couleurs différentes pour faciliter le débogage
+  - Rouge: 3.3V
+  - Noir: GND
+  - Autres couleurs: signaux
+
+**2. Code de test pour chaque composant**
+
+Créer un sketch Arduino qui teste séquentiellement chaque fonction:
+
+```cpp
+// Sketch de test du prototype shield
+// À compléter et adapter
+
+#include <Wire.h>
+#include <MPU6050.h>  // ou ADXL345
+
+// Définition des pins
+#define LED_RED 12
+#define LED_GREEN 13
+#define LED_BLUE 14
+#define LED_YELLOW 15
+
+#define BTN_RESET 16
+#define BTN_MODE 17
+#define BTN_USER 18
+
+#define BUZZER 19
+
+// Speaker I2S
+#define I2S_BCLK 26
+#define I2S_LRCLK 25
+#define I2S_DIN 23
+
+// Microphone I2S (optionnel)
+#define MIC_WS 35
+#define MIC_SD 33
+#define MIC_SCK 32
+
+// I2C pour accéléromètre (pins 21, 22 par défaut)
+
+void setup() {
+  Serial.begin(115200);
+
+  // Configuration LEDs
+  pinMode(LED_RED, OUTPUT);
+  pinMode(LED_GREEN, OUTPUT);
+  pinMode(LED_BLUE, OUTPUT);
+  pinMode(LED_YELLOW, OUTPUT);
+
+  // Configuration boutons
+  pinMode(BTN_RESET, INPUT_PULLUP);
+  pinMode(BTN_MODE, INPUT_PULLUP);
+  pinMode(BTN_USER, INPUT_PULLUP);
+
+  // Configuration buzzer
+  pinMode(BUZZER, OUTPUT);
+
+  // Initialisation I2C et accéléromètre
+  Wire.begin(21, 22);  // SDA, SCL
+  // TODO: initialiser votre accéléromètre
+
+  Serial.println("=== Test du prototype shield ===");
+  testAllComponents();
+}
+
+void loop() {
+  // Lire les boutons et réagir
+  checkButtons();
+
+  // Lire l'accéléromètre
+  readAccelerometer();
+
+  delay(100);
+}
+
+void testAllComponents() {
+  Serial.println("Test des LEDs...");
+  testLEDs();
+
+  Serial.println("Test du buzzer...");
+  testBuzzer();
+
+  Serial.println("Test du speaker I2S...");
+  testSpeaker();
+
+  Serial.println("Appuyez sur les boutons pour tester...");
+  // Les boutons seront testés dans la loop
+
+  Serial.println("Test de l'accéléromètre...");
+  // TODO: implémenter test accéléromètre
+}
+
+void testLEDs() {
+  digitalWrite(LED_RED, HIGH);
+  delay(500);
+  digitalWrite(LED_RED, LOW);
+
+  digitalWrite(LED_GREEN, HIGH);
+  delay(500);
+  digitalWrite(LED_GREEN, LOW);
+
+  digitalWrite(LED_BLUE, HIGH);
+  delay(500);
+  digitalWrite(LED_BLUE, LOW);
+
+  digitalWrite(LED_YELLOW, HIGH);
+  delay(500);
+  digitalWrite(LED_YELLOW, LOW);
+}
+
+void testBuzzer() {
+  tone(BUZZER, 1000, 200);  // 1kHz pendant 200ms
+  delay(300);
+  tone(BUZZER, 2000, 200);  // 2kHz pendant 200ms
+}
+
+void testSpeaker() {
+  // TODO: Implémenter test speaker avec I2S
+  // Nécessite configuration I2S et bibliothèque ESP8266Audio ou similaire
+  // Exemple:
+  // #include "AudioOutputI2S.h"
+  // AudioOutputI2S *out = new AudioOutputI2S();
+  // out->SetPinout(I2S_BCLK, I2S_LRCLK, I2S_DIN);
+  // Jouer un son de test ou tonalité
+
+  Serial.println("Speaker I2S: à implémenter (voir exemples ESP8266Audio)");
+}
+
+void checkButtons() {
+  if (digitalRead(BTN_RESET) == LOW) {
+    Serial.println("Bouton RESET pressé");
+    digitalWrite(LED_RED, HIGH);
+    delay(100);
+    digitalWrite(LED_RED, LOW);
+  }
+
+  if (digitalRead(BTN_MODE) == LOW) {
+    Serial.println("Bouton MODE pressé");
+    digitalWrite(LED_GREEN, HIGH);
+    delay(100);
+    digitalWrite(LED_GREEN, LOW);
+  }
+
+  if (digitalRead(BTN_USER) == LOW) {
+    Serial.println("Bouton USER pressé");
+    digitalWrite(LED_BLUE, HIGH);
+    tone(BUZZER, 1500, 100);
+    delay(100);
+    digitalWrite(LED_BLUE, LOW);
+  }
+}
+
+void readAccelerometer() {
+  // TODO: implémenter lecture accéléromètre
+  // Exemple pour MPU6050:
+  // int16_t ax, ay, az;
+  // mpu.getAcceleration(&ax, &ay, &az);
+  // Serial.printf("Accel: X=%d Y=%d Z=%d\n", ax, ay, az);
+}
+```
+
+**3. Tests fonctionnels**
+
+Pour chaque composant, vérifier:
+
+**LEDs:**
+- [ ] Les 4 LEDs s'allument correctement lors du test
+- [ ] Luminosité appropriée (ajuster résistances si nécessaire)
+- [ ] Pas de scintillement
+
+**Boutons:**
+- [ ] Chaque bouton déclenche l'action appropriée
+- [ ] Pas de rebonds (si rebonds: ajouter condensateur 0.1µF en parallèle)
+- [ ] LED de confirmation s'allume lors de l'appui
+
+**Accéléromètre:**
+- [ ] Communication I2C fonctionnelle (vérifier avec `i2cdetect`)
+- [ ] Lecture des valeurs X, Y, Z cohérentes
+- [ ] Détection de mouvement (bouger le breadboard et observer les valeurs)
+
+**Buzzer:**
+- [ ] Sons clairs aux différentes fréquences
+- [ ] Volume suffisant mais pas assourdissant
+- [ ] Pas de bruit parasite
+
+**Speaker (ampli I2S):**
+- [ ] Amplificateur correctement alimenté
+- [ ] Connexions I2S fonctionnelles (BCLK, LRCLK, DIN)
+- [ ] Sortie audio claire (test avec tonalité ou fichier WAV)
+- [ ] Pas de distorsion ou bruit de fond
+- [ ] Volume contrôlable
+
+**4. Documentation**
+
+Créer un document (texte ou photos annotées) qui montre:
+- Photo du montage complet sur breadboard
+- Photo en gros plan des connexions critiques
+- Schéma de connexion (dessiné à la main OK)
+- Résultats des tests (captures du moniteur série)
+- Problèmes rencontrés et solutions
+
+**5. Code avancé (optionnel - bonus)**
+
+Intégrer le prototype avec MQTT:
+- Publier les valeurs de l'accéléromètre via MQTT
+- Contrôler les LEDs via commandes MQTT
+- Déclencher le buzzer via MQTT
+- Envoyer l'état des boutons via MQTT
+
+### 📤 Livraison
+
+**À remettre sur Git:**
+
+```bash
+mkdir -p ~/243-4J5-LI/labo2/devoir-shield-prototype
+cd ~/243-4J5-LI/labo2/devoir-shield-prototype
+
+# Ajouter votre code
+# Ajouter vos photos
+# Ajouter votre documentation
+
+git add .
+cd ~/243-4J5-LI
+git commit -m "Devoir préparation Labo 3: Prototype shield sur breadboard"
+git push origin prenom-nom/labo2
+```
+
+**Contenu attendu:**
+- `shield-test.ino` - Code Arduino de test complet
+- `README.md` - Documentation du prototype
+- `photos/` - Photos du montage
+- `schema-connexions.png` ou `.jpg` - Schéma des connexions (photo ou dessin)
+
+<div style="background:#fee2e2; border:1px solid #ef4444; padding:10px 12px; border-radius:10px;">
+<strong>⚠️ Date limite</strong>
+<p>Ce devoir doit être complété <strong>AVANT</strong> le Labo 3. Le prototype fonctionnel servira de base pour la conception du PCB. Sans prototype validé, vous ne pourrez pas concevoir un PCB fiable.</p>
+</div>
+
+<div style="background:#f0fdf4; border:1px solid #22c55e; padding:10px 12px; border-radius:10px;">
+<strong>💡 Conseils</strong>
+<ul>
+  <li>Commencez simple: testez un composant à la fois</li>
+  <li>Utilisez le moniteur série pour déboguer</li>
+  <li>Si un composant ne fonctionne pas, vérifiez d'abord les connexions et l'alimentation</li>
+  <li>Pour l'I2C, utilisez <code>i2cdetect -y 1</code> sur Raspberry Pi ou un scanner I2C Arduino</li>
+  <li>Documentez au fur et à mesure (ne pas tout faire à la dernière minute)</li>
+  <li>N'hésitez pas à utiliser Gemini CLI pour vous aider avec le code!</li>
+</ul>
+</div>
 
 <div style="height: 5px; background: linear-gradient(90deg, #22d3ee, #a855f7); border-radius: 999px; margin: 22px 0;"></div>
 
