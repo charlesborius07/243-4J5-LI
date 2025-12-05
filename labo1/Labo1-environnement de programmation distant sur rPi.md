@@ -8,7 +8,7 @@
 ## 📐 Architecture du système
 
 ```mermaid
-graph LR
+graph TD
     %% ==== STYLES ====
     classDef zoneClient fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#052e16;
     classDef zoneAccess fill:#eff6ff,stroke:#2563eb,stroke-width:2px,color:#0f172a;
@@ -20,66 +20,64 @@ graph LR
     classDef securityEdge fill:#fef2f2,stroke:#b91c1c,stroke-width:1.5px,stroke-dasharray:4 3;
 
     %% ==== ZONE CLIENT ====
-    subgraph Zone_Client ["Poste de développement"]
-        Dev_PC["💻 Poste Dev (Terminal SSH + Navigateur)"]:::zoneClient
+    subgraph Zone_Client ["💻 Poste de développement"]
+        Dev_PC["Terminal SSH + Navigateur"]:::zoneClient
     end
 
     %% ==== ZONE D'ACCÈS / EDGE ====
-    subgraph Zone_Access ["Zone d'accès sécurisé"]
+    subgraph Zone_Access ["🔒 Zone d'accès sécurisé"]
         CF_ZT["Cloudflare Zero Trust<br/>(Access, Auth, Policies)"]:::securityEdge
-        CF_Tunnel["cloudflared (Tunnel sortant<br/>vers Cloudflare)"]:::componentService
+        CF_Tunnel["cloudflared<br/>(Tunnel sortant)"]:::componentService
     end
 
     %% ==== ZONE LAB / ON-PREM ====
-    subgraph Zone_Lab ["On-Prem Lab"]
+    subgraph Zone_Lab ["🏠 On-Prem Lab"]
         subgraph RPi5_Core ["🍓 Raspberry Pi 5 – Ubuntu Server"]
             SSHD["Serveur SSH (sshd)"]:::componentCore
-            System_Users["Comptes système / Gestion clés SSH"]:::componentCore
 
             subgraph Dev_Stack ["🛠️ Stack de Développement"]
-                Git_CLI["Git CLI<br/>(Repos locaux des labos)"]:::componentService
-                Node_Gemini["Node.js + Gemini CLI<br/>(Outils IA en ligne de commande)"]:::componentService
-                Python_Env["Python3 + venv + evdev<br/>(Scripts & UI locales)"]:::componentService
-                Arduino_CLI["Arduino CLI<br/>(Build & flash LilyGO)"]:::componentService
+                Git_CLI["Git CLI"]:::componentService
+                Node_Gemini["Node.js + Gemini CLI"]:::componentService
+                Python_Env["Python3 + evdev"]:::componentService
+                Arduino_CLI["Arduino CLI"]:::componentService
             end
         end
 
-        subgraph Lab_Devices ["Périphériques et IoT locaux"]
-            Touchscreen["📱 Écran tactile Raspberry Pi<br/>(HDMI + USB / I2C)"]:::componentDevice
-            LilyGO_A7670E["🚀 LilyGO A7670E<br/>ESP32 + LTE + GPS"]:::componentDevice
+        subgraph Lab_Devices ["📱 Périphériques IoT"]
+            Touchscreen["Écran tactile RPi"]:::componentDevice
+            LilyGO_A7670E["LilyGO A7670E<br/>ESP32 + LTE + GPS"]:::componentDevice
         end
     end
 
     %% ==== ZONE CLOUD / SAAS ====
-    subgraph Zone_Cloud ["Services Cloud"]
-        GitHub_SaaS["GitHub<br/>(Remote origin & CI éventuel)"]:::zoneCloud
-        Gemini_API["Google Gemini API<br/>(LLM / IA générative)"]:::zoneCloud
+    subgraph Zone_Cloud ["☁️ Services Cloud"]
+        GitHub_SaaS["GitHub"]:::zoneCloud
+        Gemini_API["Google Gemini API"]:::zoneCloud
     end
 
     %% ==== FLUX PRINCIPAUX ====
 
-    %% 1. ACCÈS DISTANT
-    Dev_PC -- "HTTPS (Browser) / SSH (Terminal)" --> CF_ZT
-    CF_ZT -- "Tunnel Cloudflare<br/>(mTLS + Auth Zero Trust)" --> CF_Tunnel
-    CF_Tunnel -- "TCP SSH (port 22)<br/>vers RPi5" --> SSHD
-    SSHD --> System_Users
+    %% 1. ACCÈS DISTANT (vertical)
+    Dev_PC -->|"HTTPS / SSH"| CF_ZT
+    CF_ZT -->|"Tunnel Cloudflare<br/>(mTLS + Auth)"| CF_Tunnel
+    CF_Tunnel -->|"TCP SSH :22"| SSHD
     SSHD --> Dev_Stack
 
     %% 2. DEV & GESTION DE CODE
-    Dev_Stack --> Git_CLI
-    Git_CLI -- "git clone/pull/push via SSH/HTTPS" --> GitHub_SaaS
+    Git_CLI -.->|"git clone/pull/push"| GitHub_SaaS
 
     %% 3. APPELS IA
-    Node_Gemini -- "HTTPS / REST API<br/>(clé d'API Gemini)" --> Gemini_API
+    Node_Gemini -.->|"API REST"| Gemini_API
 
     %% 4. INTERACTIONS MATÉRIELLES
-    Python_Env -- "Gestion tactile + UI console<br/>(/dev/input, /dev/tty1)" --> Touchscreen
-    Arduino_CLI -- "Build + Flash via USB<br/>/dev/ttyUSBx" --> LilyGO_A7670E
+    Python_Env -->|"UI tactile<br/>/dev/input"| Touchscreen
+    Arduino_CLI -->|"Flash USB<br/>/dev/ttyUSB0"| LilyGO_A7670E
 
     %% ==== CLASS ZONES ====
     class Dev_PC zoneClient;
     class CF_ZT,CF_Tunnel zoneAccess;
-    class RPi5_Core,Lab_Devices zoneLab;
+    class SSHD,Dev_Stack componentCore;
+    class Touchscreen,LilyGO_A7670E componentDevice;
     class GitHub_SaaS,Gemini_API zoneCloud;
 ```
 
