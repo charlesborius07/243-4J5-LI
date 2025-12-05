@@ -273,6 +273,8 @@ Vous verrez soit:
 ## 4. Interface tactile distante en mode console
 > 📱 **Objectif :** afficher un tableau de bord tactile minimal directement sur la console du Raspberry Pi (TTY1) via `curses` et `evdev`.
 
+TODO: section git: Créer un compte github, créer un token classique, mettre en mode store, clone le repo, créer une branch, récupérer son clone de repo, créer une branche 
+
 ### 4.1 Code prêt à l'emploi
 - Le script se trouve dans `~/243-4J5-LI/labo1/code/touch_ui.py`.
 - Il affiche trois boutons (STATUS, LOGS, QUIT) et réagit aux taps du panneau tactile sans serveur X.
@@ -366,48 +368,14 @@ nvm use 22
 
 <div style="height: 5px; background: linear-gradient(90deg, #22d3ee, #34d399); border-radius: 999px; margin: 22px 0;"></div>
 
-## 6. Configuration Git
-> 📝 **Objectif :** configurer Git globalement.
 
-*(Section à compléter selon vos besoins)*
-```bash
-# Configuration de base Git
-git config --global user.name "Votre Nom"
-git config --global user.email "votre.email@example.com"
-```
+TODO: Demander à l'étudiant d'essater de faire quelquechose de différent à l'aide d'une requête à gemini et de le tester
+TODO: git push
 
-<div style="height: 5px; background: linear-gradient(90deg, #22c55e, #a855f7); border-radius: 999px; margin: 22px 0;"></div>
 
-## 7. Programmation du LilyGO A7670E
+## 7. Programmation du LilyGO A7670G
 > 🚀 **Objectif :** compléter avec les instructions spécifiques au module.
 
-*(Section à compléter avec les instructions spécifiques)*
+TODO: ajouter consigne pour arduino-cli et préparation d'un premier code simple
 
 <div style="height: 5px; background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 999px; margin: 22px 0;"></div>
-
-## 🔖 Notes importantes
-- **NVM:** Avec NVM, toutes les commandes `node` et `npm` s'exécutent sans `sudo`
-- **Sécurité:** Le tunnel Cloudflare chiffre tout le trafic SSH
-- **Performance:** Openbox est un WM léger idéal pour Raspberry Pi
-- **Tactile:** Kivy gère automatiquement les événements tactiles
-- **Débogage:** Utilisez `journalctl` et `systemctl status` pour diagnostiquer les problèmes
-
-<div style="height: 5px; background: linear-gradient(90deg, #06b6d4, #0ea5e9); border-radius: 999px; margin: 22px 0;"></div>
-
-## 🧪 Commandes de vérification utiles
-```bash
-# Vérifier NVM
-command -v nvm
-
-# Vérifier Node
-node -v
-
-# Vérifier Gemini
-gemini --version
-
-# Vérifier service kiosk
-systemctl --user status kiosk.service
-
-# Vérifier tunnel Cloudflare
-sudo systemctl status cloudflared
-```
