@@ -1968,20 +1968,23 @@ Maintenant que vous maîtrisez la programmation du LilyGO et la communication sa
 - Bouton USER (fonction programmable)
 - Circuits anti-rebond matériels
 
-**3. Accéléromètre (MPU6050 ou ADXL345):**
-- Communication I2C
-- Détection de mouvement, vibrations, chocs
+**3. Accéléromètre (Adafruit MSA311):**
+- Communication I2C via STEMMA QT
+- Détection de mouvement, vibrations, chocs (±2g/4g/8g/16g configurable)
 - Applications: tracking de véhicule, alarme de mouvement, comptage de pas
 - Interruptions matérielles pour économie d'énergie
+- Interface simple avec bibliothèque Adafruit
 
 **4. Interface audio:**
-- **Microphone MEMS** (SPH0645 ou INMP441)
-  - Interface I2S pour audio numérique
+- **Microphone analogique** (Adafruit SPW2430)
+  - Sortie analogique directe (DC bias 0.67V, ~100mVpp)
+  - Connexion directe à ADC de l'ESP32
   - Détection de bruit ambiant
-  - Enregistrement vocal pour commandes
-- **Speaker / Buzzer**
-  - Amplificateur classe D (PAM8403 ou similaire)
-  - Alertes sonores
+  - Gamme 100Hz - 10kHz
+- **Speaker avec amplificateur I2S** (Adafruit 3885)
+  - Module STEMMA tout-en-un (speaker + ampli classe D)
+  - Interface I2S pour audio haute qualité
+  - Alertes sonores et messages vocaux
   - Feedback utilisateur
 
 **5. Alimentation et gestion d'énergie:**
@@ -2104,11 +2107,11 @@ Pour bien préparer le Labo 3 sur la conception de PCB, vous devez **prototyper 
 ### 🎯 Objectif du devoir
 
 Créer un prototype fonctionnel sur breadboard qui intègre tous les composants du futur shield:
-- LEDs d'indication
-- Boutons tactiles
-- Accéléromètre (MPU6050 ou ADXL345)
-- Speaker/Buzzer
-- Microphone MEMS (optionnel si disponible)
+- 4 LEDs d'indication (rouge, verte, bleue, jaune)
+- 3 Boutons tactiles (RESET, MODE, USER)
+- Accéléromètre MSA311 (Adafruit 5309)
+- Speaker avec amplificateur I2S (Adafruit 3885)
+- Microphone analogique SPW2430 (Adafruit 2716)
 
 ### 📦 Matériel requis
 
@@ -2120,11 +2123,9 @@ Créer un prototype fonctionnel sur breadboard qui intègre tous les composants 
   <li>4 résistances 220Ω ou 330Ω (pour LEDs)</li>
   <li>3 boutons poussoirs (tactile switch)</li>
   <li>3 résistances 10kΩ (pull-up/pull-down pour boutons)</li>
-  <li>Module accéléromètre MPU6050 ou ADXL345 (avec breakout board)</li>
-  <li>Buzzer actif 3.3V ou 5V (pour alarmes et tonalités simples)</li>
-  <li>Module amplificateur audio I2S MAX98357A ou PAM8403 (pour speaker)</li>
-  <li>Petit speaker 3W 4Ω ou 8Ω (pour audio et messages vocaux)</li>
-  <li>Microphone MEMS INMP441 ou MAX4466 (optionnel)</li>
+  <li>Adafruit STEMMA QT MSA311 3-Axis Accelerometer (Product ID: 5309)</li>
+  <li>Adafruit STEMMA Speaker + Audio Amplifier (Product ID: 3885)</li>
+  <li>Adafruit Silicon MEMS Microphone Breakout - SPW2430 (Product ID: 2716)</li>
   <li>Fils de connexion jumper mâle-mâle (assortiment)</li>
   <li>Condensateurs de découplage 0.1µF (optionnel mais recommandé)</li>
 </ul>
@@ -2145,13 +2146,10 @@ Créer un prototype fonctionnel sur breadboard qui intègre tous les composants 
 | Bouton USER | GPIO 18 | Pull-up 10kΩ |
 | Accéléromètre SDA | GPIO 21 | I2C Data (ne pas oublier pull-ups si non présents sur module) |
 | Accéléromètre SCL | GPIO 22 | I2C Clock |
-| Buzzer | GPIO 19 | PWM pour tonalités/alarmes |
-| Speaker (ampli I2S) BCLK | GPIO 26 | I2S Bit Clock |
-| Speaker (ampli I2S) LRCLK | GPIO 25 | I2S Word Select / Frame Sync |
-| Speaker (ampli I2S) DIN | GPIO 23 | I2S Data Input |
-| Microphone I2S WS | GPIO 35 | Word Select (optionnel) |
-| Microphone I2S SD | GPIO 33 | Serial Data (optionnel) |
-| Microphone I2S SCK | GPIO 32 | Serial Clock (optionnel) |
+| Speaker BCLK | GPIO 26 | I2S Bit Clock (Adafruit 3885) |
+| Speaker LRCLK | GPIO 25 | I2S Word Select / Frame Sync |
+| Speaker DIN | GPIO 23 | I2S Data Input |
+| Microphone Analog Out | GPIO 34 (ADC1_CH6) | Sortie analogique SPW2430 (DC bias 0.67V, ~100mVpp) |
 
 <div style="background:#fef9c3; border:1px solid #facc15; padding:10px 12px; border-radius:10px;">
 <strong>⚠️ Important - Niveaux de tension</strong>
@@ -2183,7 +2181,7 @@ Créer un sketch Arduino qui teste séquentiellement chaque fonction:
 // À compléter et adapter
 
 #include <Wire.h>
-#include <MPU6050.h>  // ou ADXL345
+#include <Adafruit_MSA311.h>  // Accéléromètre Adafruit MSA311
 
 // Définition des pins
 #define LED_RED 12
@@ -2195,17 +2193,13 @@ Créer un sketch Arduino qui teste séquentiellement chaque fonction:
 #define BTN_MODE 17
 #define BTN_USER 18
 
-#define BUZZER 19
-
-// Speaker I2S
+// Speaker I2S (Adafruit 3885)
 #define I2S_BCLK 26
 #define I2S_LRCLK 25
 #define I2S_DIN 23
 
-// Microphone I2S (optionnel)
-#define MIC_WS 35
-#define MIC_SD 33
-#define MIC_SCK 32
+// Microphone analogique (Adafruit SPW2430)
+#define MIC_ANALOG 34  // ADC1_CH6
 
 // I2C pour accéléromètre (pins 21, 22 par défaut)
 
@@ -2223,12 +2217,15 @@ void setup() {
   pinMode(BTN_MODE, INPUT_PULLUP);
   pinMode(BTN_USER, INPUT_PULLUP);
 
-  // Configuration buzzer
-  pinMode(BUZZER, OUTPUT);
+  // Configuration microphone analogique
+  pinMode(MIC_ANALOG, INPUT);
+  analogSetAttenuation(ADC_11db);  // Plage 0-3.3V pour ESP32
 
   // Initialisation I2C et accéléromètre
   Wire.begin(21, 22);  // SDA, SCL
   // TODO: initialiser votre accéléromètre
+
+  // TODO: Initialiser I2S pour speaker (voir bibliothèque ESP8266Audio)
 
   Serial.println("=== Test du prototype shield ===");
   testAllComponents();
@@ -2241,6 +2238,13 @@ void loop() {
   // Lire l'accéléromètre
   readAccelerometer();
 
+  // Lire le microphone (toutes les secondes)
+  static unsigned long lastMicRead = 0;
+  if (millis() - lastMicRead > 1000) {
+    readMicrophone();
+    lastMicRead = millis();
+  }
+
   delay(100);
 }
 
@@ -2248,11 +2252,11 @@ void testAllComponents() {
   Serial.println("Test des LEDs...");
   testLEDs();
 
-  Serial.println("Test du buzzer...");
-  testBuzzer();
-
   Serial.println("Test du speaker I2S...");
   testSpeaker();
+
+  Serial.println("Test du microphone...");
+  testMicrophone();
 
   Serial.println("Appuyez sur les boutons pour tester...");
   // Les boutons seront testés dans la loop
@@ -2279,22 +2283,45 @@ void testLEDs() {
   digitalWrite(LED_YELLOW, LOW);
 }
 
-void testBuzzer() {
-  tone(BUZZER, 1000, 200);  // 1kHz pendant 200ms
-  delay(300);
-  tone(BUZZER, 2000, 200);  // 2kHz pendant 200ms
-}
-
 void testSpeaker() {
   // TODO: Implémenter test speaker avec I2S
-  // Nécessite configuration I2S et bibliothèque ESP8266Audio ou similaire
+  // Nécessite configuration I2S et bibliothèque ESP8266Audio ou AudioI2S
   // Exemple:
   // #include "AudioOutputI2S.h"
   // AudioOutputI2S *out = new AudioOutputI2S();
   // out->SetPinout(I2S_BCLK, I2S_LRCLK, I2S_DIN);
   // Jouer un son de test ou tonalité
+  // Note: Le module Adafruit 3885 inclut déjà l'amplificateur
 
-  Serial.println("Speaker I2S: à implémenter (voir exemples ESP8266Audio)");
+  Serial.println("Speaker I2S (Adafruit 3885): à implémenter (voir exemples ESP8266Audio)");
+}
+
+void testMicrophone() {
+  // Lire plusieurs échantillons pour obtenir niveau moyen
+  int sum = 0;
+  int minVal = 4095;
+  int maxVal = 0;
+
+  for (int i = 0; i < 100; i++) {
+    int reading = analogRead(MIC_ANALOG);
+    sum += reading;
+    if (reading < minVal) minVal = reading;
+    if (reading > maxVal) maxVal = reading;
+    delayMicroseconds(100);
+  }
+
+  int average = sum / 100;
+  int peakToPeak = maxVal - minVal;
+
+  Serial.print("Microphone SPW2430 - Average: ");
+  Serial.print(average);
+  Serial.print(" (");
+  Serial.print((average * 3.3) / 4095.0, 3);
+  Serial.print("V), Peak-to-Peak: ");
+  Serial.print(peakToPeak);
+  Serial.print(" (");
+  Serial.print((peakToPeak * 3.3) / 4095.0, 3);
+  Serial.println("V)");
 }
 
 void checkButtons() {
@@ -2315,18 +2342,49 @@ void checkButtons() {
   if (digitalRead(BTN_USER) == LOW) {
     Serial.println("Bouton USER pressé");
     digitalWrite(LED_BLUE, HIGH);
-    tone(BUZZER, 1500, 100);
     delay(100);
     digitalWrite(LED_BLUE, LOW);
   }
 }
 
 void readAccelerometer() {
-  // TODO: implémenter lecture accéléromètre
-  // Exemple pour MPU6050:
-  // int16_t ax, ay, az;
-  // mpu.getAcceleration(&ax, &ay, &az);
-  // Serial.printf("Accel: X=%d Y=%d Z=%d\n", ax, ay, az);
+  // TODO: implémenter lecture accéléromètre MSA311
+  // Exemple pour MSA311:
+  // #include <Adafruit_MSA311.h>
+  // Adafruit_MSA311 msa = Adafruit_MSA311();
+  // sensors_event_t event;
+  // msa.getEvent(&event);
+  // Serial.printf("Accel: X=%.2f Y=%.2f Z=%.2f m/s^2\n",
+  //               event.acceleration.x,
+  //               event.acceleration.y,
+  //               event.acceleration.z);
+}
+
+void readMicrophone() {
+  // Lire le niveau audio sur plusieurs échantillons
+  int sum = 0;
+  int minVal = 4095;
+  int maxVal = 0;
+
+  for (int i = 0; i < 100; i++) {
+    int reading = analogRead(MIC_ANALOG);
+    sum += reading;
+    if (reading < minVal) minVal = reading;
+    if (reading > maxVal) maxVal = reading;
+    delayMicroseconds(100);
+  }
+
+  int average = sum / 100;
+  int peakToPeak = maxVal - minVal;
+
+  // Afficher seulement si niveau significatif (bruit détecté)
+  if (peakToPeak > 50) {  // Seuil ajustable
+    Serial.print("Audio détecté - Avg: ");
+    Serial.print((average * 3.3) / 4095.0, 3);
+    Serial.print("V, P-P: ");
+    Serial.print((peakToPeak * 3.3) / 4095.0, 3);
+    Serial.println("V");
+  }
 }
 ```
 
@@ -2344,22 +2402,25 @@ Pour chaque composant, vérifier:
 - [ ] Pas de rebonds (si rebonds: ajouter condensateur 0.1µF en parallèle)
 - [ ] LED de confirmation s'allume lors de l'appui
 
-**Accéléromètre:**
-- [ ] Communication I2C fonctionnelle (vérifier avec `i2cdetect`)
-- [ ] Lecture des valeurs X, Y, Z cohérentes
+**Accéléromètre MSA311:**
+- [ ] Communication I2C fonctionnelle (vérifier avec `i2cdetect`, adresse 0x62)
+- [ ] Lecture des valeurs X, Y, Z cohérentes (en m/s²)
 - [ ] Détection de mouvement (bouger le breadboard et observer les valeurs)
+- [ ] Connecteur STEMMA QT fonctionnel (si utilisé)
 
-**Buzzer:**
-- [ ] Sons clairs aux différentes fréquences
-- [ ] Volume suffisant mais pas assourdissant
-- [ ] Pas de bruit parasite
-
-**Speaker (ampli I2S):**
-- [ ] Amplificateur correctement alimenté
+**Speaker (Adafruit 3885):**
+- [ ] Module correctement alimenté (3-5V)
 - [ ] Connexions I2S fonctionnelles (BCLK, LRCLK, DIN)
 - [ ] Sortie audio claire (test avec tonalité ou fichier WAV)
 - [ ] Pas de distorsion ou bruit de fond
 - [ ] Volume contrôlable
+
+**Microphone (SPW2430):**
+- [ ] Sortie DC centrée autour de 0.67V (mesure au multimètre)
+- [ ] Variation de tension lors de bruits (parler près du micro)
+- [ ] Lecture ADC fonctionnelle (valeurs entre 0-4095)
+- [ ] Peak-to-peak ~100mV pour voix normale
+- [ ] Pas de bruit excessif en silence
 
 **4. Documentation**
 
