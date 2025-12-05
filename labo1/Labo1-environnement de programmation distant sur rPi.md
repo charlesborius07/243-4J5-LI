@@ -604,6 +604,20 @@ arduino-cli core update-index
 arduino-cli core install esp32:esp32
 ```
 
+> 💡 **Si vous obtenez l'erreur** `esp32:esp32-arduino-libs@idf-release_v5.5-8410210c-v2 net/http: request canceled ...`, il y a probablement une limite de taille (~400 Mo) sur votre connexion. Téléchargez alors manuellement les archives volumineuses dans le dossier de staging Arduino avant de relancer l'installation:
+> ```bash
+> mkdir -p ~/.arduino15/staging/packages
+> cd ~/.arduino15/staging/packages
+> # Librairies Arduino ESP32 (≈428 Mo, reprise possible)
+> wget -c https://github.com/espressif/arduino-esp32/releases/download/3.3.4/esp32-3.3.4-libs.zip
+> # Toolchains (adaptées pour aarch64; remplacez si autre architecture)
+> wget -c https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20250730/xtensa-esp-elf-14.2.0_20250730-aarch64-linux-gnu.tar.gz
+> wget -c https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20250730/riscv32-esp-elf-14.2.0_20250730-aarch64-linux-gnu.tar.gz
+> # Puis relancer l'installation
+> arduino-cli core install esp32:esp32
+> ```
+> Les téléchargements supportent la reprise (`-c`) en cas de coupure.
+
 #### Lister les boards disponibles
 ```bash
 arduino-cli board listall esp32
