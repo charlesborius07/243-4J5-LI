@@ -10,9 +10,9 @@
 - [Installation Ubuntu Server](#1-installation-ubuntu-server)
 - [Configuration réseau](#2-configuration-réseau)
 - [Connexion à distance via Cloudflare Tunnel](#3-connexion-à-distance-via-cloudflare-tunnel)
-- [Interface tactile Kivy](#4-interface-graphique-tactile-avec-kivy)
-- [Installation Node.js et outils CLI](#5-installation-nodejs-et-outils-cli)
-- [Configuration Git](#6-configuration-git)
+- [Configuration Git](#4-configuration-git)
+- [Interface tactile en mode console](#5-interface-tactile-distante-en-mode-console)
+- [Installation Node.js et outils CLI](#6-installation-nodejs-et-outils-cli)
 - [Programmation du LilyGO A7670E](#7-programmation-du-lilygo-a7670e)
 - [Notes importantes](#-notes-importantes)
 - [Commandes de vérification](#-commandes-de-vérification-utiles)
@@ -270,23 +270,166 @@ Vous verrez soit:
 
 <div style="height: 5px; background: linear-gradient(90deg, #c084fc, #22d3ee); border-radius: 999px; margin: 22px 0;"></div>
 
-## 4. Interface tactile distante en mode console
+
+## 4. Configuration Git
+> 🔧 **Objectif :** configurer Git et GitHub pour collaborer sur le projet du cours.
+
+### 4.1 Création du compte GitHub et token d'accès
+
+#### Créer un compte GitHub
+1. Si vous n'avez pas de compte, allez sur [github.com](https://github.com) et créez-en un
+2. Vérifiez votre adresse email
+
+#### Créer un Personal Access Token (Classic)
+1. Connectez-vous à GitHub
+2. Allez dans **Settings** (en haut à droite, cliquez sur votre avatar)
+3. Dans le menu de gauche, en bas, cliquez sur **Developer settings**
+4. Cliquez sur **Personal access tokens** → **Tokens (classic)**
+5. Cliquez sur **Generate new token** → **Generate new token (classic)**
+6. Configurez le token:
+   - **Note:** `Raspberry Pi - 243-4J5-LI`
+   - **Expiration:** 90 days (ou selon préférence)
+   - **Scopes:** Cochez au minimum `repo` (accès complet aux dépôts privés et publics)
+7. Cliquez sur **Generate token**
+8. **⚠️ IMPORTANT:** Copiez le token immédiatement, vous ne pourrez plus le voir!
+
+### 4.2 Configuration Git sur le Raspberry Pi
+
+#### Configuration de l'identité
+```bash
+git config --global user.name "Votre Nom"
+git config --global user.email "votre.email@example.com"
+```
+
+#### Configurer le credential store
+Pour éviter de retaper le token à chaque fois:
+```bash
+git config --global credential.helper store
+```
+
+<div style="background:#fee2e2; border:1px solid #ef4444; padding:10px 12px; border-radius:10px;">
+<strong>⚠️ Attention sécurité</strong>
+<ul>
+  <li>Le mode <code>store</code> enregistre le token en <strong>texte clair</strong> dans <code>~/.git-credentials</code></li>
+  <li>Sur un système partagé, préférez <code>cache</code> : <code>git config --global credential.helper cache</code></li>
+  <li>Pour un timeout de 1h : <code>git config --global credential.helper 'cache --timeout=3600'</code></li>
+</ul>
+</div>
+
+### 4.3 Cloner le dépôt du cours
+
+#### Cloner le repository
+```bash
+cd ~
+git clone https://github.com/fpoisson2/243-4J5-LI.git
+cd 243-4J5-LI
+```
+
+Lors du premier clone, Git vous demandera:
+- **Username:** Votre nom d'utilisateur GitHub
+- **Password:** Collez votre **token** (pas votre mot de passe!)
+
+Le credential helper sauvegarde ces informations pour les prochaines fois.
+
+### 4.4 Travailler avec les branches
+
+#### Créer votre branche personnelle
+```bash
+git checkout -b prenom-nom/labo1
+```
+
+Exemple: `git checkout -b francis-poisson/labo1`
+
+#### Vérifier votre branche actuelle
+```bash
+git branch
+```
+
+L'astérisque `*` indique la branche active.
+
+#### Faire des modifications et les sauvegarder
+
+**Vérifier l'état:**
+```bash
+git status
+```
+
+**Ajouter vos modifications:**
+```bash
+git add .
+```
+
+Ou pour ajouter un fichier spécifique:
+```bash
+git add chemin/vers/fichier.py
+```
+
+**Créer un commit:**
+```bash
+git commit -m "Description de vos changements"
+```
+
+Exemple: `git commit -m "Ajout de l'interface tactile avec trois boutons"`
+
+**Pousser vers GitHub:**
+```bash
+git push origin prenom-nom/labo1
+```
+
+Si c'est le premier push de cette branche:
+```bash
+git push -u origin prenom-nom/labo1
+```
+
+Le flag `-u` (upstream) établit le lien entre votre branche locale et la branche distante.
+
+### 4.5 Synchroniser avec le dépôt principal
+
+#### Récupérer les dernières modifications
+```bash
+git fetch origin
+```
+
+#### Mettre à jour votre branche locale depuis main
+```bash
+git checkout main
+git pull origin main
+```
+
+#### Fusionner main dans votre branche
+```bash
+git checkout prenom-nom/labo1
+git merge main
+```
+
+<div style="background:#dbeafe; border:1px solid #3b82f6; padding:10px 12px; border-radius:10px;">
+<strong>💡 Bonnes pratiques</strong>
+<ul>
+  <li>Faites des commits fréquents avec des messages clairs</li>
+  <li>Synchronisez régulièrement avec <code>main</code> pour éviter les conflits</li>
+  <li>Nommez vos branches de façon descriptive: <code>prenom-nom/feature-description</code></li>
+  <li>Ne travaillez jamais directement sur <code>main</code></li>
+</ul>
+</div>
+
+<div style="height: 5px; background: linear-gradient(90deg, #10b981, #06b6d4); border-radius: 999px; margin: 22px 0;"></div>
+
+
+## 5. Interface tactile distante en mode console
 > 📱 **Objectif :** afficher un tableau de bord tactile minimal directement sur la console du Raspberry Pi (TTY1) via `curses` et `evdev`.
 
-TODO: section git: Créer un compte github, créer un token classique, mettre en mode store, clone le repo, créer une branch, récupérer son clone de repo, créer une branche 
-
-### 4.1 Code prêt à l'emploi
+### 5.1 Code prêt à l'emploi
 - Le script se trouve dans `~/243-4J5-LI/labo1/code/touch_ui.py`.
 - Il affiche trois boutons (STATUS, LOGS, QUIT) et réagit aux taps du panneau tactile sans serveur X.
 - `q` ou le bouton **QUIT** ferment l'application.
 
-### 4.2 Dépendances requises
+### 5.2 Dépendances requises
 ```bash
 sudo apt update
 sudo apt install -y python3 python3-evdev
 ```
 
-### 4.3 Lancer l'UI sur l'écran distant
+### 5.3 Lancer l'UI sur l'écran distant
 Exécuter depuis une session SSH (le Pi doit avoir l'écran tactile branché) :
 ```bash
 sudo chvt 1
@@ -298,15 +441,15 @@ sudo setsid sh -c 'exec </dev/tty1 >/dev/tty1 2>&1 python3 /home/fpoisson/243-4J
 <div style="height: 5px; background: linear-gradient(90deg, #f59e0b, #f97316); border-radius: 999px; margin: 22px 0;"></div>
 
 
-## 5. Installation Node.js et outils CLI
+## 6. Installation Node.js et outils CLI
 > 🛠️ **Objectif :** installer Node.js 22 avec NVM puis la Gemini CLI.
 
-### 5.1 Installation de base
+### 6.1 Installation de base
 ```bash
 sudo apt install npm
 ```
 
-### 5.2 Configuration NVM (Node Version Manager)
+### 6.2 Configuration NVM (Node Version Manager)
 
 #### Activer NVM dans la session
 ```bash
@@ -336,7 +479,7 @@ npm -v
 
 **Important:** Avec NVM, pas besoin de `sudo` pour `node`/`npm`. Tout est dans votre `$HOME`.
 
-### 5.3 Installation Gemini CLI
+### 6.3 Installation Gemini CLI
 
 #### Installation
 ```bash
@@ -356,7 +499,7 @@ gemini
 ```
 Lancer dans le dossier du code Python créé pour assistance.
 
-### 5.4 Nettoyage (optionnel)
+### 6.4 Nettoyage (optionnel)
 Pour supprimer l'ancienne installation globale:
 ```bash
 nvm use system
@@ -366,16 +509,220 @@ nvm use 22
 
 **Astuce:** Ajoutez `nvm use 22` dans votre `~/.bashrc` pour en faire la version par défaut.
 
-<div style="height: 5px; background: linear-gradient(90deg, #22d3ee, #34d399); border-radius: 999px; margin: 22px 0;"></div>
+### 6.5 Exercice pratique avec Gemini CLI
+
+Maintenant que vous avez installé Gemini CLI, testez-le pour améliorer votre code!
+
+**Exemple d'utilisation:**
+1. Naviguez vers votre code:
+   ```bash
+   cd ~/243-4J5-LI/labo1/code
+   ```
+
+2. Lancez Gemini et demandez-lui d'ajouter une fonctionnalité:
+   ```bash
+   gemini
+   ```
+
+3. **Suggestions de requêtes:**
+   - "Ajoute un quatrième bouton 'REBOOT' qui affiche un message de confirmation"
+   - "Ajoute des couleurs différentes pour chaque bouton"
+   - "Crée une fonction qui affiche l'heure actuelle dans le coin supérieur droit"
+   - "Ajoute un indicateur de batterie factice qui change de couleur"
+
+4. Testez le code modifié:
+   ```bash
+   sudo chvt 1
+   sudo setsid sh -c 'exec </dev/tty1 >/dev/tty1 2>&1 python3 /home/fpoisson/243-4J5-LI/labo1/code/touch_ui.py'
+   ```
+
+5. Sauvegardez vos changements avec Git:
+   ```bash
+   git add .
+   git commit -m "Ajout de fonctionnalité via Gemini: [décrivez ce que vous avez ajouté]"
+   git push origin prenom-nom/labo1
+   ```
+
+<div style="background:#f0fdf4; border:1px solid #22c55e; padding:10px 12px; border-radius:10px;">
+<strong>✅ À remettre:</strong>
+<ul>
+  <li>Capturez une photo de votre écran tactile montrant la nouvelle fonctionnalité</li>
+  <li>Notez la requête Gemini que vous avez utilisée</li>
+  <li>Décrivez brièvement ce qui fonctionne et ce qui ne fonctionne pas</li>
+</ul>
+</div>
+
+<div style="height: 5px; background: linear-gradient(90deg, #34d399, #fbbf24); border-radius: 999px; margin: 22px 0;"></div>
 
 
-TODO: Demander à l'étudiant d'essater de faire quelquechose de différent à l'aide d'une requête à gemini et de le tester
-TODO: git push
+## 7. Programmation du LilyGO A7670E
+> 🚀 **Objectif :** installer Arduino CLI et programmer le module LilyGO pour communiquer via LTE.
 
+### 7.1 Installation Arduino CLI
 
-## 7. Programmation du LilyGO A7670G
-> 🚀 **Objectif :** compléter avec les instructions spécifiques au module.
+#### Télécharger et installer Arduino CLI
+```bash
+cd ~
+curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+```
 
-TODO: ajouter consigne pour arduino-cli et préparation d'un premier code simple
+#### Ajouter Arduino CLI au PATH
+```bash
+echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+source ~/.bashrc
+```
+
+#### Vérifier l'installation
+```bash
+arduino-cli version
+```
+
+#### Initialiser la configuration
+```bash
+arduino-cli config init
+```
+
+#### Mettre à jour l'index des boards
+```bash
+arduino-cli core update-index
+```
+
+### 7.2 Configuration pour ESP32
+
+#### Ajouter l'URL des ESP32
+```bash
+arduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+```
+
+#### Mettre à jour l'index
+```bash
+arduino-cli core update-index
+```
+
+#### Installer le support ESP32
+```bash
+arduino-cli core install esp32:esp32
+```
+
+#### Lister les boards disponibles
+```bash
+arduino-cli board listall esp32
+```
+
+### 7.3 Installation des bibliothèques requises
+
+Pour le LilyGO A7670E, installer les bibliothèques nécessaires:
+```bash
+arduino-cli lib install "TinyGSM"
+arduino-cli lib install "ArduinoJson"
+arduino-cli lib install "PubSubClient"
+```
+
+### 7.4 Premier programme simple
+
+#### Créer un dossier pour le projet
+```bash
+mkdir -p ~/243-4J5-LI/labo1/lilygo-test
+cd ~/243-4J5-LI/labo1/lilygo-test
+```
+
+#### Créer le sketch Arduino
+```bash
+nano lilygo-test.ino
+```
+
+**Code de test simple:**
+```cpp
+// Test basique pour LilyGO A7670E
+// Vérifie la communication série et allume la LED
+
+#define LED_PIN 12  // LED intégrée sur le LilyGO
+
+void setup() {
+  // Initialiser la communication série
+  Serial.begin(115200);
+  delay(1000);
+
+  // Configurer la LED
+  pinMode(LED_PIN, OUTPUT);
+
+  Serial.println("=========================");
+  Serial.println("LilyGO A7670E - Test");
+  Serial.println("=========================");
+  Serial.println("Démarrage...");
+}
+
+void loop() {
+  // Faire clignoter la LED
+  digitalWrite(LED_PIN, HIGH);
+  Serial.println("LED ON");
+  delay(1000);
+
+  digitalWrite(LED_PIN, LOW);
+  Serial.println("LED OFF");
+  delay(1000);
+}
+```
+
+### 7.5 Compilation et téléversement
+
+#### Connecter le LilyGO
+1. Brancher le câble USB-A vers USB-C entre le Raspberry Pi et le LilyGO
+2. Vérifier la connexion:
+```bash
+arduino-cli board list
+```
+
+Vous devriez voir un port comme `/dev/ttyUSB0` ou `/dev/ttyACM0`
+
+#### Compiler le sketch
+```bash
+arduino-cli compile --fqbn esp32:esp32:esp32 lilygo-test.ino
+```
+
+#### Téléverser vers le LilyGO
+```bash
+arduino-cli upload -p /dev/ttyUSB0 --fqbn esp32:esp32:esp32 lilygo-test.ino
+```
+
+**Note:** Remplacez `/dev/ttyUSB0` par le port détecté sur votre système.
+
+#### Moniteur série pour voir les messages
+```bash
+arduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200
+```
+
+Vous devriez voir:
+```
+=========================
+LilyGO A7670E - Test
+=========================
+Démarrage...
+LED ON
+LED OFF
+LED ON
+LED OFF
+...
+```
+
+Pour quitter le moniteur série: `Ctrl+C`
+
+### 7.6 Prochaines étapes
+
+Une fois le test de base réussi:
+1. Tester la communication avec le module A7670E (AT commands)
+2. Configurer la connexion LTE avec votre carte SIM
+3. Établir une connexion MQTT pour envoyer des données
+4. Intégrer le GPS pour la géolocalisation
+
+<div style="background:#fef3c7; border:1px solid #f59e0b; padding:10px 12px; border-radius:10px;">
+<strong>⚡ Dépannage</strong>
+<ul>
+  <li>Si <code>/dev/ttyUSB0</code> n'apparaît pas, vérifiez le câble USB</li>
+  <li>Ajoutez votre utilisateur au groupe dialout: <code>sudo usermod -a -G dialout $USER</code> puis redémarrez</li>
+  <li>Si l'upload échoue, appuyez sur le bouton BOOT du LilyGO pendant l'upload</li>
+  <li>Pour voir tous les ports: <code>ls -la /dev/tty*</code></li>
+</ul>
+</div>
 
 <div style="height: 5px; background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 999px; margin: 22px 0;"></div>
