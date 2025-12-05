@@ -1,23 +1,45 @@
-# Labo 1 - Environnement de programmation distant pour objets connectés
-
-## Matériel requis
-
-- Clavier Raspberry Pi
-- Raspberry Pi 5
-- Écran tactile pour Raspberry Pi 5
-- Alimentation USB-C pour Raspberry Pi 5
-- Câble micro-USB pour clavier
-- Carte micro SD 64 GB
-- LilyGO A7670E avec antenne GPS et LTE
-- Carte SIM
-- Câble USB-A à USB-C
+<div style="background: linear-gradient(90deg, #0ea5e9, #6366f1); padding: 18px 20px; color: #f8fafc; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  <h1 style="margin: 0; font-size: 28px;">Labo 1 — Environnement de programmation distant pour objets connectés</h1>
+  <p style="margin: 6px 0 0; font-size: 15px;">Guide pas à pas pour préparer un Raspberry Pi 5, le connecter au réseau et déployer les outils nécessaires.</p>
+</div>
 
 ---
 
+## 🧭 Plan du guide
+- [Matériel requis](#-matériel-requis)
+- [Installation Ubuntu Server](#1-installation-ubuntu-server)
+- [Configuration réseau](#2-configuration-réseau)
+- [Connexion à distance via Cloudflare Tunnel](#3-connexion-à-distance-via-cloudflare-tunnel)
+- [Interface tactile Kivy](#4-interface-graphique-tactile-avec-kivy)
+- [Installation Node.js et outils CLI](#5-installation-nodejs-et-outils-cli)
+- [Configuration Git](#6-configuration-git)
+- [Programmation du LilyGO A7670E](#7-programmation-du-lilygo-a7670e)
+- [Notes importantes](#-notes-importantes)
+- [Commandes de vérification](#-commandes-de-vérification-utiles)
+
+<div style="height: 6px; background: linear-gradient(90deg, #22d3ee, #22c55e); border-radius: 999px; margin: 18px 0;"></div>
+
+## 🎒 Matériel requis
+<div style="background:#ecfeff; border:1px solid #06b6d4; padding:12px 14px; border-radius:10px;">
+<ul style="margin:0;">
+  <li>Clavier Raspberry Pi</li>
+  <li>Raspberry Pi 5</li>
+  <li>Écran tactile pour Raspberry Pi 5</li>
+  <li>Alimentation USB-C pour Raspberry Pi 5</li>
+  <li>Câble micro-USB pour clavier</li>
+  <li>Carte micro SD 64 GB</li>
+  <li>LilyGO A7670E avec antenne GPS et LTE</li>
+  <li>Carte SIM</li>
+  <li>Câble USB-A à USB-C</li>
+</ul>
+</div>
+
+<div style="height: 6px; background: linear-gradient(90deg, #22c55e, #84cc16); border-radius: 999px; margin: 22px 0;"></div>
+
 ## 1. Installation Ubuntu Server
+> 🎯 **Objectif :** préparer la carte SD avec Ubuntu Server, SSH et l'écran tactile.
 
 ### Préparation de la carte SD
-
 1. Installer Ubuntu Server (dernière version LTS) sur le Raspberry Pi 5
 2. Lors de la préparation de la carte micro-SD:
    - Activer SSH
@@ -25,9 +47,10 @@
 3. Pendant la préparation, installer l'écran sur le Raspberry Pi 5 (suivre les instructions attentivement)
 4. Brancher le clavier sur le Raspberry Pi 5
 
----
+<div style="height: 5px; background: linear-gradient(90deg, #f59e0b, #fb7185); border-radius: 999px; margin: 22px 0;"></div>
 
 ## 2. Configuration réseau
+> 🌐 **Objectif :** disposer d'une connexion filaire fixe et d'un WiFi prêt pour le réseau du Cégep.
 
 ### 2.1 Adresse IP statique (Ethernet)
 
@@ -53,11 +76,15 @@ network:
           - 8.8.8.8
 ```
 
-**Paramètres:**
-- `192.168.1.9` → Votre IP fixe
-- `/24` → Masque 255.255.255.0
-- `gateway4: 192.168.1.1` → Votre passerelle (modem/routeur)
-- DNS: Cloudflare (1.1.1.1) + Google (8.8.8.8)
+<div style="background:#fef9c3; border:1px solid #facc15; padding:10px 12px; border-radius:10px;">
+<strong>Paramètres</strong>
+<ul>
+  <li><code>192.168.1.9</code> → Votre IP fixe</li>
+  <li><code>/24</code> → Masque 255.255.255.0</li>
+  <li><code>gateway4: 192.168.1.1</code> → Votre passerelle (modem/routeur)</li>
+  <li>DNS: Cloudflare (1.1.1.1) + Google (8.8.8.8)</li>
+</ul>
+</div>
 
 #### Appliquer la configuration
 ```bash
@@ -73,7 +100,6 @@ sudo netplan --debug apply
 ```bash
 ip a
 ```
-
 Vous devriez voir: `inet 192.168.1.9/24`
 
 **Test Internet:**
@@ -83,7 +109,6 @@ ping google.com
 ```
 
 ### 2.2 Connexion SSH locale
-
 1. Brancher le câble réseau entre votre RPi et votre PC
 2. Se connecter en SSH au Raspberry Pi
 
@@ -128,12 +153,12 @@ sudo journalctl -u systemd-networkd -f
 ping www.google.ca
 ```
 
----
+<div style="height: 5px; background: linear-gradient(90deg, #22d3ee, #3b82f6); border-radius: 999px; margin: 22px 0;"></div>
 
 ## 3. Connexion à distance via Cloudflare Tunnel
+> 🔒 **Objectif :** sécuriser l'accès SSH via un tunnel Cloudflare et Zero Trust.
 
 ### 3.1 Prérequis
-
 1. Se créer un compte gratuit sur Cloudflare
 2. Acheter un nom de domaine public
 
@@ -169,15 +194,18 @@ ingress:
   - service: http_status:404
 ```
 
-**Remplacer:**
-- `<TON-UUID-ICI>` par l'UUID du tunnel
-- `rpi.edxo.ca` par votre sous-domaine
+<div style="background:#fdf2f8; border:1px solid #ec4899; padding:10px 12px; border-radius:10px;">
+<strong>Remplacer</strong>
+<ul>
+  <li><code>&lt;TON-UUID-ICI&gt;</code> par l'UUID du tunnel</li>
+  <li><code>rpi.edxo.ca</code> par votre sous-domaine</li>
+</ul>
+</div>
 
 #### Lier le tunnel au DNS
 ```bash
 cloudflared tunnel route dns rpi-ssh rpi.edxo.ca
 ```
-
 - `rpi-ssh` → nom du tunnel
 - `rpi.edxo.ca` → hostname externe
 
@@ -187,20 +215,17 @@ Cela crée automatiquement l'entrée DNS dans votre compte Cloudflare.
 ```bash
 cloudflared tunnel run rpi-ssh
 ```
-
 Laissez cette commande tourner (utilisez `tmux` ou `screen` si nécessaire).
 
 Si tout fonctionne, vous verrez des logs: `"Connection established"` / `"Proxying tunnel"`
 
 #### Installer le service (démarrage automatique)
-
 Une fois le test réussi:
 ```bash
 sudo cloudflared service install
 ```
 
 ### 3.3 Configuration Cloudflare Zero Trust (Dashboard web)
-
 1. Aller sur le dashboard Cloudflare
 2. Accéder à **Zero Trust** (ou "Cloudflare One")
 3. Naviguer vers: **Access → Applications → Add an application**
@@ -221,7 +246,6 @@ sudo cloudflared service install
 ### 3.4 Connexion SSH via Cloudflare Access
 
 #### Configuration SSH locale (sur votre PC)
-
 Éditer `~/.ssh/config`:
 ```bash
 nano ~/.ssh/config
@@ -244,9 +268,10 @@ Vous verrez soit:
 - `fpoisson@rpi's password:` (authentification par mot de passe)
 - `Authenticated with public key...` (si clé SSH configurée)
 
----
+<div style="height: 5px; background: linear-gradient(90deg, #c084fc, #22d3ee); border-radius: 999px; margin: 22px 0;"></div>
 
 ## 4. Interface graphique tactile avec Kivy
+> 📱 **Objectif :** afficher un dashboard tactile en plein écran sur le Raspberry Pi.
 
 ### 4.1 Installation des dépendances
 ```bash
@@ -434,9 +459,10 @@ sudo loginctl enable-linger $USER
 - Lancera X automatiquement
 - Affichera directement le dashboard tactile
 
----
+<div style="height: 5px; background: linear-gradient(90deg, #f59e0b, #f97316); border-radius: 999px; margin: 22px 0;"></div>
 
 ## 5. Installation Node.js et outils CLI
+> 🛠️ **Objectif :** installer Node.js 22 avec NVM puis la Gemini CLI.
 
 ### 5.1 Installation de base
 ```bash
@@ -491,11 +517,9 @@ Vous ne devriez plus voir l'erreur: `SyntaxError: Invalid regular expression fla
 ```bash
 gemini
 ```
-
 Lancer dans le dossier du code Python créé pour assistance.
 
 ### 5.4 Nettoyage (optionnel)
-
 Pour supprimer l'ancienne installation globale:
 ```bash
 nvm use system
@@ -505,9 +529,10 @@ nvm use 22
 
 **Astuce:** Ajoutez `nvm use 22` dans votre `~/.bashrc` pour en faire la version par défaut.
 
----
+<div style="height: 5px; background: linear-gradient(90deg, #22d3ee, #34d399); border-radius: 999px; margin: 22px 0;"></div>
 
 ## 6. Configuration Git
+> 📝 **Objectif :** configurer Git globalement.
 
 *(Section à compléter selon vos besoins)*
 ```bash
@@ -516,25 +541,25 @@ git config --global user.name "Votre Nom"
 git config --global user.email "votre.email@example.com"
 ```
 
----
+<div style="height: 5px; background: linear-gradient(90deg, #22c55e, #a855f7); border-radius: 999px; margin: 22px 0;"></div>
 
 ## 7. Programmation du LilyGO A7670E
+> 🚀 **Objectif :** compléter avec les instructions spécifiques au module.
 
 *(Section à compléter avec les instructions spécifiques)*
 
----
+<div style="height: 5px; background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 999px; margin: 22px 0;"></div>
 
-## Notes importantes
-
+## 🔖 Notes importantes
 - **NVM:** Avec NVM, toutes les commandes `node` et `npm` s'exécutent sans `sudo`
 - **Sécurité:** Le tunnel Cloudflare chiffre tout le trafic SSH
 - **Performance:** Openbox est un WM léger idéal pour Raspberry Pi
 - **Tactile:** Kivy gère automatiquement les événements tactiles
 - **Débogage:** Utilisez `journalctl` et `systemctl status` pour diagnostiquer les problèmes
 
----
+<div style="height: 5px; background: linear-gradient(90deg, #06b6d4, #0ea5e9); border-radius: 999px; margin: 22px 0;"></div>
 
-## Commandes de vérification utiles
+## 🧪 Commandes de vérification utiles
 ```bash
 # Vérifier NVM
 command -v nvm
