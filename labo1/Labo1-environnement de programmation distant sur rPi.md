@@ -45,7 +45,7 @@ graph TD
 
         subgraph Lab_Devices ["📱 Périphériques"]
             Touchscreen["Écran tactile"]:::componentDevice
-            LilyGO_A7670E["LilyGO A7670E"]:::componentDevice
+            LilyGO_A7670G["LilyGO A7670G"]:::componentDevice
         end
     end
 
@@ -71,13 +71,13 @@ graph TD
 
     %% 4. INTERACTIONS MATÉRIELLES
     Python_Env -->|"UI tactile<br/>/dev/input"| Touchscreen
-    Arduino_CLI -->|"Flash USB<br/>/dev/ttyUSB0"| LilyGO_A7670E
+    Arduino_CLI -->|"Flash USB<br/>/dev/ttyUSB0"| LilyGO_A7670G
 
     %% ==== CLASS ZONES ====
     class Dev_PC zoneClient;
     class CF_ZT,CF_Tunnel zoneAccess;
     class SSHD,Dev_Stack componentCore;
-    class Touchscreen,LilyGO_A7670E componentDevice;
+    class Touchscreen,LilyGO_A7670G componentDevice;
     class GitHub_SaaS,Gemini_API zoneCloud;
 ```
 
@@ -97,7 +97,7 @@ Ce diagramme illustre l'architecture complète du laboratoire:
 - [Configuration Git](#4-configuration-git)
 - [Interface tactile en mode console](#5-interface-tactile-distante-en-mode-console)
 - [Installation Node.js et outils CLI](#6-installation-nodejs-et-outils-cli)
-- [Programmation du LilyGO A7670E](#7-programmation-du-lilygo-a7670e)
+- [Programmation du LilyGO A7670G](#7-programmation-du-lilygo-a7670e)
 - [Notes importantes](#-notes-importantes)
 - [Commandes de vérification](#-commandes-de-vérification-utiles)
 
@@ -112,7 +112,7 @@ Ce diagramme illustre l'architecture complète du laboratoire:
   <li>Alimentation USB-C pour Raspberry Pi 5</li>
   <li>Câble micro-USB pour clavier</li>
   <li>Carte micro SD 64 GB</li>
-  <li>LilyGO A7670E avec antenne GPS et LTE</li>
+  <li>LilyGO A7670G avec antenne GPS et LTE</li>
   <li>Plaquette de prototypage (breadboard)</li>
   <li>LED rouge et LED verte</li>
   <li>Résistances appropriées (220Ω - 330Ω)</li>
@@ -133,7 +133,7 @@ Ces périphériques sont essentiels pour la **configuration initiale** du Raspbe
 **Carte micro SD 64 GB:**
 Le système d'exploitation, les outils de développement, et vos projets seront stockés sur cette carte. Une capacité de 64 GB offre amplement d'espace pour Ubuntu Server, Node.js, Arduino CLI, et tous vos programmes.
 
-**LilyGO A7670E:**
+**LilyGO A7670G:**
 Ce module ESP32 avec modem cellulaire intégré (LTE Cat-1) et GPS représente votre **objet connecté cible**. Il sera programmé **via le Raspberry Pi à distance**. Dans un scénario réel, cet appareil pourrait être déployé sur un véhicule, dans un champ agricole, ou sur une station météo isolée. Vous le programmerez comme si vous mettiez à jour un appareil IoT sur le terrain, sans y être physiquement.
 
 **Carte SIM et antennes:**
@@ -980,16 +980,16 @@ Maintenant que vous avez installé Gemini CLI, testez-le pour améliorer votre c
 <div style="height: 5px; background: linear-gradient(90deg, #34d399, #fbbf24); border-radius: 999px; margin: 22px 0;"></div>
 
 
-## 7. Programmation du LilyGO A7670E
+## 7. Programmation du LilyGO A7670G
 > 🚀 **Objectif :** installer Arduino CLI et programmer le module LilyGO pour communiquer via LTE.
 
 ### 💡 Concepts clés
 
-**Qu'est-ce que le LilyGO A7670E?**
+**Qu'est-ce que le LilyGO A7670G?**
 
-Le LilyGO A7670E est un module de développement qui combine:
+Le LilyGO A7670G est un module de développement qui combine:
 1. **ESP32:** Microcontrôleur WiFi/Bluetooth (dual-core, 240 MHz)
-2. **A7670E:** Modem cellulaire 4G LTE Cat-1 (2G/3G/4G)
+2. **A7670G:** Modem cellulaire 4G LTE Cat-1 (2G/3G/4G)
 3. **GPS:** Récepteur GNSS pour la géolocalisation
 4. **Connectivité:** WiFi, Bluetooth, LTE, GPS sur une seule carte
 
@@ -1115,7 +1115,7 @@ arduino-cli board listall esp32
 ### 7.3 Installation des bibliothèques requises
 
 #### Bibliothèques Arduino
-Pour le LilyGO A7670E, installer les bibliothèques nécessaires:
+Pour le LilyGO A7670G, installer les bibliothèques nécessaires:
 ```bash
 arduino-cli lib install "TinyGSM"
 arduino-cli lib install "ArduinoJson"
@@ -1143,7 +1143,7 @@ nano lilygo-test.ino
 
 **Code de test simple:**
 ```cpp
-// Test basique pour LilyGO A7670E
+// Test basique pour LilyGO A7670G
 // Vérifie la communication série et allume la LED
 
 #define LED_PIN 12  // LED intégrée sur le LilyGO
@@ -1157,7 +1157,7 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
 
   Serial.println("=========================");
-  Serial.println("LilyGO A7670E - Test");
+  Serial.println("LilyGO A7670G - Test");
   Serial.println("=========================");
   Serial.println("Démarrage...");
 }
@@ -1205,7 +1205,7 @@ arduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200
 Vous devriez voir:
 ```
 =========================
-LilyGO A7670E - Test
+LilyGO A7670G - Test
 =========================
 Démarrage...
 LED ON
@@ -1317,7 +1317,7 @@ Maintenant que vous maîtrisez la programmation distante et la communication sé
 - Publication de messages MQTT via WiFi
 
 **Phase 3 : Communication cellulaire (LTE)**
-- Activation du modem **A7670E** pour la connectivité **4G LTE**
+- Activation du modem **A7670G** pour la connectivité **4G LTE**
 - Remplacement du WiFi par le **réseau cellulaire**
 - Intégration de la **carte SIM** et configuration APN
 - Le LilyGO peut maintenant communiquer **n'importe où** avec couverture cellulaire

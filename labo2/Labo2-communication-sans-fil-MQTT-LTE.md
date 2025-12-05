@@ -47,7 +47,7 @@ graph TD
 
         subgraph Lab_Devices ["📱 Périphériques"]
             Touchscreen["Écran tactile"]:::componentDevice
-            LilyGO_A7670E["LilyGO A7670E<br/>(ESP32 + LTE + GPS)"]:::wireless
+            LilyGO_A7670G["LilyGO A7670G<br/>(ESP32 + LTE + GPS)"]:::wireless
         end
     end
 
@@ -75,25 +75,25 @@ graph TD
 
     %% 4. COMMUNICATION MQTT
     Python_Env -->|"MQTT Publish/Subscribe<br/>(WiFi local)"| MQTT_Broker
-    LilyGO_A7670E -->|"MQTT via WiFi"| MQTT_Broker
-    LilyGO_A7670E -->|"MQTT via LTE"| Cellular_Network
+    LilyGO_A7670G -->|"MQTT via WiFi"| MQTT_Broker
+    LilyGO_A7670G -->|"MQTT via LTE"| Cellular_Network
     Cellular_Network -->|"Internet"| MQTT_Broker
 
     %% 5. PROGRAMMATION ET MONITORING
-    Arduino_CLI -->|"Flash USB<br/>/dev/ttyUSB0"| LilyGO_A7670E
+    Arduino_CLI -->|"Flash USB<br/>/dev/ttyUSB0"| LilyGO_A7670G
 
     %% 6. INTERACTIONS TACTILES
     Python_Env -->|"UI tactile<br/>/dev/input"| Touchscreen
 
     %% 7. GPS
-    LilyGO_A7670E -.->|"Réception signaux<br/>satellites"| GPS_Satellites
+    LilyGO_A7670G -.->|"Réception signaux<br/>satellites"| GPS_Satellites
 
     %% ==== CLASS ZONES ====
     class Dev_PC zoneClient;
     class CF_ZT,CF_Tunnel zoneAccess;
     class SSHD,Dev_Stack componentCore;
     class Touchscreen componentDevice;
-    class LilyGO_A7670E wireless;
+    class LilyGO_A7670G wireless;
     class GitHub_SaaS,Gemini_API,Cellular_Network,GPS_Satellites zoneCloud;
 ```
 
@@ -674,13 +674,13 @@ def handle_green_button():
 <div style="height: 5px; background: linear-gradient(90deg, #f59e0b, #f97316); border-radius: 999px; margin: 22px 0;"></div>
 
 ## 3. Activation du modem LTE
-> 📶 **Objectif :** configurer le modem A7670E pour la connectivité cellulaire.
+> 📶 **Objectif :** configurer le modem A7670G pour la connectivité cellulaire.
 
 ### 💡 Concepts clés
 
-**Qu'est-ce que le modem A7670E?**
+**Qu'est-ce que le modem A7670G?**
 
-Le **A7670E** est un modem cellulaire multi-bande supportant:
+Le **A7670G** est un modem cellulaire multi-bande supportant:
 - **2G:** GSM 850/900/1800/1900 MHz
 - **3G:** UMTS/HSPA+ (bandes 1/2/4/5/6/8)
 - **4G LTE Cat-1:** Jusqu'à 10 Mbps DL / 5 Mbps UL (bandes 1/2/3/4/5/7/8/12/13/18/19/20/25/26/28/66)
@@ -717,9 +717,9 @@ AT+COMMANDE=PARAMETRE
 
 **Communication série avec le modem:**
 
-Sur le LilyGO, l'ESP32 communique avec le A7670E via **UART série**:
+Sur le LilyGO, l'ESP32 communique avec le A7670G via **UART série**:
 ```
-ESP32 (Serial1) ←→ A7670E Modem
+ESP32 (Serial1) ←→ A7670G Modem
   TX → RX
   RX ← TX
 ```
@@ -760,7 +760,7 @@ L'**APN** est le point d'accès réseau de votre opérateur cellulaire. C'est co
 **Identifier les connecteurs:**
 
 ```
-LilyGO A7670E (vue de dessus):
+LilyGO A7670G (vue de dessus):
 ┌─────────────────────────────┐
 │  [ANT GPS]      [ANT LTE]   │ ← Connecteurs antennes (à visser)
 │                              │
@@ -785,7 +785,7 @@ nano modem-test.ino
 #### Code de diagnostic
 
 ```cpp
-// Test du modem A7670E
+// Test du modem A7670G
 // Vérifie la SIM, le signal et l'enregistrement réseau
 
 #define MODEM_TX 27
@@ -803,7 +803,7 @@ void setup() {
   delay(2000);
 
   Serial.println("=========================");
-  Serial.println("Test Modem A7670E");
+  Serial.println("Test Modem A7670G");
   Serial.println("=========================");
 
   // Configuration pins
@@ -915,7 +915,7 @@ Test AT...
 OK
 
 Info modem:
-A7670E
+A7670G
 
 Test SIM:
 +CPIN: READY
@@ -993,7 +993,7 @@ OK
 **Architecture finale:**
 
 ```
-[LilyGO] → [Modem A7670E] → [Tour cellulaire] → [Internet] → [Broker MQTT Raspberry Pi]
+[LilyGO] → [Modem A7670G] → [Tour cellulaire] → [Internet] → [Broker MQTT Raspberry Pi]
                                                                       ↓
                                                               [Interface tactile]
 ```
@@ -1064,7 +1064,7 @@ nano mqtt-lte.ino
 #### Code complet
 
 ```cpp
-#define TINY_GSM_MODEM_SIM7600  // Compatible avec A7670E
+#define TINY_GSM_MODEM_SIM7600  // Compatible avec A7670G
 #include <TinyGsmClient.h>
 #include <PubSubClient.h>
 
@@ -1338,7 +1338,7 @@ LilyGO - MQTT via LTE
 =========================
 Démarrage modem...
 Initialisation du modem...
-Modem: A7670E
+Modem: A7670G
 Attente réseau cellulaire ✓
 Connexion GPRS ✓
 
@@ -1391,7 +1391,7 @@ mosquitto_pub -h localhost -t "iot/led/command" -m "red"
 - Galileo (Europe)
 - BeiDou (Chine)
 
-Le modem A7670E supporte **GPS + GLONASS + Galileo** simultanément pour une meilleure précision.
+Le modem A7670G supporte **GPS + GLONASS + Galileo** simultanément pour une meilleure précision.
 
 **Format NMEA:**
 
