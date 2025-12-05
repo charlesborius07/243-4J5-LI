@@ -1356,3 +1356,150 @@ Maintenant que vous maîtrisez la programmation distante et la communication sé
 </div>
 
 <div style="height: 5px; background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 999px; margin: 22px 0;"></div>
+
+## 📚 Devoir de préparation (à faire avant le prochain laboratoire)
+
+Profitez de votre accès distant au Raspberry Pi pour préparer le terrain! Ces tâches vous permettront de démarrer rapidement le prochain laboratoire.
+
+### 1. Installation du broker MQTT sur le Raspberry Pi
+
+**Tâche :** Installer Mosquitto (broker MQTT) sur votre Raspberry Pi.
+
+```bash
+sudo apt update
+sudo apt install -y mosquitto mosquitto-clients
+sudo systemctl enable mosquitto
+sudo systemctl start mosquitto
+```
+
+**Vérifier que le service est actif :**
+```bash
+sudo systemctl status mosquitto
+```
+
+### 2. Tests de base avec MQTT
+
+**Tester la communication locale :**
+
+Dans un premier terminal SSH :
+```bash
+mosquitto_sub -h localhost -t "test/topic"
+```
+
+Dans un deuxième terminal SSH :
+```bash
+mosquitto_pub -h localhost -t "test/topic" -m "Hello MQTT!"
+```
+
+Vous devriez voir le message apparaître dans le premier terminal.
+
+<div style="background:#dbeafe; border:1px solid #3b82f6; padding:10px 12px; border-radius:10px;">
+<strong>💡 Astuce</strong>
+<p>Utilisez <code>tmux</code> ou <code>screen</code> pour gérer plusieurs terminaux SSH simultanément :</p>
+<pre><code># Installer tmux
+sudo apt install tmux
+
+# Lancer tmux
+tmux
+
+# Créer une nouvelle fenêtre : Ctrl+b puis c
+# Naviguer entre fenêtres : Ctrl+b puis n (next) ou p (previous)
+# Détacher la session : Ctrl+b puis d
+# Rattacher : tmux attach</code></pre>
+</div>
+
+### 3. Test de connexion WiFi avec l'ESP32
+
+**Tâche :** Créer un sketch Arduino simple qui teste la connexion WiFi de votre LilyGO.
+
+**Créer le projet :**
+```bash
+mkdir -p ~/243-4J5-LI/labo1/wifi-test
+cd ~/243-4J5-LI/labo1/wifi-test
+nano wifi-test.ino
+```
+
+**Code de base à adapter :**
+```cpp
+#include <WiFi.h>
+
+// À REMPLACER par vos informations
+const char* ssid = "VOTRE_SSID";
+const char* password = "VOTRE_PASSWORD";
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  Serial.println("Test de connexion WiFi...");
+
+  WiFi.begin(ssid, password);
+
+  int attempts = 0;
+  while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+    delay(500);
+    Serial.print(".");
+    attempts++;
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\nConnecté au WiFi!");
+    Serial.print("Adresse IP: ");
+    Serial.println(WiFi.localIP());
+  } else {
+    Serial.println("\nÉchec de connexion WiFi");
+  }
+}
+
+void loop() {
+  // Rien ici pour l'instant
+  delay(1000);
+}
+```
+
+**Compiler et téléverser :**
+```bash
+arduino-cli compile --fqbn esp32:esp32:esp32 wifi-test.ino
+arduino-cli upload -p /dev/ttyUSB0 --fqbn esp32:esp32:esp32 wifi-test.ino
+arduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200
+```
+
+### 4. Recherche et compréhension
+
+**À faire :**
+- 📖 Lire sur le protocole MQTT : qu'est-ce qu'un **topic**, un **QoS** (Quality of Service), un **retained message**?
+- 📖 Comprendre la différence entre **publish/subscribe** et **requête/réponse** (HTTP)
+- 📖 Regarder des exemples de messages MQTT au format JSON
+- 📖 Explorer la bibliothèque Arduino **PubSubClient** (déjà installée) : [https://pubsubclient.knolleary.net/](https://pubsubclient.knolleary.net/)
+
+### 5. Commit de votre travail
+
+```bash
+cd ~/243-4J5-LI/labo1/wifi-test
+git add .
+cd ~/243-4J5-LI
+git commit -m "Préparation Labo 2: installation Mosquitto et test WiFi ESP32"
+git push origin prenom-nom/labo1
+```
+
+<div style="background:#fef3c7; border:1px solid #f59e0b; padding:10px 12px; border-radius:10px;">
+<strong>⚠️ Important</strong>
+<ul>
+  <li>Ces tâches sont <strong>obligatoires</strong> et facilitent grandement le prochain laboratoire</li>
+  <li>Ne partagez pas vos identifiants WiFi dans le code que vous poussez sur GitHub</li>
+  <li>Si vous rencontrez des problèmes, documentez-les pour en discuter au prochain cours</li>
+  <li>Testez votre configuration avant le prochain labo pour éviter de perdre du temps</li>
+</ul>
+</div>
+
+<div style="background:#f0fdf4; border:1px solid #22c55e; padding:10px 12px; border-radius:10px;">
+<strong>✅ À remettre (facultatif mais recommandé):</strong>
+<ul>
+  <li>Capture d'écran du <code>systemctl status mosquitto</code> montrant le service actif</li>
+  <li>Capture d'écran de votre test MQTT (pub/sub) fonctionnel</li>
+  <li>Capture d'écran du moniteur série montrant la connexion WiFi réussie</li>
+  <li>Code du test WiFi dans votre dépôt Git</li>
+</ul>
+</div>
+
+<div style="height: 5px; background: linear-gradient(90deg, #22d3ee, #a855f7); border-radius: 999px; margin: 22px 0;"></div>
