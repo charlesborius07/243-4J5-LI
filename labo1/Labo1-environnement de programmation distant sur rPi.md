@@ -113,6 +113,10 @@ Ce diagramme illustre l'architecture complète du laboratoire:
   <li>Câble micro-USB pour clavier</li>
   <li>Carte micro SD 64 GB</li>
   <li>LilyGO A7670E avec antenne GPS et LTE</li>
+  <li>Plaquette de prototypage (breadboard)</li>
+  <li>LED rouge et LED verte</li>
+  <li>Résistances appropriées (220Ω - 330Ω)</li>
+  <li>Fils de connexion (jumper wires)</li>
   <li>Carte SIM</li>
   <li>Câble USB-A à USB-C</li>
 </ul>
@@ -1110,11 +1114,18 @@ arduino-cli board listall esp32
 
 ### 7.3 Installation des bibliothèques requises
 
+#### Bibliothèques Arduino
 Pour le LilyGO A7670E, installer les bibliothèques nécessaires:
 ```bash
 arduino-cli lib install "TinyGSM"
 arduino-cli lib install "ArduinoJson"
 arduino-cli lib install "PubSubClient"
+```
+
+#### Bibliothèque Python pour communication série
+Pour que l'interface tactile puisse communiquer avec le LilyGO:
+```bash
+sudo apt install -y python3-serial
 ```
 
 ### 7.4 Premier programme simple
@@ -1206,13 +1217,7 @@ LED OFF
 
 Pour quitter le moniteur série: `Ctrl+C`
 
-### 7.6 Prochaines étapes
-
-Une fois le test de base réussi:
-1. Tester la communication avec le module A7670E (AT commands)
-2. Configurer la connexion LTE avec votre carte SIM
-3. Établir une connexion MQTT pour envoyer des données
-4. Intégrer le GPS pour la géolocalisation
+### 7.6 Exercice pratique : Contrôle de LEDs via port série
 
 <div style="background:#fef3c7; border:1px solid #f59e0b; padding:10px 12px; border-radius:10px;">
 <strong>⚡ Dépannage</strong>
@@ -1221,6 +1226,132 @@ Une fois le test de base réussi:
   <li>Ajoutez votre utilisateur au groupe dialout: <code>sudo usermod -a -G dialout $USER</code> puis redémarrez</li>
   <li>Si l'upload échoue, appuyez sur le bouton BOOT du LilyGO pendant l'upload</li>
   <li>Pour voir tous les ports: <code>ls -la /dev/tty*</code></li>
+</ul>
+</div>
+
+**Objectif :** Mettre en place un circuit avec deux LEDs (rouge et verte) contrôlables via des commandes envoyées sur le port série.
+
+#### Ce que vous devez réaliser
+
+1. **Circuit électronique:**
+   - Branchez une LED rouge et une LED verte sur votre plaquette de prototypage
+   - Connectez-les aux GPIO appropriés de votre LilyGO
+   - N'oubliez pas les résistances de limitation de courant
+
+2. **Interface tactile (touch_ui.py):**
+   - Modifiez le programme Python de l'interface tactile créé à la section 5
+   - Ajoutez deux gros boutons: "ROUGE" et "VERT"
+   - Chaque bouton doit envoyer la couleur correspondante sur le port série du LilyGO (`/dev/ttyUSB0`)
+   - L'interface tactile devient ainsi votre panneau de contrôle visuel pour les LEDs
+
+3. **Programme Arduino:**
+   - Modifiez le sketch pour écouter les commandes sur le port série
+   - Implémentez la logique pour allumer la LED correspondante selon la couleur reçue ("rouge" ou "verte")
+   - Les deux commandes doivent éteindre l'autre LED si elle est allumée
+
+4. **Test complet:**
+   - Lancez l'interface tactile sur l'écran du Raspberry Pi
+   - Appuyez sur les boutons ROUGE et VERT
+   - Vérifiez que les LEDs s'allument correctement
+   - Testez aussi via `arduino-cli monitor` pour déboguer si nécessaire
+
+<div style="background:#dbeafe; border:1px solid #3b82f6; padding:10px 12px; border-radius:10px;">
+<strong>💡 Indices</strong>
+<ul>
+  <li><strong>Python (interface tactile):</strong> La bibliothèque <code>serial</code> (PySerial) permet d'écrire sur le port série</li>
+  <li><strong>Arduino:</strong> Utilisez <code>Serial.available()</code> et <code>Serial.readStringUntil()</code> pour lire les commandes</li>
+  <li>La fonction <code>String.trim()</code> peut être utile pour nettoyer l'entrée</li>
+  <li>Pensez à définir les pins des LEDs en <code>OUTPUT</code> dans le <code>setup()</code></li>
+  <li>Testez d'abord votre code Arduino avec <code>arduino-cli monitor</code> avant d'intégrer l'interface tactile</li>
+</ul>
+</div>
+
+#### Commit de votre travail
+
+Une fois que votre circuit fonctionne et que l'interface tactile contrôle les LEDs:
+```bash
+# Ajouter le code Arduino
+cd ~/243-4J5-LI/labo1/lilygo-test
+git add .
+
+# Ajouter le code Python modifié
+cd ~/243-4J5-LI/labo1/code
+git add touch_ui.py
+
+# Committer et pousser
+cd ~/243-4J5-LI
+git commit -m "Ajout du contrôle de LEDs via interface tactile et port série"
+git push origin prenom-nom/labo1
+```
+
+<div style="background:#f0fdf4; border:1px solid #22c55e; padding:10px 12px; border-radius:10px;">
+<strong>✅ À remettre:</strong>
+<ul>
+  <li>Photo du circuit sur la plaquette de prototypage</li>
+  <li>Photo de l'interface tactile avec les boutons ROUGE et VERT</li>
+  <li>Votre code Python modifié (touch_ui.py)</li>
+  <li>Votre code Arduino (lilygo-test.ino)</li>
+  <li>Photo montrant les LEDs allumées lors d'un test</li>
+  <li>Tous les fichiers doivent être dans votre dépôt Git</li>
+</ul>
+</div>
+
+<div style="height: 5px; background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 999px; margin: 22px 0;"></div>
+
+## 🔮 Au prochain laboratoire
+
+Maintenant que vous maîtrisez la programmation distante et la communication série, vous allez faire évoluer votre système vers une architecture IoT moderne et sans fil.
+
+### 📡 Évolution de l'architecture de communication
+
+**Phase 1 : Protocole MQTT**
+- Introduction au protocole **MQTT** (Message Queuing Telemetry Transport)
+- Concepts de **broker**, **publisher** et **subscriber**
+- Architecture publish/subscribe pour l'IoT
+- Avantages : léger, asynchrone, découplage des composants
+
+**Phase 2 : Communication WiFi**
+- Remplacement de la communication série (câble USB) par **WiFi**
+- Le LilyGO devient autonome et peut communiquer sans fil avec le Raspberry Pi
+- Utilisation du module WiFi intégré de l'ESP32
+- Publication de messages MQTT via WiFi
+
+**Phase 3 : Communication cellulaire (LTE)**
+- Activation du modem **A7670E** pour la connectivité **4G LTE**
+- Remplacement du WiFi par le **réseau cellulaire**
+- Intégration de la **carte SIM** et configuration APN
+- Le LilyGO peut maintenant communiquer **n'importe où** avec couverture cellulaire
+- Application : télémétrie mobile, tracking GPS, capteurs distants
+
+### 🎯 Vision finale
+
+À la fin du prochain laboratoire, votre système pourra :
+- Envoyer des données depuis le LilyGO via **4G LTE** vers un broker MQTT
+- Recevoir ces données sur le Raspberry Pi (ou n'importe où dans le monde)
+- Contrôler les LEDs **à distance** via MQTT sans connexion physique
+- Déployer le LilyGO en **mode terrain** avec localisation GPS et télémétrie cellulaire
+
+**Passez de :**
+```
+[Interface tactile] → [Câble USB] → [LilyGO]
+```
+
+**À :**
+```
+[Interface tactile] → [MQTT/WiFi] → [Broker] → [MQTT/LTE] → [LilyGO anywhere]
+                         ↓
+                     [Internet]
+```
+
+<div style="background:#eff6ff; border:1px solid #3b82f6; padding:12px 14px; border-radius:10px;">
+<strong>💡 Réflexion</strong>
+<p>Pensez à des cas d'usage réels où cette architecture serait utile :</p>
+<ul>
+  <li>Surveillance de ruches d'abeilles en campagne (température, humidité, poids)</li>
+  <li>Tracking de véhicules en temps réel avec géolocalisation</li>
+  <li>Stations météo déployées dans des zones reculées</li>
+  <li>Capteurs agricoles pour irrigation intelligente</li>
+  <li>Systèmes d'alerte en cas de dépassement de seuils (température, mouvement, etc.)</li>
 </ul>
 </div>
 
