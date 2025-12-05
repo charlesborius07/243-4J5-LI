@@ -25,34 +25,34 @@ graph TD
     end
 
     %% ==== ZONE D'ACCÈS / EDGE ====
-    subgraph Zone_Access ["🔒 Zone d'accès sécurisé"]
-        CF_ZT["Cloudflare Zero Trust<br/>(Access, Auth, Policies)"]:::securityEdge
-        CF_Tunnel["cloudflared<br/>(Tunnel sortant)"]:::componentService
+    subgraph Zone_Access ["🔒 Accès sécurisé"]
+        CF_ZT["Cloudflare Zero Trust"]:::securityEdge
+        CF_Tunnel["cloudflared"]:::componentService
     end
 
     %% ==== ZONE LAB / ON-PREM ====
-    subgraph Zone_Lab ["🏠 On-Prem Lab"]
-        subgraph RPi5_Core ["🍓 Raspberry Pi 5 – Ubuntu Server"]
-            SSHD["Serveur SSH (sshd)"]:::componentCore
+    subgraph Zone_Lab ["🏠 Lab On-Prem"]
+        subgraph RPi5_Core ["🍓 Raspberry Pi 5"]
+            SSHD["SSH Server"]:::componentCore
 
-            subgraph Dev_Stack ["🛠️ Stack de Développement"]
+            subgraph Dev_Stack ["🛠️ Outils Dev"]
                 Git_CLI["Git CLI"]:::componentService
-                Node_Gemini["Node.js + Gemini CLI"]:::componentService
-                Python_Env["Python3 + evdev"]:::componentService
+                Node_Gemini["Node + Gemini"]:::componentService
+                Python_Env["Python + evdev"]:::componentService
                 Arduino_CLI["Arduino CLI"]:::componentService
             end
         end
 
-        subgraph Lab_Devices ["📱 Périphériques IoT"]
-            Touchscreen["Écran tactile RPi"]:::componentDevice
-            LilyGO_A7670E["LilyGO A7670E<br/>ESP32 + LTE + GPS"]:::componentDevice
+        subgraph Lab_Devices ["📱 Périphériques"]
+            Touchscreen["Écran tactile"]:::componentDevice
+            LilyGO_A7670E["LilyGO A7670E"]:::componentDevice
         end
     end
 
     %% ==== ZONE CLOUD / SAAS ====
     subgraph Zone_Cloud ["☁️ Services Cloud"]
         GitHub_SaaS["GitHub"]:::zoneCloud
-        Gemini_API["Google Gemini API"]:::zoneCloud
+        Gemini_API["Gemini API"]:::zoneCloud
     end
 
     %% ==== FLUX PRINCIPAUX ====
