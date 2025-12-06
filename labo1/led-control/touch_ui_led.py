@@ -71,6 +71,10 @@ class LEDControlUI:
 
         self.buttons = []  # rempli à chaque redraw en fonction de la taille écran
 
+        # Buffer pour les messages série reçus (max 10 lignes)
+        self.serial_feedback = []
+        self.max_feedback_lines = 10
+
     def _init_serial(self):
         """
         Initialise la connexion série avec le LilyGO
@@ -95,6 +99,24 @@ class LEDControlUI:
                 self.status_message = f"Erreur d'envoi: {str(e)}"
         else:
             self.status_message = "Port série non disponible"
+
+    def _read_serial(self):
+        """
+        Lit les données disponibles du port série et les ajoute au buffer de feedback
+        """
+        if self.serial_port and self.serial_port.is_open:
+            try:
+                while self.serial_port.in_waiting > 0:
+                    line = self.serial_port.readline().decode('utf-8', errors='ignore').strip()
+                    if line:
+                        # Ajouter le message avec un timestamp simple
+                        self.serial_feedback.append(line)
+                        # Garder seulement les N dernières lignes
+                        if len(self.serial_feedback) > self.max_feedback_lines:
+                            self.serial_feedback.pop(0)
+            except Exception as e:
+                # Ne pas polluer le status avec les erreurs de lecture
+                pass
 
     def _init_colors(self):
         curses.start_color()
@@ -148,6 +170,27 @@ class LEDControlUI:
         self.stdscr.attron(curses.A_BOLD)
         self.stdscr.addstr(0, max(0, (w - len(title)) // 2), title)
         self.stdscr.attroff(curses.A_BOLD)
+
+        # Zone de feedback série (en haut à droite ou en haut)
+        feedback_title = "--- Feedback Arduino ---"
+        feedback_start_row = 2
+        if w > 60:
+            # Si l'écran est assez large, afficher à droite
+            feedback_col = w // 2 + 2
+        else:
+            # Sinon, afficher en haut
+            feedback_col = 1
+
+        self.stdscr.attron(curses.A_UNDERLINE)
+        self.stdscr.addstr(feedback_start_row, feedback_col, feedback_title[:w - feedback_col - 1])
+        self.stdscr.attroff(curses.A_UNDERLINE)
+
+        # Afficher les messages série
+        for i, msg in enumerate(self.serial_feedback):
+            row = feedback_start_row + 1 + i
+            if row < h - 3:  # Laisser de la place pour le status bar
+                display_msg = msg[:w - feedback_col - 1]  # Tronquer si nécessaire
+                self.stdscr.addstr(row, feedback_col, display_msg)
 
         # Status bar
         self.stdscr.attron(curses.color_pair(3))
@@ -243,6 +286,9 @@ class LEDControlUI:
             if now - last_redraw > 0.05:  # ~20 FPS
                 self._draw()
                 last_redraw = now
+
+            # Lire les données série disponibles
+            self._read_serial()
 
             # Lecture touches clavier (genre pour debug / sortir)
             try:
