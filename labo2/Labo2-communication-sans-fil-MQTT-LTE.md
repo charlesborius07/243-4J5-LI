@@ -113,7 +113,7 @@ Ce diagramme illustre la nouvelle architecture avec communication sans fil:
 - [Activation du modem LTE](#3-activation-du-modem-lte)
 - [Communication MQTT via LTE](#4-communication-mqtt-via-lte)
 - [Intégration GPS](#5-intégration-gps)
-- [Projet intégrateur](#6-projet-intégrateur)
+- [Devoir : montage sur breadboard](#6-devoir-montage-sur-breadboard)
 - [Au prochain laboratoire](#-au-prochain-laboratoire)
 - [Commandes de vérification](#-commandes-de-vérification-utiles)
 
@@ -1750,196 +1750,19 @@ client.loop_forever()
 
 <div style="height: 5px; background: linear-gradient(90deg, #10b981, #06b6d4); border-radius: 999px; margin: 22px 0;"></div>
 
-## 6. Projet intégrateur
-> 🎯 **Objectif :** combiner tous les éléments dans un système complet.
+## 6. Devoir : montage sur breadboard
+> 🎯 **Objectif :** assembler le circuit minimal du LilyGO A7670G sur breadboard et valider l'alimentation, la connectivité et les LED. Le cahier des charges complet du projet de mi-session (conception du shield PCB) est désormais dans `../Projet-mi-session.md`; ce labo se limite au câblage.
 
-### 💡 Cahier des charges
+### Étapes conseillées
+1. **Préparer la breadboard** : placer le LilyGO sur un support stable, installer la carte SIM, brancher les antennes LTE et GPS, puis relier le module à la breadboard pour distribuer 5V et GND.
+2. **Alimentation** : utiliser l'USB ou une alimentation 5V régulée, ajouter un condensateur de découplage (100 µF) sur l'alim breadboard si disponible, et vérifier l'absence de court-circuit avant mise sous tension.
+3. **LEDs et boutons** : câbler deux LEDs (rouge/verte) avec résistances de 220–330 Ω sur des GPIO libres (ex. 12 et 13) et un bouton poussoir (reset ou user) avec pull-up interne activé.
+4. **Test rapide** : flasher l'exemple minimal du labo (connexion WiFi ou LTE + toggling LED) et vérifier dans le moniteur série que le module s'enregistre sur le réseau et que les commandes MQTT allument/éteignent les LEDs.
 
-Créez un système de tracking IoT complet avec les fonctionnalités suivantes:
-
-<div style="background:#f0fdf4; border:1px solid #22c55e; padding:12px 14px; border-radius:10px;">
-<strong>✅ Fonctionnalités requises</strong>
-
-<strong>1. LilyGO (Arduino):</strong>
-<ul>
-  <li>Connexion LTE avec fallback 3G/2G si nécessaire</li>
-  <li>Publication position GPS toutes les 10 secondes</li>
-  <li>Contrôle de 2 LEDs via MQTT (rouge/verte)</li>
-  <li>Publication de métriques système (signal, batterie si applicable)</li>
-  <li>Gestion Last Will Testament</li>
-  <li>Reconnexion automatique en cas de perte réseau</li>
-</ul>
-
-<strong>2. Interface tactile (Python):</strong>
-<ul>
-  <li>Affichage de la dernière position GPS</li>
-  <li>Affichage du statut de connexion (online/offline)</li>
-  <li>Boutons de contrôle LED (rouge/vert/off)</li>
-  <li>Affichage de la qualité du signal cellulaire</li>
-  <li>Historique des 5 dernières positions</li>
-  <li>Bouton pour forcer une mise à jour GPS</li>
-</ul>
-
-<strong>3. Logging (Python CLI ou script):</strong>
-<ul>
-  <li>Enregistrement de toutes les positions GPS dans un fichier CSV</li>
-  <li>Timestamp, latitude, longitude, altitude, vitesse, nombre de satellites</li>
-  <li>Rotation des logs (nouveau fichier par jour)</li>
-</ul>
-</div>
-
-### 6.1 Structure de fichiers
-
-```bash
-~/243-4J5-LI/labo2/
-├── projet-final/
-│   ├── lilygo-tracker.ino       # Code Arduino complet
-│   ├── touch_ui_tracker.py      # Interface tactile améliorée
-│   ├── gps_logger.py            # Script de logging GPS
-│   └── README.md                # Documentation du projet
-└── logs/
-    └── gps_YYYY-MM-DD.csv       # Logs GPS quotidiens
-```
-
-### 6.2 Exemple de logger GPS
-
-```python
-#!/usr/bin/env python3
-# gps_logger.py - Enregistrement des positions GPS depuis MQTT
-
-import paho.mqtt.client as mqtt
-import json
-import csv
-from datetime import datetime
-import os
-
-LOG_DIR = os.path.expanduser("~/243-4J5-LI/labo2/logs")
-os.makedirs(LOG_DIR, exist_ok=True)
-
-def get_log_filename():
-    """Retourne le nom du fichier log du jour"""
-    today = datetime.now().strftime("%Y-%m-%d")
-    return os.path.join(LOG_DIR, f"gps_{today}.csv")
-
-def log_gps(data):
-    """Enregistre une position GPS dans le CSV"""
-    filename = get_log_filename()
-    file_exists = os.path.isfile(filename)
-
-    with open(filename, 'a', newline='') as csvfile:
-        fieldnames = ['timestamp', 'latitude', 'longitude', 'altitude',
-                      'speed', 'satellites', 'hdop']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-        if not file_exists:
-            writer.writeheader()
-
-        writer.writerow({
-            'timestamp': data.get('timestamp', datetime.now().isoformat()),
-            'latitude': data.get('latitude', 0),
-            'longitude': data.get('longitude', 0),
-            'altitude': data.get('altitude', 0),
-            'speed': data.get('speed', 0),
-            'satellites': data.get('satellites', 0),
-            'hdop': data.get('hdop', 0)
-        })
-
-    print(f"✓ Position enregistrée: {data['latitude']:.6f}, {data['longitude']:.6f}")
-
-def on_connect(client, userdata, flags, rc):
-    print(f"Connecté au broker MQTT (rc: {rc})")
-    client.subscribe("iot/gps/location")
-    print("En attente de positions GPS...")
-
-def on_message(client, userdata, msg):
-    try:
-        data = json.loads(msg.payload.decode())
-        if 'latitude' in data and 'longitude' in data:
-            log_gps(data)
-    except json.JSONDecodeError as e:
-        print(f"✗ Erreur parsing JSON: {e}")
-    except Exception as e:
-        print(f"✗ Erreur: {e}")
-
-# Configuration
-client = mqtt.Client("gps-logger")
-client.on_connect = on_connect
-client.on_message = on_message
-
-try:
-    client.connect("localhost", 1883, 60)
-    print("=========================")
-    print("GPS Logger démarré")
-    print(f"Fichier: {get_log_filename()}")
-    print("=========================")
-    client.loop_forever()
-except KeyboardInterrupt:
-    print("\nArrêt du logger")
-    client.disconnect()
-```
-
-**Lancer le logger:**
-```bash
-chmod +x ~/243-4J5-LI/labo2/projet-final/gps_logger.py
-python3 ~/243-4J5-LI/labo2/projet-final/gps_logger.py
-```
-
-**Pour lancer en arrière-plan:**
-```bash
-nohup python3 ~/243-4J5-LI/labo2/projet-final/gps_logger.py &
-```
-
-### 6.3 Critères d'évaluation
-
-<div style="background:#dbeafe; border:1px solid#3b82f6; padding:12px 14px; border-radius:10px;">
-<strong>📊 Grille d'évaluation</strong>
-
-<strong>Fonctionnement (50%):</strong>
-<ul>
-  <li>Connexion LTE stable (10%)</li>
-  <li>GPS fonctionnel avec position précise (15%)</li>
-  <li>Communication MQTT bidirectionnelle (10%)</li>
-  <li>Contrôle LEDs opérationnel (10%)</li>
-  <li>Gestion des déconnexions et reconnexions (5%)</li>
-</ul>
-
-<strong>Code (30%):</strong>
-<ul>
-  <li>Qualité et lisibilité du code Arduino (10%)</li>
-  <li>Qualité et lisibilité du code Python (10%)</li>
-  <li>Gestion des erreurs (5%)</li>
-  <li>Commentaires et documentation (5%)</li>
-</ul>
-
-<strong>Documentation (20%):</strong>
-<ul>
-  <li>README.md complet avec instructions (10%)</li>
-  <li>Photos du circuit et du système en fonctionnement (5%)</li>
-  <li>Logs GPS sur au moins 30 minutes (5%)</li>
-</ul>
-</div>
-
-### 6.4 Livraison
-
-**À remettre sur Git:**
-```bash
-cd ~/243-4J5-LI/labo2/projet-final
-git add .
-cd ~/243-4J5-LI/labo2/logs
-git add *.csv
-cd ~/243-4J5-LI
-git commit -m "Labo 2 - Projet final: GPS tracker avec MQTT LTE"
-git push origin prenom-nom/labo2
-```
-
-**Contenu du README.md:**
-- Description du projet
-- Photos du circuit
-- Instructions de déploiement
-- Exemples de commandes MQTT
-- Capture d'écran de l'interface tactile
-- Extrait des logs GPS
-- Difficultés rencontrées et solutions
+### Livrables
+- 2 à 3 photos nettes du montage breadboard (vue globale et détail des branchements).
+- Capture du moniteur série montrant la connexion réseau et un échange MQTT ou un clignotement commandé.
+- Court paragraphe (150–200 mots) décrivant le câblage et les tests effectués, incluant les broches utilisées pour les LEDs/bouton.
 
 <div style="height: 5px; background: linear-gradient(90deg, #f59e0b, #f97316); border-radius: 999px; margin: 22px 0;"></div>
 
@@ -2000,11 +1823,11 @@ Maintenant que vous maîtrisez la programmation du LilyGO et la communication sa
 
 Au prochain laboratoire, vous apprendrez à utiliser:
 
-**KiCad (logiciel de conception PCB open-source):**
+**Altium Designer (logiciel de conception PCB):**
 - Création du schéma électrique
 - Sélection des composants et empreintes
 - Routage des pistes
-- Génération des fichiers Gerber
+- Génération des fichiers Gerber/ODB++
 - Vérification DRC (Design Rule Check)
 
 **Calculs et dimensionnement:**
@@ -2021,7 +1844,7 @@ Au prochain laboratoire, vous apprendrez à utiliser:
 ### 📋 Contenu du Labo 3
 
 **Partie 1: Conception du schéma électrique**
-- Dessin du schéma avec KiCad
+- Dessin du schéma avec Altium
 - Connexions GPIO du LilyGO A7670G
 - Circuits de conditionnement de signaux
 - Alimentations et découplage
@@ -2048,7 +1871,7 @@ Au prochain laboratoire, vous apprendrez à utiliser:
 
 À la fin du Labo 3, vous serez capable de:
 - ✅ Lire et comprendre un schéma électrique complexe
-- ✅ Concevoir un PCB à 2 couches avec KiCad
+- ✅ Concevoir un PCB à 2 couches avec Altium
 - ✅ Sélectionner des composants adaptés (specs, empreintes)
 - ✅ Respecter les contraintes de fabrication PCB
 - ✅ Intégrer plusieurs protocoles de communication (I2C, I2S, GPIO)
@@ -2087,8 +1910,8 @@ Votre shield pourra servir de base pour:
 <strong>💡 Préparation recommandée</strong>
 <p>Avant le Labo 3, vous pouvez:</p>
 <ul>
-  <li>Télécharger et installer KiCad (gratuit) : <a href="https://www.kicad.org/">kicad.org</a></li>
-  <li>Regarder des tutoriels KiCad pour vous familiariser avec l'interface</li>
+  <li>Installer Altium Designer ou s'assurer d'un accès laboratoire</li>
+  <li>Regarder des tutoriels Altium pour vous familiariser avec l'interface</li>
   <li>Lire les datasheets des composants (MPU6050, INMP441, PAM8403)</li>
   <li>Explorer les contraintes de fabrication des fabricants de PCB (JLCPCB, etc.)</li>
   <li>Tester l'accéléromètre MPU6050 ou ADXL345 sur breadboard si disponible</li>
