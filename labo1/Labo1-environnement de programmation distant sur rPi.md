@@ -810,6 +810,7 @@ sudo setsid sh -c 'exec </dev/tty1 >/dev/tty1 2>&1 python3 /home/fpoisson/243-4J
 ```
 - `chvt 1` bascule l'affichage sur la console locale (TTY1).
 - `setsid` démarre le script dans un nouveau groupe de sessions et redirige STDIN/STDOUT/STDERR vers l'écran, ce qui permet de voir et toucher l'interface à distance.
+- Une fois le programme terminé, libérez l'écran local si nécessaire avec `sudo fuser -v /dev/tty1`.
 
 <div style="height: 5px; background: linear-gradient(90deg, #f59e0b, #f97316); border-radius: 999px; margin: 22px 0;"></div>
 
