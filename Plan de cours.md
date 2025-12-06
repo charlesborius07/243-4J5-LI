@@ -237,11 +237,10 @@ La note finale par capacité ne correspond pas nécessairement à la moyenne ari
 
 ## 4. MATÉRIEL OBLIGATOIRE
 
-- Raspberry Pi
-- Capteurs de base et actionneurs selon le projet
-- Environnement de développement Python
-- Accès à un courtier MQTT (p. ex. Mosquitto)
-- Matériel de conception/assemblage de PCB et outils de soudure
+1. Un compte payant de premier niveau Claude, Gemini ou ChatGPT (environ 30$/mois ou gratuit pour étudiant Gemini pendant 1 an)
+2. Un compte Cloudflare (gratuit)
+3. Un nom de domaine public enregistré chez Cloudflare (environ 15$ pour un an) – on va faire ça en classe
+4. Le kit de pièce X (Y$)
 
 ---
 
