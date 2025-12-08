@@ -27,11 +27,16 @@ class TouchHandler:
         self.running = False
         self.thread = None
 
-        # État tactile actuel
+        # État tactile actuel (ancien système - un seul touch)
         self.current_x = 0
         self.current_y = 0
         self.touch_active = False
         self.last_touch = None  # (x, y) en coordonnées terminal
+
+        # Multi-touch support
+        self.current_slot = 0
+        self.touches = {}  # {slot: {'x': x, 'y': y, 'tracking_id': id}}
+        self.new_touches = []  # Liste des nouvelles touches à consommer
 
         # Paramètres de calibration (seront ajustés selon l'écran)
         self.touch_max_x = 4095  # Valeur max typique pour écran tactile
@@ -113,10 +118,30 @@ class TouchHandler:
 
                 # EV_ABS = 3, événements de position absolue
                 if event.type == 3:
+                    # Ancien système (un seul touch)
                     if event.code == 0:  # ABS_X
                         self.current_x = event.value
                     elif event.code == 1:  # ABS_Y
                         self.current_y = event.value
+
+                    # Multi-touch
+                    elif event.code == 47:  # ABS_MT_SLOT
+                        self.current_slot = event.value
+                    elif event.code == 57:  # ABS_MT_TRACKING_ID
+                        if event.value == -1:  # Touch terminé
+                            if self.current_slot in self.touches:
+                                del self.touches[self.current_slot]
+                        else:  # Nouveau touch
+                            if self.current_slot not in self.touches:
+                                self.touches[self.current_slot] = {
+                                    'x': 0, 'y': 0, 'tracking_id': event.value
+                                }
+                    elif event.code == 53:  # ABS_MT_POSITION_X
+                        if self.current_slot in self.touches:
+                            self.touches[self.current_slot]['x'] = event.value
+                    elif event.code == 54:  # ABS_MT_POSITION_Y
+                        if self.current_slot in self.touches:
+                            self.touches[self.current_slot]['y'] = event.value
 
                 # EV_KEY = 1, événements de bouton (touch down/up)
                 elif event.type == 1:
@@ -126,8 +151,15 @@ class TouchHandler:
                             self.last_touch = self._touch_to_terminal_coords(
                                 self.current_x, self.current_y
                             )
+                            # Aussi ajouter aux nouvelles touches
+                            self.new_touches.append(self.last_touch)
                         elif event.value == 0:  # Touch up
                             self.touch_active = False
+
+                # EV_SYN = 0, événement de synchronisation (fin d'une frame)
+                elif event.type == 0 and event.code == 0:  # SYN_REPORT
+                    # Une frame complète a été reçue, on peut traiter
+                    pass
 
         except OSError:
             pass  # Périphérique déconnecté
@@ -173,6 +205,28 @@ class TouchHandler:
             Tuple (x, y) en coordonnées terminal
         """
         return self._touch_to_terminal_coords(self.current_x, self.current_y)
+
+    def get_all_active_touches(self) -> List[Tuple[int, int]]:
+        """
+        Récupère toutes les positions tactiles actuellement actives
+
+        Returns:
+            Liste de tuples (x, y) en coordonnées terminal
+        """
+        positions = []
+        for slot, touch in self.touches.items():
+            pos = self._touch_to_terminal_coords(touch['x'], touch['y'])
+            positions.append(pos)
+        return positions
+
+    def get_touch_count(self) -> int:
+        """
+        Retourne le nombre de touches actuellement actives
+
+        Returns:
+            Nombre de doigts sur l'écran
+        """
+        return len(self.touches)
 
 
 class MockTouchHandler(TouchHandler):
