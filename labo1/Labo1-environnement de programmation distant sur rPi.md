@@ -807,6 +807,11 @@ Exécuter depuis une session SSH (le Pi doit avoir l'écran tactile branché) :
 ```bash
 sudo chvt 1
 sudo setsid sh -c 'exec </dev/tty1 >/dev/tty1 2>&1 python3 /home/fpoisson/243-4J5-LI/labo1/code/touch_ui.py'
+
+Pour tuer le processus Python distant si l'application ne répond pas:
+```bash
+sudo pkill python3
+```
 ```
 - `chvt 1` bascule l'affichage sur la console locale (TTY1).
 - `setsid` démarre le script dans un nouveau groupe de sessions et redirige STDIN/STDOUT/STDERR vers l'écran, ce qui permet de voir et toucher l'interface à distance.
