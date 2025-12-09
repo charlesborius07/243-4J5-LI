@@ -30,6 +30,11 @@ WebSocketsClient webSocket;
 bool mqttConnected = false;
 unsigned long lastPing = 0;
 
+// Pour la lecture non-bloquante des boutons
+long lastButtonCheck = 0;
+int lastButton1State = HIGH;
+long lastButton2State = HIGH;
+
 // ===== helpers MQTT =====
 
 // encode Remaining Length (MQTT varint)
