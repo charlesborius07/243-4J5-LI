@@ -44,7 +44,6 @@ PubSubClient mqttClient(wifiClient);
 long lastButtonCheck = 0;
 int lastButton1State = HIGH;
 long lastButton2State = HIGH;
-long lastPingTime = 0; // Re-added for ping functionality
 
 // --- Functions ---
 
@@ -117,24 +116,6 @@ void reconnect() {
   }
 }
 
-void performPing() {
-  if (millis() - lastPingTime > 30000) { // Ping every 30 seconds
-    lastPingTime = millis();
-    Serial.print("Pinging MQTT Broker (");
-    Serial.print(MQTT_BROKER);
-    Serial.print(")... ");
-    
-    // The WiFi.ping function returns the round-trip time in milliseconds, or 0 if failed.
-    int pingResult = WiFi.ping(MQTT_BROKER);
-
-    if (pingResult >= 0) {
-      Serial.printf("Réponse de %s: temps=%dms\n", MQTT_BROKER, pingResult);
-    } else {
-      Serial.printf("Pas de réponse de %s\n", MQTT_BROKER);
-    }
-  }
-}
-
 void setup() {
   Serial.begin(115200);
 
@@ -150,16 +131,26 @@ void setup() {
   delay(10);
   Serial.println();
   Serial.print("Connexion WiFi à ");
-  Serial.println(ssid);
+  Serial.println(WIFI_SSID);
 
-  // Connexion WiFi WPA2-Enterprise
   WiFi.disconnect(true);
   WiFi.mode(WIFI_STA);
-  esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)username, strlen(username));
-  esp_wifi_sta_wpa2_ent_set_username((uint8_t *)username, strlen(username));
-  esp_wifi_sta_wpa2_ent_set_password((uint8_t *)password, strlen(password));
+
+#ifdef WIFI_SECURITY_WPA2_ENTERPRISE
+  Serial.println("Using WPA2-Enterprise connection.");
+  esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY));
+  esp_wifi_sta_wpa2_ent_set_username((uint8_t *)EAP_USERNAME, strlen(EAP_USERNAME));
+  esp_wifi_sta_wpa2_ent_set_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD));
   esp_wifi_sta_wpa2_ent_enable();
-  WiFi.begin(ssid);
+  WiFi.begin(WIFI_SSID);
+#elif defined(WIFI_SECURITY_WPA2_PERSONAL)
+  Serial.println("Using WPA2-Personal connection.");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+#else
+  // Fallback for open networks or if no security is defined
+  Serial.println("Using Open/Undefined WiFi connection.");
+  WiFi.begin(WIFI_SSID);
+#endif
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -223,5 +214,4 @@ void loop() {
        Serial.printf("Bouton 2: %s\n", stateMsg);
     }
   }
-  performPing();
 }
