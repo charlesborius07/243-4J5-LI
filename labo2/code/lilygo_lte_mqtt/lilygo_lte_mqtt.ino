@@ -1,4 +1,4 @@
-// LilyGO T-A7670G - Version LTE/Cellulaire avec MQTT
+// LilyGO T-SIM A7670G - Version LTE/Cellulaire avec MQTT via WebSocket
 // Utilise le modem cellulaire A7670G au lieu du WiFi
 
 #define TINY_GSM_MODEM_SIM7600  // Le A7670G est compatible avec SIM7600
@@ -8,7 +8,7 @@
 #include <WebSocketsClient.h>
 #include <vector>
 
-#include "auth.h" // Fichier contenant les paramètres APN
+#include "auth.h" // Fichier contenant APN et identifiants MQTT
 
 // ====== CONFIG MODEM A7670G ======
 #define MODEM_TX 26
@@ -28,11 +28,10 @@
 const char* MQTT_HOST = "mqtt.edxo.ca";      // Votre domaine Cloudflare
 const int   MQTT_WSS_PORT = 443;             // Port sécurisé SSL
 const char* MQTT_PATH = "/";                 // WebSocket path
-char MQTT_CLIENT_ID[20];                     // Will be generated from IMEI
+char MQTT_CLIENT_ID[20];                     // Sera généré depuis l'IMEI
 
-// ====== IDENTIFIANTS MOSQUITTO ======
-const char* MQTT_USER = "esp_user";          // Votre utilisateur Mosquitto
-const char* MQTT_PASS = "yxhtfi60";          // Votre mot de passe
+// Les identifiants MQTT (MQTT_USER, MQTT_PASS) sont définis dans auth.h
+// Le broker MQTT (MQTT_BROKER, MQTT_PORT) est également dans auth.h
 
 char BUTTON1_STATE_TOPIC[50];
 char BUTTON2_STATE_TOPIC[50];
@@ -40,15 +39,15 @@ char LED1_SET_TOPIC[50];
 char LED2_SET_TOPIC[50];
 
 // --- Configuration des broches (Pins) ---
-const int LED1_PIN = 22;
-const int LED2_PIN = 23;
-const int BUTTON1_PIN = 18;
-const int BUTTON2_PIN = 19;
+const int LED1_PIN = 12;   // LED rouge
+const int LED2_PIN = 13;   // LED verte
+const int BUTTON1_PIN = 0; // Bouton 1
+const int BUTTON2_PIN = 35; // Bouton 2
 
 // Serial pour le modem
 HardwareSerial SerialAT(1);
 
-// Client TinyGSM
+// Clients
 TinyGsm modem(SerialAT);
 TinyGsmClient gsmClient(modem);
 
@@ -62,7 +61,11 @@ unsigned long lastPing = 0;
 // Pour la lecture non-bloquante des boutons
 long lastButtonCheck = 0;
 int lastButton1State = HIGH;
-long lastButton2State = HIGH;
+int lastButton2State = HIGH;
+
+// Reconnexion GPRS
+unsigned long lastGprsCheck = 0;
+const unsigned long GPRS_CHECK_INTERVAL = 30000; // 30 secondes
 
 // ===== Helpers MQTT (identiques à la version WiFi) =====
 
@@ -113,6 +116,7 @@ std::vector<uint8_t> mqtt_build_connect_packet(const char* clientId, const char*
   for (uint16_t i = 0; i < passLen; i++) payload.push_back((uint8_t)password[i]);
 
   // --- ASSEMBLAGE FINAL ---
+  // fixed header
   pkt.push_back(0x10); // CONNECT
   std::vector<uint8_t> rl;
   mqtt_encode_remaining_length(vh.size() + payload.size(), rl);
@@ -123,56 +127,23 @@ std::vector<uint8_t> mqtt_build_connect_packet(const char* clientId, const char*
   return pkt;
 }
 
-std::vector<uint8_t> mqtt_build_pingreq() {
-  std::vector<uint8_t> pkt;
-  pkt.push_back(0xC0);
-  pkt.push_back(0x00);
-  return pkt;
-}
-
-std::vector<uint8_t> mqtt_build_publish(const char* topic, const char* message) {
-  std::vector<uint8_t> pkt;
-  std::vector<uint8_t> topicBuf;
-
-  uint16_t tlen = strlen(topic);
-  topicBuf.push_back(tlen >> 8);
-  topicBuf.push_back(tlen & 0xFF);
-  for (uint16_t i = 0; i < tlen; i++) {
-    topicBuf.push_back((uint8_t)topic[i]);
-  }
-
-  std::vector<uint8_t> payload;
-  uint16_t mlen = strlen(message);
-  for (uint16_t i = 0; i < mlen; i++) {
-    payload.push_back((uint8_t)message[i]);
-  }
-
-  pkt.push_back(0x30); // PUBLISH QoS0
-
-  std::vector<uint8_t> rl;
-  mqtt_encode_remaining_length(topicBuf.size() + payload.size(), rl);
-  pkt.insert(pkt.end(), rl.begin(), rl.end());
-
-  pkt.insert(pkt.end(), topicBuf.begin(), topicBuf.end());
-  pkt.insert(pkt.end(), payload.begin(), payload.end());
-
-  return pkt;
-}
-
-std::vector<uint8_t> mqtt_build_subscribe(const char* topic, uint16_t packetId = 1) {
+std::vector<uint8_t> mqtt_build_subscribe_packet(const char* topic, uint16_t packetId, uint8_t qos = 0) {
   std::vector<uint8_t> pkt;
   std::vector<uint8_t> vh;
+
+  // Packet ID
   vh.push_back(packetId >> 8);
   vh.push_back(packetId & 0xFF);
 
+  // Topic
   std::vector<uint8_t> payload;
-  uint16_t tlen = strlen(topic);
-  payload.push_back(tlen >> 8);
-  payload.push_back(tlen & 0xFF);
-  for (uint16_t i = 0; i < tlen; i++) payload.push_back((uint8_t)topic[i]);
-  payload.push_back(0x00); // QoS 0
+  uint16_t topicLen = strlen(topic);
+  payload.push_back(topicLen >> 8); payload.push_back(topicLen & 0xFF);
+  for (uint16_t i = 0; i < topicLen; i++) payload.push_back((uint8_t)topic[i]);
+  payload.push_back(qos);
 
-  pkt.push_back(0x82); // SUBSCRIBE QoS1
+  // Assemblage
+  pkt.push_back(0x82); // SUBSCRIBE
   std::vector<uint8_t> rl;
   mqtt_encode_remaining_length(vh.size() + payload.size(), rl);
   pkt.insert(pkt.end(), rl.begin(), rl.end());
@@ -182,103 +153,234 @@ std::vector<uint8_t> mqtt_build_subscribe(const char* topic, uint16_t packetId =
   return pkt;
 }
 
-void mqtt_parse_publish(const uint8_t* data, size_t len) {
-  if (len < 4) return;
+std::vector<uint8_t> mqtt_build_publish_packet(const char* topic, const char* payload_str, uint8_t qos = 0, bool retain = false) {
+  std::vector<uint8_t> pkt;
 
-  uint8_t header = data[0];
-  uint8_t msgType = header >> 4;
-  if (msgType != 3) return; // pas un PUBLISH
+  // Fixed Header
+  uint8_t fixedHeader = 0x30; // PUBLISH
+  if (retain) fixedHeader |= 0x01;
+  if (qos == 1) fixedHeader |= 0x02;
+  pkt.push_back(fixedHeader);
 
-  // on suppose Remaining Length tient sur 1 octet (demo only)
-  uint8_t rl = data[1];
-  size_t idx = 2;
+  // Variable Header
+  std::vector<uint8_t> vh;
+  uint16_t topicLen = strlen(topic);
+  vh.push_back(topicLen >> 8); vh.push_back(topicLen & 0xFF);
+  for (uint16_t i = 0; i < topicLen; i++) vh.push_back((uint8_t)topic[i]);
 
-  if (idx + 2 > len) return;
-  uint16_t topicLen = (data[idx] << 8) | data[idx+1];
-  idx += 2;
-  if (idx + topicLen > len) return;
+  // Payload
+  std::vector<uint8_t> payload;
+  uint16_t payloadLen = strlen(payload_str);
+  for (uint16_t i = 0; i < payloadLen; i++) payload.push_back((uint8_t)payload_str[i]);
 
-  String topic;
-  for (uint16_t i = 0; i < topicLen; i++) {
-    topic += (char)data[idx + i];
-  }
-  idx += topicLen;
+  // Remaining Length
+  std::vector<uint8_t> rl;
+  mqtt_encode_remaining_length(vh.size() + payload.size(), rl);
+  pkt.insert(pkt.end(), rl.begin(), rl.end());
+  pkt.insert(pkt.end(), vh.begin(), vh.end());
+  pkt.insert(pkt.end(), payload.begin(), payload.end());
 
-  String payload;
-  for (size_t i = idx; i < len; i++) {
-    payload += (char)data[i];
-  }
-
-  Serial.print("[MQTT] PUBLISH reçu - topic='");
-  Serial.print(topic);
-  Serial.print("' payload='");
-  Serial.print(payload);
-  Serial.println("'");
-
-  if (topic == String(LED1_SET_TOPIC)) {
-    digitalWrite(LED1_PIN, (payload == "ON") ? HIGH : LOW);
-  } else if (topic == String(LED2_SET_TOPIC)) {
-    digitalWrite(LED2_PIN, (payload == "ON") ? HIGH : LOW);
-  }
+  return pkt;
 }
 
-// ===== WebSocket event =====
+std::vector<uint8_t> mqtt_build_pingreq_packet() {
+  std::vector<uint8_t> pkt;
+  pkt.push_back(0xC0); // PINGREQ
+  pkt.push_back(0x00); // Remaining Length = 0
+  return pkt;
+}
 
-void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
-  Serial.printf("[WS] Event type=%d, len=%u\n", type, (unsigned)length);
+// ============================================================================
+// FONCTIONS MODEM
+// ============================================================================
 
+void modemPowerOn() {
+  Serial.println("[MODEM] Allumage du modem...");
+  pinMode(MODEM_PWRKEY, OUTPUT);
+  digitalWrite(MODEM_PWRKEY, HIGH);
+  delay(100);
+  digitalWrite(MODEM_PWRKEY, LOW);
+  delay(1000);
+  digitalWrite(MODEM_PWRKEY, HIGH);
+  delay(3000); // Attendre que le modem démarre
+  Serial.println("[MODEM] ✓ Modem allumé");
+}
+
+bool initModem() {
+  Serial.println("[MODEM] Initialisation...");
+
+  SerialAT.begin(115200, SERIAL_8N1, MODEM_RX, MODEM_TX);
+  delay(3000);
+
+  if (!modem.restart()) {
+    Serial.println("[MODEM] ✗ Échec du redémarrage");
+    return false;
+  }
+
+  String modemInfo = modem.getModemInfo();
+  Serial.print("[MODEM] Info: ");
+  Serial.println(modemInfo);
+
+  // Récupérer l'IMEI pour générer le Device ID
+  String imei = modem.getIMEI();
+  Serial.print("[MODEM] IMEI: ");
+  Serial.println(imei);
+
+  // Générer Device ID: lte-XXXXXX (6 derniers chiffres de l'IMEI)
+  String shortIMEI = imei.substring(imei.length() - 6);
+  snprintf(MQTT_CLIENT_ID, sizeof(MQTT_CLIENT_ID), "lte-%s", shortIMEI.c_str());
+  Serial.print("[MQTT] Device ID: ");
+  Serial.println(MQTT_CLIENT_ID);
+
+  // Générer les topics MQTT
+  snprintf(LED1_SET_TOPIC, sizeof(LED1_SET_TOPIC), "%s/led/1/set", MQTT_CLIENT_ID);
+  snprintf(LED2_SET_TOPIC, sizeof(LED2_SET_TOPIC), "%s/led/2/set", MQTT_CLIENT_ID);
+  snprintf(BUTTON1_STATE_TOPIC, sizeof(BUTTON1_STATE_TOPIC), "%s/button/1/state", MQTT_CLIENT_ID);
+  snprintf(BUTTON2_STATE_TOPIC, sizeof(BUTTON2_STATE_TOPIC), "%s/button/2/state", MQTT_CLIENT_ID);
+
+  Serial.println("[MODEM] ✓ Initialisé");
+  return true;
+}
+
+bool connectToNetwork() {
+  Serial.println("[NETWORK] Connexion au réseau cellulaire...");
+
+  if (!modem.waitForNetwork(60000L)) {
+    Serial.println("[NETWORK] ✗ Échec de connexion au réseau");
+    return false;
+  }
+
+  String operator_name = modem.getOperator();
+  Serial.print("[NETWORK] Opérateur: ");
+  Serial.println(operator_name);
+
+  int signalQuality = modem.getSignalQuality();
+  Serial.print("[NETWORK] Signal: ");
+  Serial.print(signalQuality);
+  Serial.println(" dBm");
+
+  Serial.println("[GPRS] Connexion GPRS...");
+  if (!modem.gprsConnect(APN, APN_USER, APN_PASS)) {
+    Serial.println("[GPRS] ✗ Échec de connexion GPRS");
+    return false;
+  }
+
+  if (!modem.isGprsConnected()) {
+    Serial.println("[GPRS] ✗ GPRS non connecté");
+    return false;
+  }
+
+  IPAddress ip = modem.localIP();
+  Serial.print("[GPRS] IP: ");
+  Serial.println(ip);
+  Serial.println("[GPRS] ✓ Connecté");
+
+  return true;
+}
+
+// ============================================================================
+// WEBSOCKET EVENT
+// ============================================================================
+
+void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
   switch (type) {
-    case WStype_ERROR:
-      Serial.println("[WS] ERROR");
-      mqttConnected = false;
-      break;
-
     case WStype_DISCONNECTED:
-      Serial.println("[WS] DISCONNECTED");
+      Serial.println("[WSS] Déconnecté");
       mqttConnected = false;
       break;
 
     case WStype_CONNECTED:
-      Serial.printf("[WS] CONNECTED to: %s\n", payload);
+      Serial.println("[WSS] Connecté au broker");
       {
-        // Envoi du paquet CONNECT avec USER et PASSWORD
-        auto pkt = mqtt_build_connect_packet(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASS);
-
-        Serial.print("[MQTT] CONNECT packet:");
-        for (auto b : pkt) Serial.printf(" %02X", b);
-        Serial.println();
-        webSocket.sendBIN(pkt.data(), pkt.size());
+        // Envoyer MQTT CONNECT
+        std::vector<uint8_t> connectPacket = mqtt_build_connect_packet(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASS);
+        webSocket.sendBIN(connectPacket.data(), connectPacket.size());
+        Serial.println("[MQTT] CONNECT envoyé");
       }
       break;
 
-    case WStype_TEXT:
-      Serial.print("[WS] TEXT: ");
-      Serial.write(payload, length);
-      Serial.println();
-      break;
-
     case WStype_BIN:
-      Serial.printf("[WS] BIN (%u bytes):", (unsigned)length);
-      for (size_t i = 0; i < length; i++) Serial.printf(" %02X", payload[i]);
-      Serial.println();
+      // Message MQTT reçu
+      if (length > 0) {
+        uint8_t packetType = payload[0] >> 4;
 
-      if (length >= 4 && payload[0] == 0x20) {
-        // CONNACK
-        uint8_t rc = payload[3];
-        Serial.printf("[MQTT] CONNACK rc=%u\n", rc);
-        if (rc == 0) {
-          mqttConnected = true;
-          // s'abonner aux topics LED
-          auto sub1 = mqtt_build_subscribe(LED1_SET_TOPIC, 1);
-          auto sub2 = mqtt_build_subscribe(LED2_SET_TOPIC, 2);
-          webSocket.sendBIN(sub1.data(), sub1.size());
-          webSocket.sendBIN(sub2.data(), sub2.size());
-        } else {
-          Serial.println("ERREUR D'AUTHENTIFICATION ! Vérifiez user/pass.");
-          mqttConnected = false;
+        if (packetType == 2) { // CONNACK
+          uint8_t returnCode = payload[3];
+          if (returnCode == 0) {
+            Serial.println("[MQTT] ✓ Connecté au broker");
+            mqttConnected = true;
+
+            // Souscrire aux topics de contrôle des LEDs
+            std::vector<uint8_t> sub1 = mqtt_build_subscribe_packet(LED1_SET_TOPIC, 1);
+            webSocket.sendBIN(sub1.data(), sub1.size());
+
+            std::vector<uint8_t> sub2 = mqtt_build_subscribe_packet(LED2_SET_TOPIC, 2);
+            webSocket.sendBIN(sub2.data(), sub2.size());
+
+            Serial.println("[MQTT] Souscriptions envoyées");
+          } else {
+            Serial.print("[MQTT] ✗ Échec de connexion, code: ");
+            Serial.println(returnCode);
+          }
         }
-      } else {
-        mqtt_parse_publish(payload, length);
+        else if (packetType == 3) { // PUBLISH
+          // Décoder le message PUBLISH
+          int pos = 1;
+
+          // Remaining length
+          uint32_t remainingLength = 0;
+          uint8_t multiplier = 1;
+          uint8_t encodedByte;
+          do {
+            encodedByte = payload[pos++];
+            remainingLength += (encodedByte & 127) * multiplier;
+            multiplier *= 128;
+          } while ((encodedByte & 128) != 0);
+
+          // Topic length
+          uint16_t topicLen = (payload[pos] << 8) | payload[pos + 1];
+          pos += 2;
+
+          // Topic
+          char topic[100];
+          memcpy(topic, &payload[pos], topicLen);
+          topic[topicLen] = '\0';
+          pos += topicLen;
+
+          // Payload
+          char msg[100];
+          int msgLen = length - pos;
+          memcpy(msg, &payload[pos], msgLen);
+          msg[msgLen] = '\0';
+
+          Serial.print("[MQTT] ← ");
+          Serial.print(topic);
+          Serial.print(" = ");
+          Serial.println(msg);
+
+          // Contrôle des LEDs
+          if (strcmp(topic, LED1_SET_TOPIC) == 0) {
+            if (strcmp(msg, "ON") == 0) {
+              digitalWrite(LED1_PIN, HIGH);
+              Serial.println("[LED1] Allumée (ROUGE)");
+            } else if (strcmp(msg, "OFF") == 0) {
+              digitalWrite(LED1_PIN, LOW);
+              Serial.println("[LED1] Éteinte");
+            }
+          }
+          else if (strcmp(topic, LED2_SET_TOPIC) == 0) {
+            if (strcmp(msg, "ON") == 0) {
+              digitalWrite(LED2_PIN, HIGH);
+              Serial.println("[LED2] Allumée (VERTE)");
+            } else if (strcmp(msg, "OFF") == 0) {
+              digitalWrite(LED2_PIN, LOW);
+              Serial.println("[LED2] Éteinte");
+            }
+          }
+        }
+        else if (packetType == 13) { // PINGRESP
+          // Silent ping response
+        }
       }
       break;
 
@@ -287,206 +389,162 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
   }
 }
 
-// ===== Fonctions pour le modem LTE =====
+// ============================================================================
+// GESTION DES BOUTONS
+// ============================================================================
 
-void modemPowerOn() {
-  Serial.println("Mise sous tension du modem...");
+void checkButtons() {
+  long now = millis();
 
-  pinMode(MODEM_PWRKEY, OUTPUT);
-  pinMode(MODEM_FLIGHT, OUTPUT);
-  pinMode(MODEM_STATUS, INPUT);
+  if (now - lastButtonCheck < 100) {
+    return;
+  }
+  lastButtonCheck = now;
 
-  digitalWrite(MODEM_FLIGHT, HIGH);  // Désactiver mode avion
+  if (!mqttConnected) return;
 
-  // Séquence d'allumage
-  digitalWrite(MODEM_PWRKEY, HIGH);
-  delay(100);
-  digitalWrite(MODEM_PWRKEY, LOW);
-  delay(1000);
-  digitalWrite(MODEM_PWRKEY, HIGH);
+  // Vérifier le bouton 1
+  int button1State = digitalRead(BUTTON1_PIN);
+  if (button1State != lastButton1State) {
+    lastButton1State = button1State;
 
-  // Attendre que le modem démarre
-  Serial.println("Attente démarrage modem...");
-  delay(3000);
+    const char* state = (button1State == LOW) ? "PRESSED" : "RELEASED";
+    std::vector<uint8_t> pub = mqtt_build_publish_packet(BUTTON1_STATE_TOPIC, state);
+    webSocket.sendBIN(pub.data(), pub.size());
+
+    Serial.print("[BTN1] → ");
+    Serial.println(state);
+  }
+
+  // Vérifier le bouton 2
+  int button2State = digitalRead(BUTTON2_PIN);
+  if (button2State != lastButton2State) {
+    lastButton2State = button2State;
+
+    const char* state = (button2State == LOW) ? "PRESSED" : "RELEASED";
+    std::vector<uint8_t> pub = mqtt_build_publish_packet(BUTTON2_STATE_TOPIC, state);
+    webSocket.sendBIN(pub.data(), pub.size());
+
+    Serial.print("[BTN2] → ");
+    Serial.println(state);
+  }
 }
 
-bool initModem() {
-  Serial.println("\n=== Initialisation du modem LTE ===");
-
-  // Démarrer la communication série avec le modem
-  SerialAT.begin(115200, SERIAL_8N1, MODEM_RX, MODEM_TX);
-  delay(100);
-
-  // Test de communication
-  Serial.println("Test de communication avec le modem...");
-  if (!modem.testAT()) {
-    Serial.println("ERREUR: Pas de réponse du modem!");
-    return false;
-  }
-  Serial.println("✓ Modem répond");
-
-  // Informations du modem
-  String modemInfo = modem.getModemInfo();
-  Serial.print("Info modem: ");
-  Serial.println(modemInfo);
-
-  String imei = modem.getIMEI();
-  Serial.print("IMEI: ");
-  Serial.println(imei);
-
-  // Générer le Client ID basé sur l'IMEI
-  String shortIMEI = imei.substring(imei.length() - 6);
-  sprintf(MQTT_CLIENT_ID, "lte-%s", shortIMEI.c_str());
-  Serial.print("Device ID: ");
-  Serial.println(MQTT_CLIENT_ID);
-
-  return true;
-}
-
-bool connectToNetwork() {
-  Serial.println("\n=== Connexion au réseau cellulaire ===");
-
-  // Attendre que la carte SIM soit prête
-  Serial.println("Vérification de la carte SIM...");
-  if (!modem.getSimStatus()) {
-    Serial.println("ERREUR: Carte SIM non détectée!");
-    return false;
-  }
-  Serial.println("✓ Carte SIM OK");
-
-  // Attendre l'enregistrement sur le réseau
-  Serial.println("Recherche du réseau cellulaire...");
-  if (!modem.waitForNetwork(60000L)) {
-    Serial.println("ERREUR: Impossible de se connecter au réseau!");
-    return false;
-  }
-  Serial.println("✓ Connecté au réseau cellulaire");
-
-  // Afficher l'opérateur
-  String op = modem.getOperator();
-  Serial.print("Opérateur: ");
-  Serial.println(op);
-
-  // Signal
-  int csq = modem.getSignalQuality();
-  Serial.print("Signal (CSQ): ");
-  Serial.println(csq);
-
-  // Connexion GPRS/LTE
-  Serial.print("Connexion à l'APN: ");
-  Serial.println(APN);
-
-  if (!modem.gprsConnect(APN, APN_USER, APN_PASS)) {
-    Serial.println("ERREUR: Échec connexion GPRS!");
-    return false;
-  }
-  Serial.println("✓ Connexion GPRS établie");
-
-  // Vérifier la connexion
-  if (modem.isGprsConnected()) {
-    Serial.println("✓ GPRS actif");
-    return true;
-  }
-
-  return false;
-}
-
-// ===== setup/loop =====
+// ============================================================================
+// SETUP
+// ============================================================================
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
+  delay(2000);
 
+  Serial.println();
+  Serial.println("=== LilyGo T-SIM A7670G - MQTT via LTE ===");
+  Serial.println();
+
+  // Configuration des pins
   pinMode(LED1_PIN, OUTPUT);
   pinMode(LED2_PIN, OUTPUT);
   pinMode(BUTTON1_PIN, INPUT_PULLUP);
   pinMode(BUTTON2_PIN, INPUT_PULLUP);
+
   digitalWrite(LED1_PIN, LOW);
   digitalWrite(LED2_PIN, LOW);
-
-  Serial.println("\n\n=================================");
-  Serial.println("LilyGO T-A7670G - MQTT via LTE");
-  Serial.println("=================================\n");
 
   // Démarrage du modem
   modemPowerOn();
 
   if (!initModem()) {
-    Serial.println("ERREUR FATALE: Impossible d'initialiser le modem!");
-    while (1) delay(1000);
+    Serial.println("[ERREUR] Impossible d'initialiser le modem");
+    Serial.println("Redémarrez l'appareil");
+    while (true) {
+      digitalWrite(LED1_PIN, !digitalRead(LED1_PIN));
+      delay(200);
+    }
   }
 
   if (!connectToNetwork()) {
-    Serial.println("ERREUR FATALE: Impossible de se connecter au réseau!");
-    while (1) delay(1000);
+    Serial.println("[ERREUR] Impossible de se connecter au réseau");
+    Serial.println("Vérifiez votre carte SIM et l'APN");
+    while (true) {
+      digitalWrite(LED1_PIN, !digitalRead(LED1_PIN));
+      delay(500);
+    }
   }
 
-  // Définir les topics MQTT
-  sprintf(BUTTON1_STATE_TOPIC, "%s/button/1/state", MQTT_CLIENT_ID);
-  sprintf(BUTTON2_STATE_TOPIC, "%s/button/2/state", MQTT_CLIENT_ID);
-  sprintf(LED1_SET_TOPIC, "%s/led/1/set", MQTT_CLIENT_ID);
-  sprintf(LED2_SET_TOPIC, "%s/led/2/set", MQTT_CLIENT_ID);
-
-  Serial.printf("Topic Bouton 1: %s\n", BUTTON1_STATE_TOPIC);
-  Serial.printf("Topic Bouton 2: %s\n", BUTTON2_STATE_TOPIC);
-  Serial.printf("Topic LED 1: %s\n", LED1_SET_TOPIC);
-  Serial.printf("Topic LED 2: %s\n", LED2_SET_TOPIC);
-
-  // Configuration WebSocket avec le client GSM
-  Serial.println("\n=== Connexion WebSocket SSL ===");
-
-  // IMPORTANT: Utiliser le gsmClient au lieu de WiFiClient
-  webSocket.beginSSL(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH, "", "mqtt");
-
+  // Configuration WebSocket avec SSL
+  webSocket.beginSSL(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH);
   webSocket.onEvent(webSocketEvent);
   webSocket.setReconnectInterval(5000);
 
-  Serial.println("WebSocket configuré");
+  Serial.println("[WSS] En attente de connexion...");
+
+  // Attendre la connexion MQTT
+  int attempts = 0;
+  while (!mqttConnected && attempts < 30) {
+    webSocket.loop();
+    delay(1000);
+    attempts++;
+  }
+
+  if (!mqttConnected) {
+    Serial.println("[ERREUR] Impossible de se connecter au broker MQTT");
+    Serial.println("Vérifiez les identifiants dans auth.h");
+    while (true) {
+      digitalWrite(LED1_PIN, !digitalRead(LED1_PIN));
+      delay(1000);
+    }
+  }
+
+  Serial.println();
+  Serial.println("=== Système prêt ===");
+  Serial.println();
+
+  // Clignoter les LEDs pour indiquer que tout est OK
+  for (int i = 0; i < 3; i++) {
+    digitalWrite(LED1_PIN, HIGH);
+    digitalWrite(LED2_PIN, HIGH);
+    delay(200);
+    digitalWrite(LED1_PIN, LOW);
+    digitalWrite(LED2_PIN, LOW);
+    delay(200);
+  }
 }
 
-void loop() {
-  webSocket.loop();
+// ============================================================================
+// LOOP
+// ============================================================================
 
+void loop() {
   unsigned long now = millis();
 
-  // Ping MQTT
-  if (mqttConnected && now - lastPing > 30000) {
-    lastPing = now;
-    auto ping = mqtt_build_pingreq();
-    webSocket.sendBIN(ping.data(), ping.size());
-    Serial.println("[MQTT] PINGREQ envoyé");
-  }
+  // Vérifier la connexion GPRS périodiquement
+  if (now - lastGprsCheck > GPRS_CHECK_INTERVAL) {
+    lastGprsCheck = now;
 
-  // Lecture des boutons
-  if (mqttConnected && millis() - lastButtonCheck > 50) {
-    lastButtonCheck = millis();
-
-    int button1State = digitalRead(BUTTON1_PIN);
-    if (button1State != lastButton1State) {
-      lastButton1State = button1State;
-      const char* stateMsg = (button1State == LOW) ? "PRESSED" : "RELEASED";
-      auto pub = mqtt_build_publish(BUTTON1_STATE_TOPIC, stateMsg);
-      webSocket.sendBIN(pub.data(), pub.size());
-      Serial.printf("Bouton 1: %s\n", stateMsg);
-    }
-
-    int button2State = digitalRead(BUTTON2_PIN);
-    if (button2State != lastButton2State) {
-      lastButton2State = button2State;
-      const char* stateMsg = (button2State == LOW) ? "PRESSED" : "RELEASED";
-      auto pub = mqtt_build_publish(BUTTON2_STATE_TOPIC, stateMsg);
-      webSocket.sendBIN(pub.data(), pub.size());
-      Serial.printf("Bouton 2: %s\n", stateMsg);
-    }
-  }
-
-  // Vérifier l'état de la connexion GPRS périodiquement
-  static unsigned long lastCheckGPRS = 0;
-  if (now - lastCheckGPRS > 60000) { // Toutes les 60 secondes
-    lastCheckGPRS = now;
     if (!modem.isGprsConnected()) {
-      Serial.println("ATTENTION: GPRS déconnecté! Reconnexion...");
-      connectToNetwork();
+      Serial.println("[GPRS] Connexion perdue, reconnexion...");
+      mqttConnected = false;
+      if (connectToNetwork()) {
+        webSocket.beginSSL(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH);
+        Serial.println("[GPRS] ✓ Reconnecté");
+      }
     }
   }
+
+  // Traiter les événements WebSocket
+  webSocket.loop();
+
+  // Vérifier les boutons
+  checkButtons();
+
+  // Envoyer un PING MQTT toutes les 30 secondes
+  if (mqttConnected && (now - lastPing > 30000)) {
+    lastPing = now;
+    std::vector<uint8_t> ping = mqtt_build_pingreq_packet();
+    webSocket.sendBIN(ping.data(), ping.size());
+  }
+
+  // Petit délai pour ne pas surcharger
+  delay(10);
 }
