@@ -5,8 +5,8 @@
 #include "auth.h" // Fichier contenant les identifiants WiFi
 
 // ====== CONFIG MQTT/WSS ======
-const char* MQTT_HOST = "mqtt.edxo.ca";
-const int   MQTT_WSS_PORT = 443;
+const char* MQTT_HOST = "192.168.1.32";
+const int   MQTT_WSS_PORT = 9001;
 const char* MQTT_PATH = "/";          // WebSocket path
 char MQTT_CLIENT_ID[20]; // Will be generated from MAC
 char MQTT_TOPIC_PUB[50]; // Will be generated
@@ -344,7 +344,7 @@ void setup() {
 
 
   // WebSocket client
-  webSocket.beginSSL(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH);
+      webSocket.begin(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH); // Re-establish WebSocket connection
   webSocket.onEvent(webSocketEvent);
 
   // important : Cloudflare + Mosquitto n'ont généralement pas besoin de subprotocol,
