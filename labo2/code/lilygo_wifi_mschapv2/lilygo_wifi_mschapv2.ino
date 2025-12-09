@@ -1,7 +1,11 @@
+// LilyGO WiFi - Version avec MQTT via WebSocket SSL
+// Utilise PubSubClient avec wrapper WebSocket pour simplifier le code MQTT
+
 #include <WiFi.h>
-#include <WebSocketsClient.h>
+#include <WiFiClientSecure.h>
+#include <PubSubClient.h>
 #include <esp_wpa2.h> // Keep for Enterprise WiFi
-#include <vector>
+#include <mbedtls/base64.h>
 
 #include "auth.h" // Fichier contenant les identifiants WiFi et MQTT
 
@@ -21,257 +25,377 @@ const int LED2_PIN = 33;
 const int BUTTON1_PIN = 34;
 const int BUTTON2_PIN = 35;
 
-WebSocketsClient webSocket;
+// ============================================================================
+// CLASSE WRAPPER WEBSOCKET POUR PUBSUBCLIENT
+// ============================================================================
 
-// état MQTT
-bool mqttConnected = false;
-unsigned long lastPing = 0;
+class WebSocketClient : public Client {
+private:
+  WiFiClientSecure* _sslClient;
+  bool _wsConnected;
 
-// Pour la lecture non-bloquante des boutons
+  // Buffer pour les données reçues
+  uint8_t _rxBuffer[512];
+  size_t _rxBufferLen;
+  size_t _rxBufferPos;
+
+  String generateWebSocketKey() {
+    uint8_t key[16];
+    for(int i = 0; i < 16; i++) {
+      key[i] = random(0, 256);
+    }
+    size_t olen;
+    unsigned char output[64];
+    mbedtls_base64_encode(output, sizeof(output), &olen, key, 16);
+    return String((char*)output);
+  }
+
+  bool readWebSocketFrame() {
+    if (!_sslClient->available()) return false;
+
+    uint8_t byte1 = _sslClient->read();
+    if (!_sslClient->available()) return false;
+    uint8_t byte2 = _sslClient->read();
+
+    uint8_t opcode = byte1 & 0x0F;
+    bool masked = (byte2 & 0x80) != 0;
+    size_t payloadLen = byte2 & 0x7F;
+
+    if (payloadLen == 126) {
+      if (_sslClient->available() < 2) return false;
+      payloadLen = (_sslClient->read() << 8) | _sslClient->read();
+    } else if (payloadLen == 127) {
+      if (_sslClient->available() < 8) return false;
+      payloadLen = 0;
+      for(int i = 0; i < 8; i++) {
+        payloadLen = (payloadLen << 8) | _sslClient->read();
+      }
+    }
+
+    uint8_t mask[4] = {0};
+    if (masked) {
+      if (_sslClient->available() < 4) return false;
+      for(int i = 0; i < 4; i++) {
+        mask[i] = _sslClient->read();
+      }
+    }
+
+    if (opcode == 0x01 || opcode == 0x02) { // Text ou Binary
+      if (_sslClient->available() < payloadLen) return false;
+
+      _rxBufferLen = payloadLen < sizeof(_rxBuffer) ? payloadLen : sizeof(_rxBuffer);
+      for(size_t i = 0; i < _rxBufferLen; i++) {
+        _rxBuffer[i] = _sslClient->read();
+        if (masked) _rxBuffer[i] ^= mask[i % 4];
+      }
+      _rxBufferPos = 0;
+      return true;
+    }
+    else if (opcode == 0x08) { // Close
+      Serial.println("[WSS] Serveur a ferme la connexion");
+      _wsConnected = false;
+      return false;
+    }
+    else if (opcode == 0x09) { // Ping
+      uint8_t pong[2] = {0x8A, 0x00};
+      _sslClient->write(pong, 2);
+      return false;
+    }
+
+    return false;
+  }
+
+public:
+  WebSocketClient(WiFiClientSecure* sslClient) {
+    _sslClient = sslClient;
+    _wsConnected = false;
+    _rxBufferLen = 0;
+    _rxBufferPos = 0;
+  }
+
+  int connect(IPAddress ip, uint16_t port) { return 0; }
+  int connect(const char *host, uint16_t port) {
+    Serial.println("[WSS] Connexion SSL...");
+
+    if (!_sslClient->connect(host, port)) {
+      Serial.println("[WSS] Echec connexion SSL");
+      return 0;
+    }
+
+    Serial.println("[WSS] SSL connecte, envoi handshake WebSocket...");
+    String wsKey = generateWebSocketKey();
+
+    _sslClient->print("GET ");
+    _sslClient->print(MQTT_PATH);
+    _sslClient->print(" HTTP/1.1\r\nHost: ");
+    _sslClient->print(host);
+    _sslClient->print("\r\nUpgrade: websocket\r\n");
+    _sslClient->print("Connection: Upgrade\r\n");
+    _sslClient->print("Sec-WebSocket-Key: ");
+    _sslClient->print(wsKey);
+    _sslClient->print("\r\nSec-WebSocket-Protocol: mqtt\r\n");
+    _sslClient->print("Sec-WebSocket-Version: 13\r\n\r\n");
+
+    unsigned long timeout = millis();
+    while (!_sslClient->available() && millis() - timeout < 5000) {
+      delay(10);
+    }
+
+    if (!_sslClient->available()) {
+      Serial.println("[WSS] Timeout handshake");
+      return 0;
+    }
+
+    String response = "";
+    while (_sslClient->available()) {
+      char c = _sslClient->read();
+      response += c;
+      if (response.endsWith("\r\n\r\n")) break;
+    }
+
+    if (response.indexOf("101") > 0 && response.indexOf("Switching Protocols") > 0) {
+      Serial.println("[WSS] Handshake WebSocket reussi!");
+      _wsConnected = true;
+      return 1;
+    } else {
+      Serial.println("[WSS] Handshake WebSocket echoue");
+      return 0;
+    }
+  }
+
+  size_t write(uint8_t b) {
+    return write(&b, 1);
+  }
+
+  size_t write(const uint8_t *buf, size_t size) {
+    if (!_wsConnected) return 0;
+
+    // Frame WebSocket binaire avec masque
+    uint8_t header[14];
+    int headerLen = 2;
+
+    header[0] = 0x82; // FIN + Binary frame
+
+    if (size < 126) {
+      header[1] = 0x80 | size;
+    } else if (size < 65536) {
+      header[1] = 0x80 | 126;
+      header[2] = (size >> 8) & 0xFF;
+      header[3] = size & 0xFF;
+      headerLen = 4;
+    } else {
+      header[1] = 0x80 | 127;
+      for(int i = 0; i < 8; i++) header[2 + i] = 0;
+      header[6] = (size >> 24) & 0xFF;
+      header[7] = (size >> 16) & 0xFF;
+      header[8] = (size >> 8) & 0xFF;
+      header[9] = size & 0xFF;
+      headerLen = 10;
+    }
+
+    // Masque aléatoire
+    uint8_t mask[4];
+    for(int i = 0; i < 4; i++) {
+      mask[i] = random(0, 256);
+      header[headerLen + i] = mask[i];
+    }
+    headerLen += 4;
+
+    _sslClient->write(header, headerLen);
+
+    for(size_t i = 0; i < size; i++) {
+      uint8_t maskedByte = buf[i] ^ mask[i % 4];
+      _sslClient->write(&maskedByte, 1);
+    }
+
+    return size;
+  }
+
+  int available() {
+    // D'abord vérifier le buffer
+    if (_rxBufferPos < _rxBufferLen) {
+      return _rxBufferLen - _rxBufferPos;
+    }
+
+    // Sinon essayer de lire une nouvelle frame
+    if (_sslClient->available()) {
+      if (readWebSocketFrame()) {
+        return _rxBufferLen - _rxBufferPos;
+      }
+    }
+
+    return 0;
+  }
+
+  int read() {
+    if (_rxBufferPos < _rxBufferLen) {
+      return _rxBuffer[_rxBufferPos++];
+    }
+
+    if (_sslClient->available()) {
+      if (readWebSocketFrame() && _rxBufferPos < _rxBufferLen) {
+        return _rxBuffer[_rxBufferPos++];
+      }
+    }
+
+    return -1;
+  }
+
+  int read(uint8_t *buf, size_t size) {
+    size_t count = 0;
+    while (count < size) {
+      int c = read();
+      if (c < 0) break;
+      buf[count++] = (uint8_t)c;
+    }
+    return count;
+  }
+
+  int peek() {
+    if (_rxBufferPos < _rxBufferLen) {
+      return _rxBuffer[_rxBufferPos];
+    }
+    return -1;
+  }
+
+  void flush() {
+    _sslClient->flush();
+  }
+
+  void stop() {
+    _wsConnected = false;
+    _sslClient->stop();
+  }
+
+  uint8_t connected() {
+    return _wsConnected && _sslClient->connected();
+  }
+
+  operator bool() {
+    return _wsConnected;
+  }
+};
+
+// ============================================================================
+// CLIENTS ET MQTT
+// ============================================================================
+
+WiFiClientSecure wifiClient;
+WebSocketClient wsClient(&wifiClient);
+PubSubClient mqttClient(wsClient);
+
+// État
 long lastButtonCheck = 0;
 int lastButton1State = HIGH;
-long lastButton2State = HIGH;
+int lastButton2State = HIGH;
 
-// ===== helpers MQTT =====
+// ============================================================================
+// CALLBACK MQTT
+// ============================================================================
 
-void mqtt_encode_remaining_length(uint32_t len, std::vector<uint8_t>& out) {
-  do {
-    uint8_t encodedByte = len % 128;
-    len /= 128;
-    if (len > 0) encodedByte |= 128;
-    out.push_back(encodedByte);
-  } while (len > 0);
-}
-
-// VERSION MISE À JOUR POUR USERNAME / PASSWORD
-std::vector<uint8_t> mqtt_build_connect_packet(const char* clientId, const char* username, const char* password, uint16_t keepAliveSeconds = 60) {
-  std::vector<uint8_t> pkt;
-  std::vector<uint8_t> vh;
-
-  // "MQTT"
-  vh.push_back(0x00); vh.push_back(0x04);
-  vh.push_back('M');  vh.push_back('Q');  vh.push_back('T');  vh.push_back('T');
-
-  // Protocol Level 4 (3.1.1)
-  vh.push_back(0x04);
-
-  // FLAGS: User(1) + Pass(1) + CleanSession(1) = 11000010 = 0xC2
-  uint8_t connectFlags = 0xC2; 
-  vh.push_back(connectFlags);
-
-  // Keep Alive
-  vh.push_back(keepAliveSeconds >> 8);
-  vh.push_back(keepAliveSeconds & 0xFF);
-
-  // --- PAYLOAD ---
-  std::vector<uint8_t> payload;
-
-  // 1. Client ID
-  uint16_t cidLen = strlen(clientId);
-  payload.push_back(cidLen >> 8); payload.push_back(cidLen & 0xFF);
-  for (uint16_t i = 0; i < cidLen; i++) payload.push_back((uint8_t)clientId[i]);
-
-  // 2. Username
-  uint16_t userLen = strlen(username);
-  payload.push_back(userLen >> 8); payload.push_back(userLen & 0xFF);
-  for (uint16_t i = 0; i < userLen; i++) payload.push_back((uint8_t)username[i]);
-
-  // 3. Password
-  uint16_t passLen = strlen(password);
-  payload.push_back(passLen >> 8); payload.push_back(passLen & 0xFF);
-  for (uint16_t i = 0; i < passLen; i++) payload.push_back((uint8_t)password[i]);
-
-  // --- ASSEMBLAGE FINAL ---
-  // fixed header
-  pkt.push_back(0x10); // CONNECT
-  std::vector<uint8_t> rl;
-  mqtt_encode_remaining_length(vh.size() + payload.size(), rl);
-  pkt.insert(pkt.end(), rl.begin(), rl.end());
-  pkt.insert(pkt.end(), vh.begin(), vh.end());
-  pkt.insert(pkt.end(), payload.begin(), payload.end());
-
-  return pkt;
-}
-
-std::vector<uint8_t> mqtt_build_pingreq() {
-  std::vector<uint8_t> pkt;
-  pkt.push_back(0xC0);
-  pkt.push_back(0x00);
-  return pkt;
-}
-
-std::vector<uint8_t> mqtt_build_publish(const char* topic, const char* message) {
-  std::vector<uint8_t> pkt;
-  std::vector<uint8_t> topicBuf;
-
-  uint16_t tlen = strlen(topic);
-  topicBuf.push_back(tlen >> 8);
-  topicBuf.push_back(tlen & 0xFF);
-  for (uint16_t i = 0; i < tlen; i++) {
-    topicBuf.push_back((uint8_t)topic[i]);
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
+  String msg = "";
+  for (unsigned int i = 0; i < length; i++) {
+    msg += (char)payload[i];
   }
 
-  std::vector<uint8_t> payload;
-  uint16_t mlen = strlen(message);
-  for (uint16_t i = 0; i < mlen; i++) {
-    payload.push_back((uint8_t)message[i]);
-  }
-
-  pkt.push_back(0x30); // PUBLISH QoS0
-
-  std::vector<uint8_t> rl;
-  mqtt_encode_remaining_length(topicBuf.size() + payload.size(), rl);
-  pkt.insert(pkt.end(), rl.begin(), rl.end());
-
-  pkt.insert(pkt.end(), topicBuf.begin(), topicBuf.end());
-  pkt.insert(pkt.end(), payload.begin(), payload.end());
-
-  return pkt;
-}
-
-std::vector<uint8_t> mqtt_build_subscribe(const char* topic, uint16_t packetId = 1) {
-  std::vector<uint8_t> pkt;
-  std::vector<uint8_t> vh;
-  vh.push_back(packetId >> 8);
-  vh.push_back(packetId & 0xFF);
-
-  std::vector<uint8_t> payload;
-  uint16_t tlen = strlen(topic);
-  payload.push_back(tlen >> 8);
-  payload.push_back(tlen & 0xFF);
-  for (uint16_t i = 0; i < tlen; i++) payload.push_back((uint8_t)topic[i]);
-  payload.push_back(0x00); // QoS 0
-
-  pkt.push_back(0x82); // SUBSCRIBE QoS1
-  std::vector<uint8_t> rl;
-  mqtt_encode_remaining_length(vh.size() + payload.size(), rl);
-  pkt.insert(pkt.end(), rl.begin(), rl.end());
-  pkt.insert(pkt.end(), vh.begin(), vh.end());
-  pkt.insert(pkt.end(), payload.begin(), payload.end());
-
-  return pkt;
-}
-
-void mqtt_parse_publish(const uint8_t* data, size_t len) {
-  if (len < 4) return;
-
-  uint8_t header = data[0];
-  uint8_t msgType = header >> 4;
-  if (msgType != 3) return; // pas un PUBLISH
-
-  // on suppose Remaining Length tient sur 1 octet (demo only)
-  uint8_t rl = data[1];
-  size_t idx = 2;
-
-  if (idx + 2 > len) return;
-  uint16_t topicLen = (data[idx] << 8) | data[idx+1];
-  idx += 2;
-  if (idx + topicLen > len) return;
-
-  String topic;
-  for (uint16_t i = 0; i < topicLen; i++) {
-    topic += (char)data[idx + i];
-  }
-  idx += topicLen;
-
-  String payload;
-  for (size_t i = idx; i < len; i++) {
-    payload += (char)data[i];
-  }
-
-  Serial.print("[MQTT] PUBLISH reçu - topic='");
+  Serial.print("[MQTT] <- ");
   Serial.print(topic);
-  Serial.print("' payload='");
-  Serial.print(payload);
-  Serial.println("'");
+  Serial.print(" = ");
+  Serial.println(msg);
 
-  if (topic == String(LED1_SET_TOPIC)) {
-    digitalWrite(LED1_PIN, (payload == "ON") ? HIGH : LOW);
-  } else if (topic == String(LED2_SET_TOPIC)) {
-    digitalWrite(LED2_PIN, (payload == "ON") ? HIGH : LOW);
+  if (strcmp(topic, LED1_SET_TOPIC) == 0) {
+    if (msg == "ON") {
+      digitalWrite(LED1_PIN, HIGH);
+      Serial.println("[LED1] Allumee (ROUGE)");
+    } else if (msg == "OFF") {
+      digitalWrite(LED1_PIN, LOW);
+      Serial.println("[LED1] Eteinte");
+    }
+  }
+  else if (strcmp(topic, LED2_SET_TOPIC) == 0) {
+    if (msg == "ON") {
+      digitalWrite(LED2_PIN, HIGH);
+      Serial.println("[LED2] Allumee (VERTE)");
+    } else if (msg == "OFF") {
+      digitalWrite(LED2_PIN, LOW);
+      Serial.println("[LED2] Eteinte");
+    }
   }
 }
 
-// ===== WebSocket event =====
+// ============================================================================
+// FONCTIONS
+// ============================================================================
 
-void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
-  Serial.printf("[WS] Event type=%d, len=%u\n", type, (unsigned)length);
+void checkButtons() {
+  long now = millis();
 
-  switch (type) {
-    case WStype_ERROR:
-      Serial.println("[WS] ERROR");
-      mqttConnected = false;
-      break;
+  if (now - lastButtonCheck < 100) {
+    return;
+  }
+  lastButtonCheck = now;
 
-    case WStype_DISCONNECTED:
-      Serial.println("[WS] DISCONNECTED");
-      mqttConnected = false;
-      break;
+  if (!mqttClient.connected()) return;
 
-    case WStype_CONNECTED:
-      Serial.printf("[WS] CONNECTED to: %s\n", payload);
-      {
-        // Envoi du paquet CONNECT avec USER et PASSWORD
-        auto pkt = mqtt_build_connect_packet(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASS);
-        
-        Serial.print("[MQTT] CONNECT packet:");
-        for (auto b : pkt) Serial.printf(" %02X", b);
-        Serial.println();
-        webSocket.sendBIN(pkt.data(), pkt.size());
-      }
-      break;
+  int button1State = digitalRead(BUTTON1_PIN);
+  if (button1State != lastButton1State) {
+    lastButton1State = button1State;
+    const char* state = (button1State == LOW) ? "PRESSED" : "RELEASED";
+    mqttClient.publish(BUTTON1_STATE_TOPIC, state);
+    Serial.print("[BTN1] -> ");
+    Serial.println(state);
+  }
 
-    case WStype_TEXT:
-      Serial.print("[WS] TEXT: ");
-      Serial.write(payload, length);
-      Serial.println();
-      break;
-
-    case WStype_BIN:
-      Serial.printf("[WS] BIN (%u bytes):", (unsigned)length);
-      for (size_t i = 0; i < length; i++) Serial.printf(" %02X", payload[i]);
-      Serial.println();
-
-      if (length >= 4 && payload[0] == 0x20) {
-        // CONNACK
-        uint8_t rc = payload[3];
-        Serial.printf("[MQTT] CONNACK rc=%u\n", rc);
-        if (rc == 0) {
-          mqttConnected = true;
-          // s'abonner aux topics LED
-          auto sub1 = mqtt_build_subscribe(LED1_SET_TOPIC, 1);
-          auto sub2 = mqtt_build_subscribe(LED2_SET_TOPIC, 2);
-          webSocket.sendBIN(sub1.data(), sub1.size());
-          webSocket.sendBIN(sub2.data(), sub2.size());
-        } else {
-          Serial.println("ERREUR D'AUTHENTIFICATION ! Vérifiez user/pass.");
-          mqttConnected = false;
-        }
-      } else {
-        mqtt_parse_publish(payload, length);
-      }
-      break;
-
-    default:
-      break;
+  int button2State = digitalRead(BUTTON2_PIN);
+  if (button2State != lastButton2State) {
+    lastButton2State = button2State;
+    const char* state = (button2State == LOW) ? "PRESSED" : "RELEASED";
+    mqttClient.publish(BUTTON2_STATE_TOPIC, state);
+    Serial.print("[BTN2] -> ");
+    Serial.println(state);
   }
 }
 
-// ===== setup/loop =====
+bool reconnectMQTT() {
+  Serial.println("[MQTT] Connexion au broker...");
+
+  if (mqttClient.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASS)) {
+    Serial.println("[MQTT] Connecte!");
+
+    mqttClient.subscribe(LED1_SET_TOPIC);
+    mqttClient.subscribe(LED2_SET_TOPIC);
+    Serial.println("[MQTT] Souscriptions envoyees");
+
+    return true;
+  }
+
+  Serial.print("[MQTT] Echec, code: ");
+  Serial.println(mqttClient.state());
+  return false;
+}
+
+// ============================================================================
+// SETUP
+// ============================================================================
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
+  delay(2000);
+
+  Serial.println();
+  Serial.println("=== LilyGo WiFi - MQTT via WebSocket SSL ===");
+  Serial.println();
 
   pinMode(LED1_PIN, OUTPUT);
   pinMode(LED2_PIN, OUTPUT);
   pinMode(BUTTON1_PIN, INPUT_PULLUP);
   pinMode(BUTTON2_PIN, INPUT_PULLUP);
+
   digitalWrite(LED1_PIN, LOW);
   digitalWrite(LED2_PIN, LOW);
 
-  Serial.println();
-  Serial.print("Connexion WiFi à ");
+  Serial.print("Connexion WiFi a ");
   Serial.println(WIFI_SSID);
 
   WiFi.disconnect(true);
@@ -295,64 +419,88 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
-    Serial.print(" WiFi Status: ");
-    Serial.println(WiFi.status());
   }
-  Serial.println("\nWiFi connecté!");
+  Serial.println("\nWiFi connecte!");
   Serial.print("Adresse IP: ");
   Serial.println(WiFi.localIP());
 
-  // Topics MQTT basés sur le Client ID de auth.h
-  sprintf(BUTTON1_STATE_TOPIC, "%s/button/1/state", MQTT_CLIENT_ID);
-  sprintf(BUTTON2_STATE_TOPIC, "%s/button/2/state", MQTT_CLIENT_ID);
-  sprintf(LED1_SET_TOPIC, "%s/led/1/set", MQTT_CLIENT_ID);
-  sprintf(LED2_SET_TOPIC, "%s/led/2/set", MQTT_CLIENT_ID);
+  // Topics MQTT
+  snprintf(LED1_SET_TOPIC, sizeof(LED1_SET_TOPIC), "%s/led/1/set", MQTT_CLIENT_ID);
+  snprintf(LED2_SET_TOPIC, sizeof(LED2_SET_TOPIC), "%s/led/2/set", MQTT_CLIENT_ID);
+  snprintf(BUTTON1_STATE_TOPIC, sizeof(BUTTON1_STATE_TOPIC), "%s/button/1/state", MQTT_CLIENT_ID);
+  snprintf(BUTTON2_STATE_TOPIC, sizeof(BUTTON2_STATE_TOPIC), "%s/button/2/state", MQTT_CLIENT_ID);
 
-  Serial.printf("Device ID: %s\n", MQTT_CLIENT_ID);
-  Serial.printf("Topic Bouton 1: %s\n", BUTTON1_STATE_TOPIC);
-  Serial.printf("Topic Bouton 2: %s\n", BUTTON2_STATE_TOPIC);
-  Serial.printf("Topic LED 1: %s\n", LED1_SET_TOPIC);
-  Serial.printf("Topic LED 2: %s\n", LED2_SET_TOPIC);
+  Serial.print("[MQTT] Device ID: ");
+  Serial.println(MQTT_CLIENT_ID);
 
-  // WebSocket client avec SSL
-  // Note: le dernier argument "mqtt" est CRUCIAL pour Mosquitto
-  webSocket.beginSSL(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH, "", "mqtt");
-  
-  webSocket.onEvent(webSocketEvent);
-  webSocket.setReconnectInterval(5000);
+  // Configurer WiFiClientSecure
+  Serial.println("[SSL] Configuration du client SSL...");
+  wifiClient.setInsecure(); // Désactiver la vérification des certificats pour la démo
+
+  // Configurer MQTT
+  mqttClient.setServer(MQTT_HOST, MQTT_WSS_PORT);
+  mqttClient.setCallback(mqttCallback);
+  mqttClient.setKeepAlive(60);
+
+  // Connexion WebSocket et MQTT
+  if (!wsClient.connect(MQTT_HOST, MQTT_WSS_PORT)) {
+    Serial.println("[ERREUR] Impossible de se connecter via WebSocket");
+    while (true) {
+      digitalWrite(LED1_PIN, !digitalRead(LED1_PIN));
+      delay(1000);
+    }
+  }
+
+  if (!reconnectMQTT()) {
+    Serial.println("[ERREUR] Impossible de se connecter au broker MQTT");
+    while (true) {
+      digitalWrite(LED1_PIN, !digitalRead(LED1_PIN));
+      delay(1000);
+    }
+  }
+
+  Serial.println();
+  Serial.println("=== Systeme pret ===");
+  Serial.println();
+
+  for (int i = 0; i < 3; i++) {
+    digitalWrite(LED1_PIN, HIGH);
+    digitalWrite(LED2_PIN, HIGH);
+    delay(200);
+    digitalWrite(LED1_PIN, LOW);
+    digitalWrite(LED2_PIN, LOW);
+    delay(200);
+  }
 }
 
+// ============================================================================
+// LOOP
+// ============================================================================
+
 void loop() {
-  webSocket.loop();
-
-  unsigned long now = millis();
-
-  if (mqttConnected && now - lastPing > 30000) {
-    lastPing = now;
-    auto ping = mqtt_build_pingreq();
-    webSocket.sendBIN(ping.data(), ping.size());
-    Serial.println("[MQTT] PINGREQ envoyé");
-  }
-
-  if (mqttConnected && millis() - lastButtonCheck > 50) {
-    lastButtonCheck = millis();
-
-    int button1State = digitalRead(BUTTON1_PIN);
-    if (button1State != lastButton1State) {
-      lastButton1State = button1State;
-      const char* stateMsg = (button1State == LOW) ? "PRESSED" : "RELEASED";
-      auto pub = mqtt_build_publish(BUTTON1_STATE_TOPIC, stateMsg);
-      webSocket.sendBIN(pub.data(), pub.size());
-      Serial.printf("Bouton 1: %s\n", stateMsg);
+  // Vérifier la connexion WiFi
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("[WiFi] Connexion perdue, reconnexion...");
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
     }
+    Serial.println("\nWiFi reconnecte!");
 
-    int button2State = digitalRead(BUTTON2_PIN);
-    if (button2State != lastButton2State) {
-      lastButton2State = button2State;
-      const char* stateMsg = (button2State == LOW) ? "PRESSED" : "RELEASED";
-      auto pub = mqtt_build_publish(BUTTON2_STATE_TOPIC, stateMsg);
-      webSocket.sendBIN(pub.data(), pub.size());
-      Serial.printf("Bouton 2: %s\n", stateMsg);
+    if (wsClient.connect(MQTT_HOST, MQTT_WSS_PORT)) {
+      reconnectMQTT();
     }
   }
+
+  // Maintenir la connexion MQTT
+  if (!mqttClient.connected()) {
+    reconnectMQTT();
+  }
+
+  mqttClient.loop();
+
+  // Vérifier les boutons
+  checkButtons();
+
+  delay(10);
 }
