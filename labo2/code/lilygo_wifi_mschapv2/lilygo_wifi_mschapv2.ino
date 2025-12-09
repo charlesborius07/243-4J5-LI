@@ -235,12 +235,26 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
       Serial.println("[WS] Connected to WSS, sending MQTT CONNECT");
       {
         auto pkt = mqtt_build_connect_packet(MQTT_CLIENT_ID);
+        Serial.print("[MQTT] CONNECT packet: ");
+        for (int i = 0; i < pkt.size(); i++) {
+          if (pkt[i] < 0x10) Serial.print("0");
+          Serial.print(pkt[i], HEX);
+          Serial.print(" ");
+        }
+        Serial.println();
         webSocket.sendBIN(pkt.data(), pkt.size());
       }
       break;
 
     case WStype_BIN:
       Serial.printf("[WS] Binary frame len=%u\n", (unsigned)length);
+      Serial.print("[MQTT] Received BIN packet: ");
+      for (int i = 0; i < length; i++) {
+        if (payload[i] < 0x10) Serial.print("0");
+        Serial.print(payload[i], HEX);
+        Serial.print(" ");
+      }
+      Serial.println();
       if (length >= 4 && payload[0] == 0x20) {
         // CONNACK
         // payload[0]=0x20, payload[1]=remaining length(2), payload[2]=flags, payload[3]=return code
