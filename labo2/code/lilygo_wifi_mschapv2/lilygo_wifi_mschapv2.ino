@@ -340,8 +340,8 @@ void setup() {
   // mais certains brokers aiment "mqtt"
   webSocket.setExtraHeaders("Sec-WebSocket-Protocol: mqtt\r\n");
 
-  // désactiver la vérif de cert pour les tests (à sécuriser en prod)
-  webSocket.setInsecure();
+  // Pour le développement/test sans un CA valide, vous pourriez devoir désactiver la vérification (utiliser avec prudence!):
+  // webSocket.setInsecure(); 
 }
 
 void loop() {
