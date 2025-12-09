@@ -6,8 +6,8 @@
 #include "auth.h" // Fichier contenant les identifiants WiFi
 
 // ====== CONFIG MQTT/WSS ======
-const char* MQTT_HOST = "192.168.1.32";  // IP du Pi
-const int   MQTT_WSS_PORT = 9001;
+const char* MQTT_HOST = "mqtt.edxo.ca";  // IP du Pi
+const int   MQTT_WSS_PORT = 443;
 const char* MQTT_PATH = "/";             // WebSocket path
 char MQTT_CLIENT_ID[20];                 // Will be generated from MAC
 
@@ -312,7 +312,7 @@ void setup() {
   Serial.printf("Topic LED 2: %s\n", LED2_SET_TOPIC);
 
   // WebSocket client (local, sans TLS)
-  webSocket.begin(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH, "mqtt");
+  webSocket.beginSSL(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH, "mqtt");
   webSocket.onEvent(webSocketEvent);
   webSocket.setReconnectInterval(5000);
   // ⚠️ pas de setExtraHeaders ici en local
