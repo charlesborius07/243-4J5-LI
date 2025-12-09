@@ -311,10 +311,8 @@ void setup() {
   Serial.printf("Topic LED 1: %s\n", LED1_SET_TOPIC);
   Serial.printf("Topic LED 2: %s\n", LED2_SET_TOPIC);
 
-  webSocket.setExtraHeaders("Sec-WebSocket-Protocol: mqtt\r\n");
-
   // WebSocket client (local, sans TLS)
-  webSocket.begin(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH);
+  webSocket.begin(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH, "mqtt");
   webSocket.onEvent(webSocketEvent);
   webSocket.setReconnectInterval(5000);
   // ⚠️ pas de setExtraHeaders ici en local
