@@ -28,6 +28,7 @@ graph TD
     subgraph Zone_Lab ["🏠 Lab On-Prem"]
         subgraph RPi5_Core ["🍓 Raspberry Pi 5"]
             SSHD["SSH Server"]:::componentCore
+            MQTT_Local["Mosquitto Broker"]:::componentService
             Python_UI["Interface tactile Python"]:::componentService
         end
 
@@ -39,7 +40,7 @@ graph TD
 
     %% ==== ZONE CLOUD / SAAS ====
     subgraph Zone_Cloud ["☁️ Services Cloud"]
-        MQTT_Broker["Broker MQTT<br/>(mqtt.edxo.ca)"]:::zoneCloud
+        Cloudflare["Cloudflare Tunnel<br/>(WSS Proxy)"]:::zoneCloud
         Cellular_Network["Réseau Cellulaire<br/>(LTE Cat-1)"]:::zoneCloud
     end
 
@@ -48,11 +49,13 @@ graph TD
     %% 1. ACCÈS DISTANT
     Dev_PC -->|"SSH"| SSHD
 
-    %% 2. COMMUNICATION MQTT
-    Python_UI -->|"MQTT via WSS"| MQTT_Broker
-    LilyGO_A7670G -->|"MQTT via WiFi WSS"| MQTT_Broker
-    LilyGO_A7670G -->|"MQTT via LTE"| Cellular_Network
-    Cellular_Network -->|"Internet"| MQTT_Broker
+    %% 2. COMMUNICATION MQTT via Cloudflare
+    Python_UI -->|"MQTT local"| MQTT_Local
+    MQTT_Local -->|"WSS via Tunnel"| Cloudflare
+    LilyGO_A7670G -->|"MQTT via WiFi WSS"| Cloudflare
+    LilyGO_A7670G -->|"MQTT via LTE WSS"| Cellular_Network
+    Cellular_Network -->|"Internet"| Cloudflare
+    Cloudflare -->|"Tunnel"| MQTT_Local
 
     %% 3. INTERACTIONS TACTILES
     Python_UI -->|"/dev/input"| Touchscreen
@@ -60,8 +63,8 @@ graph TD
 
 Ce diagramme illustre l'architecture avec communication sans fil:
 - **Zone Client (vert):** Votre poste de développement
-- **Zone Lab (gris):** Raspberry Pi 5 avec interface tactile Python
-- **Zone Cloud (jaune):** Broker MQTT et réseau cellulaire
+- **Zone Lab (gris):** Raspberry Pi 5 avec broker Mosquitto et interface tactile
+- **Zone Cloud (jaune):** Cloudflare Tunnel pour exposer le broker en WSS
 - **Communication sans fil (violet):** LilyGO communique via WiFi ou LTE
 
 ---
@@ -69,11 +72,12 @@ Ce diagramme illustre l'architecture avec communication sans fil:
 ## 🧭 Plan du guide
 - [Matériel et branchements](#-matériel-et-branchements)
 - [Introduction au protocole MQTT](#1-introduction-au-protocole-mqtt)
-- [Diagnostic du modem LTE](#2-diagnostic-du-modem-lte)
+- [Configuration du broker MQTT avec WSS](#2-configuration-du-broker-mqtt-avec-wss)
 - [Communication MQTT via WiFi](#3-communication-mqtt-via-wifi)
 - [Communication MQTT via LTE](#4-communication-mqtt-via-lte)
 - [Interface tactile Python](#5-interface-tactile-python)
-- [Exercice : Montage complet](#6-exercice-montage-complet)
+- [Exercice : Boutons physiques](#6-exercice-boutons-physiques)
+- [Exercice : Montage complet](#7-exercice-montage-complet)
 
 <div style="height: 6px; background: linear-gradient(90deg, #22d3ee, #22c55e); border-radius: 999px; margin: 18px 0;"></div>
 
@@ -88,7 +92,7 @@ Ce diagramme illustre l'architecture avec communication sans fil:
   <li>Raspberry Pi 5 avec écran tactile</li>
   <li>2 LEDs (rouge et verte)</li>
   <li>2 boutons poussoirs</li>
-  <li>Résistances (220Ω-330Ω pour LEDs, 10kΩ pour boutons)</li>
+  <li>Résistances (220Ω-330Ω pour LEDs)</li>
   <li>Plaquette de prototypage et fils de connexion</li>
   <li>Câble USB-A vers USB-C</li>
 </ul>
@@ -174,54 +178,183 @@ esp32-123456/
 
 <div style="height: 5px; background: linear-gradient(90deg, #22c55e, #84cc16); border-radius: 999px; margin: 22px 0;"></div>
 
-## 2. Diagnostic du modem LTE
+## 2. Configuration du broker MQTT avec WSS
 
-> 🔍 **Objectif :** vérifier le bon fonctionnement du modem A7670G et de la carte SIM.
+> 🔒 **Objectif :** configurer Mosquitto sur le Raspberry Pi et l'exposer via Cloudflare Tunnel en WebSocket Secure (WSS).
 
-### 2.1 Code de diagnostic
+### 💡 Pourquoi WSS via Cloudflare?
 
-Le code de diagnostic se trouve dans `labo2/code/diagnostic_modem/diagnostic_modem.ino`.
+Les appareils IoT (LilyGO via WiFi ou LTE) doivent pouvoir se connecter au broker MQTT depuis n'importe où sur Internet. Cependant :
+- Le Raspberry Pi est derrière un NAT (pas d'IP publique directe)
+- MQTT standard (port 1883) n'est pas chiffré
+- Les connexions LTE passent par Internet public
 
-**Téléverser le code :**
-```bash
-cd ~/243-4J5-LI/labo2/code/diagnostic_modem
-arduino-cli compile --fqbn esp32:esp32:esp32 diagnostic_modem.ino
-arduino-cli upload -p /dev/ttyUSB0 --fqbn esp32:esp32:esp32 diagnostic_modem.ino
-arduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200
+**Solution :** Utiliser **Cloudflare Tunnel** pour exposer le broker Mosquitto en **WSS (WebSocket Secure)** sur le port 443 avec chiffrement TLS.
+
+```
+[LilyGO] → [Internet/LTE] → [Cloudflare WSS :443] → [Tunnel] → [RPi Mosquitto :1883]
 ```
 
-### 2.2 Interprétation des résultats
+### 2.1 Installation de Mosquitto
 
-Le diagnostic effectue plusieurs tests et affiche les résultats :
+```bash
+sudo apt update
+sudo apt install -y mosquitto mosquitto-clients
+```
 
-**Test SIM (+CPIN?):**
-- `+CPIN: READY` → SIM détectée et prête ✅
-- `+CPIN: SIM PIN` → PIN requis, désactivez-le dans un téléphone
-- `+CME ERROR: 10` → SIM absente ou mal insérée
+### 2.2 Configuration de Mosquitto
 
-**Qualité signal (+CSQ):**
-- Format : `+CSQ: XX,99` où XX est le niveau de signal
-- 0-9: mauvais, 10-14: moyen, 15-19: bon, 20-31: excellent
-- 99: pas de signal
+**Créer le fichier de configuration :**
+```bash
+sudo nano /etc/mosquitto/conf.d/default.conf
+```
 
-**Enregistrement réseau (+CREG?):**
-- `+CREG: 0,1` → Enregistré sur réseau domestique ✅
-- `+CREG: 0,2` → Recherche en cours, patientez
-- `+CREG: 0,3` → Enregistrement refusé (SIM non activée?)
-- `+CREG: 0,5` → Enregistré en itinérance (roaming)
+**Contenu :**
+```conf
+# Listener MQTT standard (local uniquement)
+listener 1883 localhost
 
-**Opérateur (+COPS?):**
-- Affiche le nom de l'opérateur et le mode réseau
-- Ex: `+COPS: 0,0,"Rogers",7` (7 = LTE)
+# Listener WebSocket (pour Cloudflare Tunnel)
+listener 9001
+protocol websockets
 
-<div style="background:#dbeafe; border:1px solid #3b82f6; padding:10px 12px; border-radius:10px;">
-<strong>💡 Mode passthrough</strong>
-<p>Après les tests automatiques, le programme passe en mode passthrough. Vous pouvez envoyer des commandes AT manuellement via le moniteur série pour diagnostiquer davantage.</p>
+# Authentification
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+
+# Logging
+log_dest file /var/log/mosquitto/mosquitto.log
+log_type all
+```
+
+### 2.3 Création des utilisateurs MQTT
+
+**Créer un utilisateur pour les ESP32 :**
+```bash
+sudo mosquitto_passwd -c /etc/mosquitto/passwd esp_user
+```
+
+Entrez un mot de passe sécurisé. **Notez-le**, vous en aurez besoin pour la configuration des appareils.
+
+**Ajouter d'autres utilisateurs si nécessaire :**
+```bash
+sudo mosquitto_passwd /etc/mosquitto/passwd autre_utilisateur
+```
+
+### 2.4 Redémarrer Mosquitto
+
+```bash
+sudo systemctl restart mosquitto
+sudo systemctl status mosquitto
+```
+
+**Vérifier que les ports sont ouverts :**
+```bash
+sudo ss -tlnp | grep mosquitto
+```
+
+Vous devriez voir :
+```
+LISTEN  0  100  127.0.0.1:1883  *:*  users:(("mosquitto",pid=...))
+LISTEN  0  100        *:9001    *:*  users:(("mosquitto",pid=...))
+```
+
+### 2.5 Test local
+
+**Terminal 1 - Subscriber :**
+```bash
+mosquitto_sub -h localhost -p 1883 -u esp_user -P VOTRE_MOT_DE_PASSE -t "test/#" -v
+```
+
+**Terminal 2 - Publisher :**
+```bash
+mosquitto_pub -h localhost -p 1883 -u esp_user -P VOTRE_MOT_DE_PASSE -t "test/hello" -m "Hello MQTT!"
+```
+
+### 2.6 Configuration Cloudflare Tunnel
+
+Le tunnel Cloudflare expose le broker Mosquitto WebSocket (port 9001) sur Internet en HTTPS/WSS.
+
+**Prérequis :** Avoir déjà configuré `cloudflared` (voir Labo 1).
+
+**Modifier la configuration du tunnel :**
+```bash
+nano ~/.cloudflared/config.yml
+```
+
+**Ajouter le service MQTT :**
+```yaml
+tunnel: <VOTRE-UUID-TUNNEL>
+credentials-file: /home/<USER>/.cloudflared/<UUID>.json
+
+ingress:
+  # SSH existant
+  - hostname: rpi.votredomaine.ca
+    service: ssh://localhost:22
+
+  # MQTT WebSocket
+  - hostname: mqtt.votredomaine.ca
+    service: http://localhost:9001
+
+  # Règle par défaut
+  - service: http_status:404
+```
+
+**Redémarrer le tunnel :**
+```bash
+sudo systemctl restart cloudflared
+```
+
+### 2.7 Configuration DNS Cloudflare
+
+1. Connectez-vous au dashboard Cloudflare
+2. Allez dans **DNS** pour votre domaine
+3. Le tunnel devrait avoir créé automatiquement l'entrée `mqtt.votredomaine.ca`
+4. Sinon, exécutez :
+```bash
+cloudflared tunnel route dns <NOM-TUNNEL> mqtt.votredomaine.ca
+```
+
+### 2.8 Test de connexion WSS
+
+**Depuis n'importe quel appareil avec accès Internet :**
+
+```bash
+# Installer un client MQTT avec support WebSocket
+pip3 install paho-mqtt
+
+# Tester avec Python
+python3 << 'EOF'
+import paho.mqtt.client as mqtt
+import ssl
+
+client = mqtt.Client(transport="websockets")
+client.tls_set(cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS)
+client.username_pw_set("esp_user", "VOTRE_MOT_DE_PASSE")
+
+def on_connect(client, userdata, flags, rc):
+    print(f"Connecté avec code: {rc}")
+    client.subscribe("test/#")
+
+def on_message(client, userdata, msg):
+    print(f"{msg.topic}: {msg.payload.decode()}")
+
+client.on_connect = on_connect
+client.on_message = on_message
+
+client.connect("mqtt.votredomaine.ca", 443)
+client.loop_forever()
+EOF
+```
+
+<div style="background:#f0fdf4; border:1px solid #22c55e; padding:10px 12px; border-radius:10px;">
+<strong>✅ Résultat attendu</strong>
+<ul>
+  <li>Mosquitto écoute sur les ports 1883 (local) et 9001 (WebSocket)</li>
+  <li>Cloudflare Tunnel expose le port 9001 en WSS sur <code>mqtt.votredomaine.ca:443</code></li>
+  <li>Les appareils peuvent se connecter depuis n'importe où via WSS</li>
+</ul>
 </div>
-
-### 2.3 Code de diagnostic avancé
-
-Pour un diagnostic plus complet, utilisez `labo2/code/diagnostic_modem/diagnostic_avance.ino` qui teste également la connexion GPRS.
 
 <div style="height: 5px; background: linear-gradient(90deg, #f59e0b, #f97316); border-radius: 999px; margin: 22px 0;"></div>
 
@@ -249,8 +382,8 @@ nano auth.h
 const char* WIFI_SSID = "VotreReseauWiFi";
 const char* WIFI_PASSWORD = "VotreMotDePasse";
 
-// Configuration MQTT
-const char* MQTT_BROKER = "mqtt.edxo.ca";
+// Configuration MQTT (votre broker via Cloudflare)
+const char* MQTT_BROKER = "mqtt.votredomaine.ca";
 const char* MQTT_USER = "esp_user";
 const char* MQTT_PASS = "VOTRE_MOT_DE_PASSE";
 const char* MQTT_CLIENT_ID = "esp32-XXXXXX";  // Sera affiché au démarrage
@@ -337,8 +470,8 @@ const char APN[] = "internet.com";  // Voir tableau ci-dessous
 const char APN_USER[] = "";         // Généralement vide au Canada
 const char APN_PASS[] = "";         // Généralement vide au Canada
 
-// Configuration MQTT
-const char MQTT_BROKER[] = "mqtt.edxo.ca";
+// Configuration MQTT (votre broker via Cloudflare)
+const char MQTT_BROKER[] = "mqtt.votredomaine.ca";
 const char MQTT_USER[] = "esp_user";
 const char MQTT_PASS[] = "VOTRE_MOT_DE_PASSE";
 const char MQTT_CLIENT_ID[] = "lte-XXXXXX";  // Généré depuis l'IMEI
@@ -452,8 +585,8 @@ nano mqtt_config.py
 **Configuration :**
 ```python
 MQTT_CONFIG = {
-    # Broker MQTT
-    "broker": "mqtt.edxo.ca",
+    # Broker MQTT (votre broker via Cloudflare)
+    "broker": "mqtt.votredomaine.ca",
     "port": 443,  # Port WSS (WebSocket Secure)
 
     # Identifiants Mosquitto
@@ -503,9 +636,106 @@ L'interface affiche :
 
 <div style="height: 5px; background: linear-gradient(90deg, #10b981, #06b6d4); border-radius: 999px; margin: 22px 0;"></div>
 
-## 6. Exercice : Montage complet
+## 6. Exercice : Boutons physiques
 
-> 🎯 **Objectif :** assembler et tester le système complet.
+> 🔘 **Objectif :** ajouter deux boutons physiques qui toggle les LEDs localement ET envoient l'état par MQTT.
+
+### 6.1 Comportement attendu
+
+Les boutons physiques sur le LilyGO doivent avoir le comportement suivant :
+
+1. **Bouton 1 (GPIO 34)** :
+   - Appui → Toggle la LED rouge (GPIO 32)
+   - Publie l'état de la LED sur `{device_id}/led/1/state` ("ON" ou "OFF")
+
+2. **Bouton 2 (GPIO 35)** :
+   - Appui → Toggle la LED verte (GPIO 33)
+   - Publie l'état de la LED sur `{device_id}/led/2/state` ("ON" ou "OFF")
+
+### 6.2 Ce que vous devez faire
+
+<div style="background:#dbeafe; border:1px solid #3b82f6; padding:10px 12px; border-radius:10px;">
+<strong>📝 Tâches</strong>
+<ol>
+  <li><strong>Brancher les boutons</strong> sur GPIO 34 et 35 (entre GPIO et GND)</li>
+  <li><strong>Modifier le code Arduino</strong> (WiFi ou LTE) pour :
+    <ul>
+      <li>Détecter l'appui sur les boutons (avec debounce)</li>
+      <li>Toggle l'état de la LED correspondante</li>
+      <li>Publier le nouvel état sur MQTT</li>
+    </ul>
+  </li>
+  <li><strong>Tester</strong> que l'appui sur un bouton physique :
+    <ul>
+      <li>Allume/éteint la LED localement</li>
+      <li>Envoie un message MQTT visible dans l'interface Python</li>
+    </ul>
+  </li>
+</ol>
+</div>
+
+### 6.3 Indices pour l'implémentation
+
+**Détection du bouton avec debounce :**
+```cpp
+// Variables globales
+bool led1State = false;
+bool led2State = false;
+unsigned long lastButton1Press = 0;
+unsigned long lastButton2Press = 0;
+const unsigned long DEBOUNCE_DELAY = 200;  // 200ms
+
+// Dans la fonction checkButtons() ou loop()
+void checkButtonsForToggle() {
+    unsigned long now = millis();
+
+    // Bouton 1 - Toggle LED 1
+    if (digitalRead(BUTTON1_PIN) == LOW) {  // Bouton pressé (pull-up)
+        if (now - lastButton1Press > DEBOUNCE_DELAY) {
+            lastButton1Press = now;
+            led1State = !led1State;  // Toggle
+            digitalWrite(LED1_PIN, led1State ? HIGH : LOW);
+
+            // Publier l'état sur MQTT
+            const char* state = led1State ? "ON" : "OFF";
+            mqttClient.publish(LED1_STATE_TOPIC, state);
+            Serial.print("[BTN1] LED1 toggled: ");
+            Serial.println(state);
+        }
+    }
+
+    // Bouton 2 - Toggle LED 2 (même logique)
+    // ...
+}
+```
+
+**Nouveaux topics à définir :**
+```cpp
+char LED1_STATE_TOPIC[50];  // {device_id}/led/1/state
+char LED2_STATE_TOPIC[50];  // {device_id}/led/2/state
+
+// Dans setup() après avoir défini MQTT_CLIENT_ID :
+snprintf(LED1_STATE_TOPIC, sizeof(LED1_STATE_TOPIC), "%s/led/1/state", MQTT_CLIENT_ID);
+snprintf(LED2_STATE_TOPIC, sizeof(LED2_STATE_TOPIC), "%s/led/2/state", MQTT_CLIENT_ID);
+```
+
+### 6.4 Validation
+
+<div style="background:#f0fdf4; border:1px solid #22c55e; padding:10px 12px; border-radius:10px;">
+<strong>✅ À vérifier :</strong>
+<ul>
+  <li>Appuyer sur BTN1 → LED rouge toggle + message MQTT envoyé</li>
+  <li>Appuyer sur BTN2 → LED verte toggle + message MQTT envoyé</li>
+  <li>L'état est visible dans l'interface Python (zone feedback)</li>
+  <li>Pas de "rebond" (un seul toggle par appui)</li>
+</ul>
+</div>
+
+<div style="height: 5px; background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 999px; margin: 22px 0;"></div>
+
+## 7. Exercice : Montage complet
+
+> 🎯 **Objectif :** assembler et tester le système complet avec communication bidirectionnelle.
 
 ### Étapes
 
@@ -517,25 +747,26 @@ L'interface affiche :
    - **WiFi** : Si vous avez accès à un réseau WiFi
    - **LTE** : Si vous avez une carte SIM avec données
 
-3. **Configurer et téléverser le code Arduino** approprié
+3. **Configurer et téléverser le code Arduino** avec les modifications de l'exercice 6
 
 4. **Noter le Device ID** affiché dans le moniteur série
 
 5. **Configurer l'interface Python** avec le bon Device ID
 
-6. **Tester le système** :
-   - Appuyer sur les boutons toggle de l'interface → Les LEDs s'allument/éteignent
-   - Appuyer sur les boutons physiques → L'état s'affiche dans l'interface
+6. **Tester la communication bidirectionnelle** :
+   - Interface tactile → LED : Appuyer sur les boutons toggle → Les LEDs s'allument/éteignent
+   - Boutons physiques → Interface : Appuyer sur BTN1/BTN2 → L'état s'affiche dans l'interface
 
-### Validation
+### Validation finale
 
 <div style="background:#f0fdf4; border:1px solid #22c55e; padding:10px 12px; border-radius:10px;">
-<strong>✅ À vérifier :</strong>
+<strong>✅ Critères de réussite :</strong>
 <ul>
   <li>Les LEDs répondent aux commandes de l'interface tactile</li>
-  <li>L'état des boutons physiques s'affiche dans l'interface</li>
+  <li>Les boutons physiques toggle les LEDs ET envoient l'état par MQTT</li>
+  <li>L'interface Python affiche les messages reçus des boutons</li>
   <li>La connexion MQTT est stable (indicateur vert)</li>
-  <li>Les messages sont visibles dans la zone feedback</li>
+  <li>Le système fonctionne via WiFi OU LTE</li>
 </ul>
 </div>
 
@@ -546,22 +777,30 @@ L'interface affiche :
 <ul>
   <li><strong>LEDs ne s'allument pas :</strong> Vérifier le sens des LEDs et les résistances</li>
   <li><strong>MQTT déconnecté :</strong> Vérifier le Device ID et les identifiants</li>
-  <li><strong>Pas de réponse aux boutons :</strong> Vérifier les connexions GPIO 34/35 vers GND</li>
+  <li><strong>Boutons ne répondent pas :</strong> Vérifier les connexions GPIO 34/35 vers GND</li>
+  <li><strong>Rebond des boutons :</strong> Augmenter DEBOUNCE_DELAY (ex: 300ms)</li>
   <li><strong>LTE ne se connecte pas :</strong> Vérifier l'APN et la carte SIM</li>
+  <li><strong>WSS ne fonctionne pas :</strong> Vérifier la config Cloudflare et Mosquitto</li>
 </ul>
 </div>
 
-<div style="height: 5px; background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 999px; margin: 22px 0;"></div>
+<div style="height: 5px; background: linear-gradient(90deg, #22d3ee, #a855f7); border-radius: 999px; margin: 22px 0;"></div>
 
 ## 📚 Commandes de vérification utiles
 
 ```bash
-# Vérifier la connexion au broker MQTT
-mosquitto_sub -h mqtt.edxo.ca -p 1883 -u esp_user -P VOTRE_MOT_DE_PASSE -t "#" -v
+# Vérifier que Mosquitto écoute sur les bons ports
+sudo ss -tlnp | grep mosquitto
+
+# Tester la connexion locale MQTT
+mosquitto_sub -h localhost -p 1883 -u esp_user -P VOTRE_MOT_DE_PASSE -t "#" -v
 
 # Envoyer une commande manuellement
-mosquitto_pub -h mqtt.edxo.ca -p 1883 -u esp_user -P VOTRE_MOT_DE_PASSE \
+mosquitto_pub -h localhost -p 1883 -u esp_user -P VOTRE_MOT_DE_PASSE \
   -t "esp32-123456/led/1/set" -m "ON"
+
+# Vérifier les logs Mosquitto
+sudo tail -f /var/log/mosquitto/mosquitto.log
 
 # Lister les ports série disponibles
 arduino-cli board list
@@ -570,7 +809,7 @@ arduino-cli board list
 arduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200
 ```
 
-<div style="height: 5px; background: linear-gradient(90deg, #22d3ee, #a855f7); border-radius: 999px; margin: 22px 0;"></div>
+<div style="height: 5px; background: linear-gradient(90deg, #a855f7, #ec4899); border-radius: 999px; margin: 22px 0;"></div>
 
 ## 📂 Structure des fichiers
 
@@ -579,8 +818,7 @@ labo2/
 ├── Labo2-communication-sans-fil-MQTT-LTE.md  # Cet énoncé
 ├── code/
 │   ├── diagnostic_modem/
-│   │   ├── diagnostic_modem.ino      # Diagnostic de base
-│   │   └── diagnostic_avance.ino     # Diagnostic complet
+│   │   └── diagnostic_avance.ino     # Diagnostic modem (optionnel)
 │   ├── lilygo_wifi_mschapv2/
 │   │   ├── lilygo_wifi_mschapv2.ino  # Code WiFi MQTT
 │   │   └── auth.h.example            # Template configuration
