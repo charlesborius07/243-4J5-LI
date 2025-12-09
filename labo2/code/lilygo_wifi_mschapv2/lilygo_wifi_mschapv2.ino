@@ -8,7 +8,7 @@
 // ====== CONFIG MQTT/WSS ======
 const char* MQTT_HOST = "192.168.1.32";  // IP du Pi
 const int   MQTT_WSS_PORT = 9001;
-const char* MQTT_PATH = "/mqtt";             // WebSocket path
+const char* MQTT_PATH = "/";             // WebSocket path
 char MQTT_CLIENT_ID[20];                 // Will be generated from MAC
 
 char BUTTON1_STATE_TOPIC[50];
