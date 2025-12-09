@@ -170,6 +170,20 @@ esp32-123456/
     └── 2/state      # État bouton 2 (PRESSED/RELEASED)
 ```
 
+**Device ID (identifiant de l'appareil):**
+
+Le préfixe des topics (`esp32-123456` dans l'exemple ci-dessus) est le **Device ID**. Cet identifiant unique permet de distinguer plusieurs appareils sur le même broker MQTT.
+
+<div style="background:#dbeafe; border:1px solid #3b82f6; padding:10px 12px; border-radius:10px;">
+<strong>📝 Configuration du Device ID</strong>
+<p>Le Device ID est configuré dans le fichier <code>auth.h</code> via la variable <code>MQTT_CLIENT_ID</code> :</p>
+<ul>
+  <li><strong>WiFi :</strong> <code>labo2/code/lilygo_wifi_mschapv2/auth.h</code></li>
+  <li><strong>LTE :</strong> <code>labo2/code/lilygo_lte_mqtt/auth.h</code></li>
+</ul>
+<p>Choisissez un identifiant unique et significatif (ex: <code>esp32-cuisine</code>, <code>lte-garage</code>).</p>
+</div>
+
 **Avantages de MQTT pour l'IoT:**
 - ✅ **Léger:** Headers minimaux (~2 bytes)
 - ✅ **Bidirectionnel:** Publish et subscribe sur le même canal
