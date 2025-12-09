@@ -225,52 +225,44 @@ void mqtt_parse_publish(const uint8_t* data, size_t len) {
 // ===== WebSocket event =====
 
 void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
+  Serial.printf("[WS] Event type=%d, len=%u\n", type, (unsigned)length);
+
   switch (type) {
+    case WStype_ERROR:
+      Serial.println("[WS] ERROR");
+      break;
+
     case WStype_DISCONNECTED:
-      Serial.println("[WS] Disconnected");
-      mqttConnected = false;
+      Serial.println("[WS] DISCONNECTED");
       break;
 
     case WStype_CONNECTED:
-      Serial.println("[WS] Connected to WSS, sending MQTT CONNECT");
+      Serial.printf("[WS] CONNECTED to: %s\n", payload);
       {
-        auto pkt = mqtt_build_connect_packet(MQTT_CLIENT_ID);
-        Serial.print("[MQTT] CONNECT packet: ");
-        for (int i = 0; i < pkt.size(); i++) {
-          if (pkt[i] < 0x10) Serial.print("0");
-          Serial.print(pkt[i], HEX);
-          Serial.print(" ");
-        }
+        auto pkt = mqtt_build_connect_packet(MQTT_CLIENT_ID); // Use MQTT_CLIENT_ID not deviceId
+        Serial.print("[MQTT] CONNECT packet:");
+        for (auto b : pkt) Serial.printf(" %02X", b);
         Serial.println();
         webSocket.sendBIN(pkt.data(), pkt.size());
       }
       break;
 
-    case WStype_BIN:
-      Serial.printf("[WS] Binary frame len=%u\n", (unsigned)length);
-      Serial.print("[MQTT] Received BIN packet: ");
-      for (int i = 0; i < length; i++) {
-        if (payload[i] < 0x10) Serial.print("0");
-        Serial.print(payload[i], HEX);
-        Serial.print(" ");
-      }
+    case WStype_TEXT:
+      Serial.print("[WS] TEXT: ");
+      Serial.write(payload, length);
       Serial.println();
-      if (length >= 4 && payload[0] == 0x20) {
-        // CONNACK
-        // payload[0]=0x20, payload[1]=remaining length(2), payload[2]=flags, payload[3]=return code
-        if (payload[3] == 0x00) {
-          Serial.println("[MQTT] CONNACK OK, connecté");
-          mqttConnected = true;
+      break;
 
-          // s'abonner à un topic
-          auto subPkt = mqtt_build_subscribe(MQTT_TOPIC_SUB, 1);
-          webSocket.sendBIN(subPkt.data(), subPkt.size());
-        } else {
-          Serial.print("[MQTT] CONNACK ERROR code=");
-          Serial.println(payload[3]);
-        }
+    case WStype_BIN:
+      Serial.printf("[WS] BIN (%u bytes):", (unsigned)length);
+      for (size_t i = 0; i < length; i++) Serial.printf(" %02X", payload[i]);
+      Serial.println();
+
+      // CONNACK ? (0x20)
+      if (length >= 4 && payload[0] == 0x20) {
+        uint8_t rc = payload[3];
+        Serial.printf("[MQTT] CONNACK rc=%u\n", rc);
       } else {
-        // peut-être un PUBLISH
         mqtt_parse_publish(payload, length);
       }
       break;
@@ -358,6 +350,7 @@ void setup() {
   // important : Cloudflare + Mosquitto n'ont généralement pas besoin de subprotocol,
   // mais certains brokers aiment "mqtt"
   webSocket.setExtraHeaders("Sec-WebSocket-Protocol: mqtt\r\n");
+
 
   // Pour le développement/test sans un CA valide, vous pourriez devoir désactiver la vérification (utiliser avec prudence!):
   // webSocket.setInsecure(); 
