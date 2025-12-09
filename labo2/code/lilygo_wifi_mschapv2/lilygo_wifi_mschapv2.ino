@@ -16,8 +16,9 @@
 
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
-#include <esp_wpa2.h>
 #include <PubSubClient.h>
+#include <WebSocketsClient.h>
+#include <esp_wpa2.h>
 #include "auth.h" // Fichier contenant les identifiants WiFi
 
 // --- Configuration des broches (Pins) ---
@@ -39,7 +40,8 @@ char LED2_SET_TOPIC[50];
 
 // --- Variables Globales ---
 WiFiClientSecure wifiClient; // Use standard WiFiClient
-PubSubClient mqttClient(wifiClient);
+WebSocketsClient webSocketClient;
+PubSubClient mqttClient(webSocketClient);
 
 // Pour la lecture non-bloquante des boutons
 long lastButtonCheck = 0;
@@ -83,37 +85,75 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 // Pour (re)connecter au broker MQTT
 void reconnect() {
+  // Loop until we're reconnected
   while (!mqttClient.connected()) {
     Serial.print("Tentative de connexion MQTT...");
-    Serial.print("Tentative de connexion MQTT avec Client ID: ");
-    Serial.println(deviceId);
-    if (mqttClient.connect(deviceId)) {
-      Serial.println("connecté!");
-      // S'abonner aux topics de contrôle des LEDs
-      mqttClient.subscribe(LED1_SET_TOPIC);
-      mqttClient.subscribe(LED2_SET_TOPIC);
-      Serial.print("Abonné à: "); Serial.println(LED1_SET_TOPIC);
-      Serial.print("Abonné à: "); Serial.println(LED2_SET_TOPIC);
-    } else {
-      Serial.print("échec, rc=");
-      Serial.print(mqttClient.state());
-      Serial.print(" (");
-      switch (mqttClient.state()) {
-        case MQTT_CONNECTION_TIMEOUT: Serial.print("MQTT_CONNECTION_TIMEOUT"); break;
-        case MQTT_CONNECTION_LOST: Serial.print("MQTT_CONNECTION_LOST"); break;
-        case MQTT_CONNECT_FAILED: Serial.print("MQTT_CONNECT_FAILED"); break;
-        case MQTT_DISCONNECTED: Serial.print("MQTT_DISCONNECTED"); break;
-        case MQTT_CONNECTED: Serial.print("MQTT_CONNECTED"); break;
-        case MQTT_CONNECT_BAD_PROTOCOL: Serial.print("MQTT_CONNECT_BAD_PROTOCOL"); break;
-        case MQTT_CONNECT_BAD_CLIENT_ID: Serial.print("MQTT_CONNECT_BAD_CLIENT_ID"); break;
-        case MQTT_CONNECT_UNAVAILABLE: Serial.print("MQTT_CONNECT_UNAVAILABLE"); break;
-        case MQTT_CONNECT_BAD_CREDENTIALS: Serial.print("MQTT_CONNECT_BAD_CREDENTIALS"); break;
-        case MQTT_CONNECT_UNAUTHORIZED: Serial.print("MQTT_CONNECT_UNAUTHORIZED"); break;
-        default: Serial.print("UNKNOWN"); break;
-      }
-      Serial.println(") nouvelle tentative dans 5 secondes");
-      delay(5000);
+    if (!webSocketClient.isConnected()) {
+      Serial.println("WebSocket non connecté. Tentative de connexion...");
+      // Reconnecter le WebSocket
+      webSocketClient.disconnect(); // Ensure clean state
+      webSocketClient.beginSSL(MQTT_BROKER, MQTT_PORT, "/mqtt"); // Re-establish WebSocket connection
     }
+
+    if (webSocketClient.isConnected()) {
+      Serial.print("Tentative de connexion MQTT avec Client ID: ");
+      Serial.println(deviceId);
+      // Attempt to connect
+      if (mqttClient.connect(deviceId)) {
+        Serial.println("connecté!");
+        // Once connected, publish an announcement...
+        // ... and resubscribe
+        mqttClient.subscribe(LED1_SET_TOPIC);
+        mqttClient.subscribe(LED2_SET_TOPIC);
+        Serial.print("Abonné à: "); Serial.println(LED1_SET_TOPIC);
+        Serial.print("Abonné à: "); Serial.println(LED2_SET_TOPIC);
+      } else {
+        Serial.print("échec, rc=");
+        Serial.print(mqttClient.state());
+        Serial.print(" (");
+        switch (mqttClient.state()) {
+          case MQTT_CONNECTION_TIMEOUT: Serial.print("MQTT_CONNECTION_TIMEOUT"); break;
+          case MQTT_CONNECTION_LOST: Serial.print("MQTT_CONNECTION_LOST"); break;
+          case MQTT_CONNECT_FAILED: Serial.print("MQTT_CONNECT_FAILED"); break;
+          case MQTT_DISCONNECTED: Serial.print("MQTT_DISCONNECTED"); break;
+          case MQTT_CONNECTED: Serial.print("MQTT_CONNECTED"); break;
+          case MQTT_CONNECT_BAD_PROTOCOL: Serial.print("MQTT_CONNECT_BAD_PROTOCOL"); break;
+          case MQTT_CONNECT_BAD_CLIENT_ID: Serial.print("MQTT_CONNECT_BAD_CLIENT_ID"); break;
+          case MQTT_CONNECT_UNAVAILABLE: Serial.print("MQTT_CONNECT_UNAVAILABLE"); break;
+          case MQTT_CONNECT_BAD_CREDENTIALS: Serial.print("MQTT_CONNECT_BAD_CREDENTIALS"); break;
+          case MQTT_CONNECT_UNAUTHORIZED: Serial.print("MQTT_CONNECT_UNAUTHORIZED"); break;
+          default: Serial.print("UNKNOWN"); break;
+        }
+        Serial.println(") nouvelle tentative dans 5 secondes");
+        delay(5000);
+      }
+    } else {
+        Serial.println("Échec de connexion WebSocket. Nouvelle tentative dans 5 secondes.");
+        delay(5000);
+    }
+  }
+}
+
+void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
+  switch(type) {
+    case WStype_DISCONNECTED:
+      Serial.println("[WebSocket] Disconnected!");
+      break;
+    case WStype_CONNECTED:
+      Serial.printf("[WebSocket] Connected to url: %s\n", payload);
+      break;
+    case WStype_TEXT:
+      Serial.printf("[WebSocket] get Text: %s\n", payload);
+      break;
+    case WStype_BIN:
+      Serial.printf("[WebSocket] get binary length: %u\n", length);
+      break;
+    case WStype_ERROR:
+    case WStype_FRAGMENT_TEXT_START:
+    case WStype_FRAGMENT_BIN_START:
+    case WStype_FRAGMENT:
+    case WStype_FRAGMENT_FIN:
+      break;
   }
 }
 
@@ -179,12 +219,15 @@ void setup() {
   Serial.printf("Topic LED 1: %s\n", LED1_SET_TOPIC);
 
   // Configuration du client MQTT
-  // Pour la connexion sécurisée (WSS/SSL), il est recommandé d'ajouter le certificat CA du broker.
-  // Si le broker utilise un certificat auto-signé ou si la validation est stricte,
-  // vous devrez spécifier le certificat CA ici.
-  // Exemple: wifiClient.setCACert(root_ca);
-  // Pour des raisons de test, on peut désactiver la validation du certificat, MAIS CE N'EST PAS SÛR EN PRODUCTION.
-  wifiClient.setInsecure();
+  // Initialize WebSocketsClient for WSS
+  // Le chemin est généralement "/mqtt" pour les brokers compatibles WSS.
+  webSocketClient.beginSSL(MQTT_BROKER, MQTT_PORT, "/mqtt"); // Host, port, path (username/password optional for beginSSL)
+  // Pour production, il est fortement recommandé de définir un certificat CA:
+  // webSocketClient.setCACert(root_ca);
+  // Pour le développement/test sans un CA valide, vous pourriez devoir désactiver la vérification (utiliser avec prudence!):
+  // webSocketClient.setInsecure(); 
+  webSocketClient.onEvent(webSocketEvent); // Configure le gestionnaire d'événements WebSocket
+
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
   mqttClient.setCallback(callback);
 }
@@ -195,6 +238,8 @@ void loop() {
     delay(1000);
     return;
   }
+
+  webSocketClient.loop(); // Important for WebSocketsClient to function
 
   if (!mqttClient.connected()) {
     reconnect();
