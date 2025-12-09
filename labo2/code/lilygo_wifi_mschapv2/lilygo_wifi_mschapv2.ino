@@ -15,6 +15,7 @@
 */
 
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
 #include <esp_wpa2.h>
 #include <PubSubClient.h>
 #include "auth.h" // Fichier contenant les identifiants WiFi
@@ -27,7 +28,7 @@ const int BUTTON2_PIN = 19;
 
 // --- Configuration MQTT ---
 const char* MQTT_BROKER = "mqtt.edxo.ca";
-const int MQTT_PORT = 1883; // Changed back to 1883 for unencrypted MQTT
+const int MQTT_PORT = 443;
 char deviceId[20];
 
 // Topics MQTT (le deviceId sera préfixé)
@@ -37,7 +38,7 @@ char LED1_SET_TOPIC[50];
 char LED2_SET_TOPIC[50];
 
 // --- Variables Globales ---
-WiFiClient wifiClient; // Use standard WiFiClient
+WiFiClientSecure wifiClient; // Use standard WiFiClient
 PubSubClient mqttClient(wifiClient);
 
 // Pour la lecture non-bloquante des boutons
@@ -178,6 +179,12 @@ void setup() {
   Serial.printf("Topic LED 1: %s\n", LED1_SET_TOPIC);
 
   // Configuration du client MQTT
+  // Pour la connexion sécurisée (WSS/SSL), il est recommandé d'ajouter le certificat CA du broker.
+  // Si le broker utilise un certificat auto-signé ou si la validation est stricte,
+  // vous devrez spécifier le certificat CA ici.
+  // Exemple: wifiClient.setCACert(root_ca);
+  // Pour des raisons de test, on peut désactiver la validation du certificat, MAIS CE N'EST PAS SÛR EN PRODUCTION.
+  wifiClient.setInsecure();
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
   mqttClient.setCallback(callback);
 }
