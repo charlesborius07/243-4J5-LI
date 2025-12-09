@@ -3,17 +3,12 @@
 #include <esp_wpa2.h> // Keep for Enterprise WiFi
 #include <vector>
 
-#include "auth.h" // Fichier contenant les identifiants WiFi (WIFI_SSID, WIFI_PASSWORD, etc.)
+#include "auth.h" // Fichier contenant les identifiants WiFi et MQTT
 
 // ====== CONFIG MQTT/WSS ======
-const char* MQTT_HOST = "mqtt.edxo.ca";      // Votre domaine Cloudflare
+const char* MQTT_HOST = MQTT_BROKER;         // Broker depuis auth.h
 const int   MQTT_WSS_PORT = 443;             // Port sécurisé SSL
 const char* MQTT_PATH = "/";                 // WebSocket path
-char MQTT_CLIENT_ID[20];                     // Will be generated from MAC
-
-// ====== IDENTIFIANTS MOSQUITTO ======
-const char* MQTT_USER = "esp_user";          // Votre utilisateur Mosquitto
-const char* MQTT_PASS = "yxhtfi60";              // Votre mot de passe (celui défini sur le Pi)
 
 char BUTTON1_STATE_TOPIC[50];
 char BUTTON2_STATE_TOPIC[50];
@@ -21,10 +16,10 @@ char LED1_SET_TOPIC[50];
 char LED2_SET_TOPIC[50];
 
 // --- Configuration des broches (Pins) ---
-const int LED1_PIN = 22;
-const int LED2_PIN = 23;
-const int BUTTON1_PIN = 18;
-const int BUTTON2_PIN = 19;
+const int LED1_PIN = 32;
+const int LED2_PIN = 33;
+const int BUTTON1_PIN = 34;
+const int BUTTON2_PIN = 35;
 
 WebSocketsClient webSocket;
 
@@ -307,11 +302,7 @@ void setup() {
   Serial.print("Adresse IP: ");
   Serial.println(WiFi.localIP());
 
-  // ID & topics MQTT
-  String mac = WiFi.macAddress();
-  mac.replace(":", "");
-  String shortMac = mac.substring(6);
-  sprintf(MQTT_CLIENT_ID, "esp32-%s", shortMac.c_str());
+  // Topics MQTT basés sur le Client ID de auth.h
   sprintf(BUTTON1_STATE_TOPIC, "%s/button/1/state", MQTT_CLIENT_ID);
   sprintf(BUTTON2_STATE_TOPIC, "%s/button/2/state", MQTT_CLIENT_ID);
   sprintf(LED1_SET_TOPIC, "%s/led/1/set", MQTT_CLIENT_ID);
