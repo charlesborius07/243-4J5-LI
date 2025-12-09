@@ -3,13 +3,17 @@
 #include <esp_wpa2.h> // Keep for Enterprise WiFi
 #include <vector>
 
-#include "auth.h" // Fichier contenant les identifiants WiFi
+#include "auth.h" // Fichier contenant les identifiants WiFi (WIFI_SSID, WIFI_PASSWORD, etc.)
 
 // ====== CONFIG MQTT/WSS ======
-const char* MQTT_HOST = "mqtt.edxo.ca";  // IP du Pi
-const int   MQTT_WSS_PORT = 443;
-const char* MQTT_PATH = "/";             // WebSocket path
-char MQTT_CLIENT_ID[20];                 // Will be generated from MAC
+const char* MQTT_HOST = "mqtt.edxo.ca";      // Votre domaine Cloudflare
+const int   MQTT_WSS_PORT = 443;             // Port sécurisé SSL
+const char* MQTT_PATH = "/";                 // WebSocket path
+char MQTT_CLIENT_ID[20];                     // Will be generated from MAC
+
+// ====== IDENTIFIANTS MOSQUITTO ======
+const char* MQTT_USER = "esp_user";          // Votre utilisateur Mosquitto
+const char* MQTT_PASS = "1234";              // Votre mot de passe (celui défini sur le Pi)
 
 char BUTTON1_STATE_TOPIC[50];
 char BUTTON2_STATE_TOPIC[50];
@@ -44,45 +48,50 @@ void mqtt_encode_remaining_length(uint32_t len, std::vector<uint8_t>& out) {
   } while (len > 0);
 }
 
-std::vector<uint8_t> mqtt_build_connect_packet(const char* clientId, uint16_t keepAliveSeconds = 60) {
+// VERSION MISE À JOUR POUR USERNAME / PASSWORD
+std::vector<uint8_t> mqtt_build_connect_packet(const char* clientId, const char* username, const char* password, uint16_t keepAliveSeconds = 60) {
   std::vector<uint8_t> pkt;
   std::vector<uint8_t> vh;
 
   // "MQTT"
-  vh.push_back(0x00);
-  vh.push_back(0x04);
-  vh.push_back('M');
-  vh.push_back('Q');
-  vh.push_back('T');
-  vh.push_back('T');
+  vh.push_back(0x00); vh.push_back(0x04);
+  vh.push_back('M');  vh.push_back('Q');  vh.push_back('T');  vh.push_back('T');
 
-  // protocol level 4 (MQTT 3.1.1)
+  // Protocol Level 4 (3.1.1)
   vh.push_back(0x04);
 
-  // flags: clean session
-  uint8_t connectFlags = 0x02;
+  // FLAGS: User(1) + Pass(1) + CleanSession(1) = 11000010 = 0xC2
+  uint8_t connectFlags = 0xC2; 
   vh.push_back(connectFlags);
 
-  // keep alive
+  // Keep Alive
   vh.push_back(keepAliveSeconds >> 8);
   vh.push_back(keepAliveSeconds & 0xFF);
 
-  // payload: client ID
+  // --- PAYLOAD ---
   std::vector<uint8_t> payload;
-  uint16_t cidLen = strlen(clientId);
-  payload.push_back(cidLen >> 8);
-  payload.push_back(cidLen & 0xFF);
-  for (uint16_t i = 0; i < cidLen; i++) {
-    payload.push_back((uint8_t)clientId[i]);
-  }
 
+  // 1. Client ID
+  uint16_t cidLen = strlen(clientId);
+  payload.push_back(cidLen >> 8); payload.push_back(cidLen & 0xFF);
+  for (uint16_t i = 0; i < cidLen; i++) payload.push_back((uint8_t)clientId[i]);
+
+  // 2. Username
+  uint16_t userLen = strlen(username);
+  payload.push_back(userLen >> 8); payload.push_back(userLen & 0xFF);
+  for (uint16_t i = 0; i < userLen; i++) payload.push_back((uint8_t)username[i]);
+
+  // 3. Password
+  uint16_t passLen = strlen(password);
+  payload.push_back(passLen >> 8); payload.push_back(passLen & 0xFF);
+  for (uint16_t i = 0; i < passLen; i++) payload.push_back((uint8_t)password[i]);
+
+  // --- ASSEMBLAGE FINAL ---
   // fixed header
   pkt.push_back(0x10); // CONNECT
   std::vector<uint8_t> rl;
   mqtt_encode_remaining_length(vh.size() + payload.size(), rl);
   pkt.insert(pkt.end(), rl.begin(), rl.end());
-
-  // var header + payload
   pkt.insert(pkt.end(), vh.begin(), vh.end());
   pkt.insert(pkt.end(), payload.begin(), payload.end());
 
@@ -207,7 +216,9 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
     case WStype_CONNECTED:
       Serial.printf("[WS] CONNECTED to: %s\n", payload);
       {
-        auto pkt = mqtt_build_connect_packet(MQTT_CLIENT_ID);
+        // Envoi du paquet CONNECT avec USER et PASSWORD
+        auto pkt = mqtt_build_connect_packet(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASS);
+        
         Serial.print("[MQTT] CONNECT packet:");
         for (auto b : pkt) Serial.printf(" %02X", b);
         Serial.println();
@@ -238,6 +249,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
           webSocket.sendBIN(sub1.data(), sub1.size());
           webSocket.sendBIN(sub2.data(), sub2.size());
         } else {
+          Serial.println("ERREUR D'AUTHENTIFICATION ! Vérifiez user/pass.");
           mqttConnected = false;
         }
       } else {
@@ -311,11 +323,12 @@ void setup() {
   Serial.printf("Topic LED 1: %s\n", LED1_SET_TOPIC);
   Serial.printf("Topic LED 2: %s\n", LED2_SET_TOPIC);
 
-  // WebSocket client (local, sans TLS)
+  // WebSocket client avec SSL
+  // Note: le dernier argument "mqtt" est CRUCIAL pour Mosquitto
   webSocket.beginSSL(MQTT_HOST, MQTT_WSS_PORT, MQTT_PATH, "", "mqtt");
+  
   webSocket.onEvent(webSocketEvent);
   webSocket.setReconnectInterval(5000);
-  // ⚠️ pas de setExtraHeaders ici en local
 }
 
 void loop() {
