@@ -13,7 +13,7 @@ char MQTT_CLIENT_ID[20];                     // Will be generated from MAC
 
 // ====== IDENTIFIANTS MOSQUITTO ======
 const char* MQTT_USER = "esp_user";          // Votre utilisateur Mosquitto
-const char* MQTT_PASS = "1234";              // Votre mot de passe (celui défini sur le Pi)
+const char* MQTT_PASS = "yxhtfi60";              // Votre mot de passe (celui défini sur le Pi)
 
 char BUTTON1_STATE_TOPIC[50];
 char BUTTON2_STATE_TOPIC[50];
