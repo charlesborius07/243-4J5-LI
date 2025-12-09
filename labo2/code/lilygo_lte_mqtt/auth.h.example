@@ -32,4 +32,9 @@ const int  MQTT_PORT = 1883;  // Port standard MQTT (non-SSL via LTE)
 const char MQTT_USER[] = "esp_user";
 const char MQTT_PASS[] = "YOUR_PASSWORD_HERE";  // ⚠️ À remplacer par votre mot de passe MQTT
 
+// Device ID - Identifiant unique de l'appareil
+// Format suggéré: "esp32-XXXXXX" (6 derniers caractères de l'IMEI ou personnalisé)
+// Cet identifiant sera utilisé comme préfixe pour tous les topics MQTT
+const char MQTT_CLIENT_ID[] = "esp32-lte";     // ⚠️ À personnaliser selon votre appareil
+
 #endif // AUTH_H

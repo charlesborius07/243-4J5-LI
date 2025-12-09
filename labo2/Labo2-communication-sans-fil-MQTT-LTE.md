@@ -386,7 +386,11 @@ const char* WIFI_PASSWORD = "VotreMotDePasse";
 const char* MQTT_BROKER = "mqtt.votredomaine.ca";
 const char* MQTT_USER = "esp_user";
 const char* MQTT_PASS = "VOTRE_MOT_DE_PASSE";
-const char* MQTT_CLIENT_ID = "esp32-XXXXXX";  // Sera affiché au démarrage
+
+// Identifiant unique de l'appareil - À PERSONNALISER
+// Format recommandé: "esp32-XXXXXX" ou un nom significatif
+// Cet identifiant sera utilisé comme préfixe pour tous les topics MQTT
+const char* MQTT_CLIENT_ID = "esp32-XXXXXX";
 ```
 
 **Configuration pour WiFi WPA2-Enterprise (réseau du Cégep) :**
@@ -474,7 +478,11 @@ const char APN_PASS[] = "";         // Généralement vide au Canada
 const char MQTT_BROKER[] = "mqtt.votredomaine.ca";
 const char MQTT_USER[] = "esp_user";
 const char MQTT_PASS[] = "VOTRE_MOT_DE_PASSE";
-const char MQTT_CLIENT_ID[] = "lte-XXXXXX";  // Généré depuis l'IMEI
+
+// Identifiant unique de l'appareil - À PERSONNALISER
+// Format recommandé: "lte-XXXXXX" ou un nom significatif
+// Cet identifiant sera utilisé comme préfixe pour tous les topics MQTT
+const char MQTT_CLIENT_ID[] = "lte-XXXXXX";
 ```
 
 **APNs par opérateur au Canada :**
