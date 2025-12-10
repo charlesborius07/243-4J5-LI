@@ -7,10 +7,10 @@
 
 ```mermaid
 graph TB
-    subgraph Device_LTE["📟 Nœud 1: LilyGO A7670G + PCB"]
+    subgraph Device_LTE["📟 LilyGO A7670G + PCB"]
         PCB["PCB Assemblé<br/>• Capteurs (temp, humidité)<br/>• LEDs (rouge/verte)<br/>• Boutons poussoirs"]
 
-        A7670G["LilyGO A7670G<br/>• ESP32 + LTE Cat-1<br/>• GPS intégré"]
+        A7670G["LilyGO A7670G<br/>• ESP32 + LTE Cat-1<br/>• GPS intégré<br/>• Config: WSS:443"]
 
         PCB <-->|GPIO/I2C| A7670G
     end
@@ -30,16 +30,16 @@ graph TB
 
     CloudflareTunnel(["☁️ Cloudflare Tunnel<br/>• Exposition sécurisée<br/>• WSS port 443<br/>• domaine.example.com"])
 
-    Internet(["☁️ Internet / LTE<br/>Réseau cellulaire"])
+    Internet(["☁️ Internet / LTE<br/>Réseau cellulaire<br/>+ Cloudflare CDN"])
 
     ClientDistant["💻 Client Web Distant<br/>• Dashboard<br/>• Monitoring"]
 
     %% Flux de communication
 
-    %% Nœud 1 passe par Internet/Cloudflare
-    A7670G -->|"MQTT via LTE"| Internet
-    Internet -->|"WSS:443<br/>TLS/mTLS"| CloudflareTunnel
-    CloudflareTunnel -->|"MQTT<br/>sensors/*<br/>actuators/*"| Mosquitto
+    %% A7670G se connecte en WSS via Cloudflare sur Internet
+    A7670G -->|"MQTT over WSS<br/>Port 443<br/>wss://domain.example.com"| Internet
+    Internet -->|"Via Cloudflare CDN"| CloudflareTunnel
+    CloudflareTunnel -->|"MQTT local<br/>sensors/*<br/>actuators/*"| Mosquitto
 
     %% Nœud 2 via LoRa mesh
     TBeam_Distant <-->|"LoRa mesh<br/>Longue portée"| TBeam_Local
@@ -71,23 +71,27 @@ graph TB
 
 ## 📊 Flux de Données
 
-### Flux 1: LilyGO A7670G + PCB → Serveur (via LTE)
+### Flux LTE: LilyGO A7670G + PCB → Serveur
 
 ```mermaid
 sequenceDiagram
     participant PCB as Capteurs PCB
     participant A7670G as LilyGO A7670G
+    participant LTE as Internet/LTE
+    participant CF as Cloudflare<br/>(CDN + Tunnel)
     participant M as Mosquitto (Pi5)
     participant UI as Interface Tactile
 
     PCB->>A7670G: Lecture GPIO<br/>(température, boutons)
     Note over A7670G: Format JSON
-    A7670G->>M: MQTT Publish (LTE)<br/>sensors/temp<br/>{"value":22.5}
+    A7670G->>LTE: MQTT over WSS:443<br/>wss://domain.example.com
+    LTE->>CF: Via Cloudflare CDN
+    CF->>M: Tunnel → Port 9001<br/>sensors/temp {"value":22.5}
     M->>UI: Affichage temps réel
     Note over UI: Mise à jour écran tactile
 ```
 
-### Flux 2: T-Beam Distant → T-Beam Local → Serveur (via LoRa mesh + WiFi)
+### Flux LoRa: T-Beam Distant → T-Beam Local → Serveur
 
 ```mermaid
 sequenceDiagram
@@ -115,21 +119,21 @@ sequenceDiagram
 - ✅ **Cloudflare Tunnel** actif
 - ✅ **Interface tactile Python** fonctionnelle
 
-### Nœud 1: LilyGO A7670G + PCB (Communication LTE)
+### LilyGO A7670G + PCB (Communication LTE)
 - ✅ **LilyGO A7670G** (Labos 1-2)
 - 🔄 **PCB assemblé et soudé** (semaine 10)
 - 🔄 **Capteurs** branchés sur PCB (température, humidité)
 - 🔄 **LEDs et boutons** fonctionnels
 - 🔄 **Communication MQTT via LTE** opérationnelle
 
-### Nœud 2: T-Beam Local (Gateway LoRa → WiFi)
+### T-Beam Local (Gateway LoRa → WiFi)
 - ✅ **T-Beam SUPREME #1** (semaines 7-9)
 - ✅ **WiFi configuré** (réseau local du labo)
 - ✅ **LoRa activé** (réception mesh)
 - ✅ **MQTT activé** (envoi vers Mosquitto)
 - 🔄 **Rôle gateway** LoRa → MQTT fonctionnel
 
-### Nœud 3: T-Beam Distant (Mobile LoRa)
+### T-Beam Distant (Mobile LoRa)
 - ✅ **T-Beam SUPREME #2** (semaines 7-9)
 - ✅ **LoRa configuré** (transmission mesh)
 - ✅ **GPS fonctionnel**
@@ -169,17 +173,17 @@ mqtt://
 - Interface tactile Python affichant les données
 - Cloudflare Tunnel pour accès distant sécurisé
 
-**2. Nœud IoT LTE (LilyGO A7670G + PCB):**
+**2. Module IoT LTE (LilyGO A7670G + PCB):**
 - PCB assemblé et soudé (semaine 10)
 - Capteurs fonctionnels branchés au PCB
 - LEDs et boutons opérationnels
 - Communication MQTT via LTE vers le serveur
 
-**3. Système LoRa mesh (2 T-Beam):**
+**3. Système LoRa mesh (2 T-Beam SUPREME):**
 - **T-Beam local:** Gateway LoRa → MQTT (WiFi réseau local)
-- **T-Beam distant:** Nœud mobile avec GPS (communication LoRa)
-- Communication mesh LoRa fonctionnelle entre les 2 nœuds
-- Données GPS du nœud distant acheminées au serveur
+- **T-Beam distant:** Module mobile avec GPS (communication LoRa)
+- Communication mesh LoRa fonctionnelle entre les deux T-Beam
+- Données GPS du T-Beam distant acheminées au serveur
 
 **4. Documentation complète:**
 - Schéma du PCB (Altium)
