@@ -8,7 +8,7 @@
 ```mermaid
 graph TB
     subgraph Zone_Remote["🌍 Nœuds Distants"]
-        subgraph Device_LTE["📟 Nœud LTE (A7670G + PCB)"]
+        subgraph Device_LTE["📟 Nœud 1: LTE (A7670G + PCB)"]
             PCB["PCB Assemblé<br/>• Capteurs (temp, humidité)<br/>• LEDs (rouge/verte)<br/>• Boutons poussoirs"]
 
             A7670G["LilyGO A7670G<br/>• ESP32 + LTE Cat-1<br/>• GPS intégré"]
@@ -16,10 +16,14 @@ graph TB
             PCB <-->|GPIO/I2C| A7670G
         end
 
-        TBeam_Distant["T-Beam Distant<br/>• ESP32-S3 + LoRa<br/>• GPS intégré<br/>• Batterie/Mobile"]
+        subgraph Device_LoRa["📡 Nœud 2: T-Beam Distant"]
+            TBeam_Distant["T-Beam SUPREME<br/>• ESP32-S3 + LoRa<br/>• GPS intégré<br/>• Batterie/Mobile"]
+        end
     end
 
     subgraph Zone_Lab["🏠 Laboratoire / Réseau Local"]
+        TBeam_Local["T-Beam Local (Gateway)<br/>• ESP32-S3 + LoRa<br/>• WiFi (réseau local)<br/>• Pont LoRa → MQTT"]
+
         subgraph RaspberryPi["🍓 Raspberry Pi 5"]
             Mosquitto["Mosquitto Broker<br/>• Port 1883 (local)<br/>• Port 9001 (WSS/TLS)"]
 
@@ -29,8 +33,6 @@ graph TB
 
             Mosquitto --> InterfaceTactile
         end
-
-        TBeam_Local["T-Beam Local<br/>• ESP32-S3 + LoRa<br/>• WiFi (réseau local)<br/>• Gateway LoRa → MQTT"]
     end
 
     subgraph Zone_Internet["☁️ Internet"]
