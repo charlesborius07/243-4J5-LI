@@ -17,15 +17,16 @@ graph TB
 
     TBeam_Distant["📡 T-Beam Distant<br/>• ESP32-S3 + LoRa<br/>• GPS intégré<br/>• Batterie/Mobile"]
 
-    TBeam_Local["🔄 T-Beam Local (Gateway)<br/>• ESP32-S3 + LoRa<br/>• WiFi (réseau local)<br/>• Pont LoRa → MQTT"]
+    subgraph Reseau_Local["🏠 Réseau Local du Laboratoire"]
+        TBeam_Local["🔄 T-Beam Local (Gateway)<br/>• ESP32-S3 + LoRa<br/>• WiFi (réseau local)<br/>• Pont LoRa → MQTT"]
 
-    subgraph RaspberryPi["🍓 Raspberry Pi 5"]
-        Mosquitto["Mosquitto Broker<br/>• Port 1883 (local)<br/>• Port 9001 (WSS/TLS)"]
+        subgraph RaspberryPi["🍓 Raspberry Pi 5"]
+            Mosquitto["Mosquitto Broker<br/>• Port 1883 (local)<br/>• Port 9001 (WSS/TLS)"]
 
-        InterfaceTactile["Interface Tactile Python<br/>• Affichage données<br/>• Contrôle LEDs"]
+            InterfaceTactile["Interface Tactile Python<br/>• Affichage données<br/>• Contrôle LEDs"]
 
-        Mosquitto --> InterfaceTactile
-        Mosquitto --> CloudflareTunnel
+            Mosquitto --> InterfaceTactile
+        end
     end
 
     CloudflareTunnel(["☁️ Cloudflare Tunnel<br/>• Exposition sécurisée<br/>• WSS port 443<br/>• domaine.example.com"])
@@ -41,11 +42,12 @@ graph TB
     Internet -->|"Via Cloudflare CDN"| CloudflareTunnel
     CloudflareTunnel -->|"MQTT local<br/>sensors/*<br/>actuators/*"| Mosquitto
 
-    %% Nœud 2 via LoRa mesh
+    %% LoRa mesh
     TBeam_Distant <-->|"LoRa mesh<br/>Longue portée"| TBeam_Local
 
-    %% Gateway local
+    %% Gateway local et exposition via tunnel
     TBeam_Local -->|"MQTT via WiFi local<br/>meshtastic/position"| Mosquitto
+    Mosquitto -->|"Port 9001 WSS/TLS"| CloudflareTunnel
 
     %% Accès client distant
     ClientDistant -->|"HTTPS/WSS"| Internet
@@ -58,6 +60,7 @@ graph TB
     classDef infra fill:#e5e7eb,stroke:#4b5563,stroke-width:2px,color:#1f2937
     classDef cloud fill:#e6f3ff,stroke:#3b82f6,stroke-width:2px,stroke-dasharray:5 5,color:#1e3a8a
     classDef client fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#4c1d95
+    classDef local_net fill:#f0fdf4,stroke:#22c55e,stroke-width:2px,color:#14532d
 
     class PCB,A7670G lte
     class TBeam_Distant lora_remote
@@ -65,6 +68,7 @@ graph TB
     class Mosquitto,InterfaceTactile infra
     class CloudflareTunnel,Internet cloud
     class ClientDistant client
+    class Reseau_Local local_net
 ```
 
 ---
