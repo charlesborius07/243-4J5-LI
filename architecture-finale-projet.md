@@ -7,58 +7,58 @@
 
 ```mermaid
 graph TB
-    subgraph Zone_Deployment["🌍 Nœuds IoT Déployés"]
-        subgraph Device1["📟 Nœud 1: LilyGO A7670G + PCB"]
+    subgraph Zone_Remote["🌍 Nœuds Distants"]
+        subgraph Device_LTE["📟 Nœud LTE (A7670G + PCB)"]
             PCB["PCB Assemblé<br/>• Capteurs (temp, humidité)<br/>• LEDs (rouge/verte)<br/>• Boutons poussoirs"]
 
-            A7670G["LilyGO A7670G<br/>• ESP32 + LTE<br/>• GPS intégré"]
+            A7670G["LilyGO A7670G<br/>• ESP32 + LTE Cat-1<br/>• GPS intégré"]
 
             PCB <-->|GPIO/I2C| A7670G
         end
 
-        subgraph Device2["📡 Nœud 2: T-Beam Distant"]
-            TBeam["LilyGO T-Beam SUPREME<br/>• ESP32-S3 + LoRa<br/>• GPS intégré<br/>• WiFi activé"]
-
-            SensorLora["Capteurs optionnels<br/>• Température<br/>• Position GPS"]
-
-            TBeam <--> SensorLora
-        end
+        TBeam_Distant["T-Beam Distant<br/>• ESP32-S3 + LoRa<br/>• GPS intégré<br/>• Batterie/Mobile"]
     end
 
-    subgraph Zone_Lab["🏠 Raspberry Pi 5 - Serveur"]
-        Mosquitto["Mosquitto Broker<br/>• Port 1883 (local)<br/>• Port 9001 (WSS/TLS)"]
+    subgraph Zone_Lab["🏠 Laboratoire / Réseau Local"]
+        subgraph RaspberryPi["🍓 Raspberry Pi 5"]
+            Mosquitto["Mosquitto Broker<br/>• Port 1883 (local)<br/>• Port 9001 (WSS/TLS)"]
 
-        CloudflareTunnel["Cloudflare Tunnel<br/>• Exposition sécurisée"]
+            CloudflareTunnel["Cloudflare Tunnel<br/>• Exposition sécurisée"]
 
-        InterfaceTactile["Interface Tactile Python<br/>• Affichage données<br/>• Contrôle LEDs<br/>• Monitoring"]
+            InterfaceTactile["Interface Tactile Python<br/>• Affichage données<br/>• Contrôle LEDs"]
 
-        Mosquitto --> InterfaceTactile
+            Mosquitto --> InterfaceTactile
+        end
+
+        TBeam_Local["T-Beam Local<br/>• ESP32-S3 + LoRa<br/>• WiFi (réseau local)<br/>• Gateway LoRa → MQTT"]
     end
 
     subgraph Zone_Internet["☁️ Internet"]
         Internet["Réseau Public"]
-
-        ClientDistant["Client Web Distant<br/>• Monitoring<br/>• Contrôle"]
+        ClientDistant["Client Web"]
     end
 
     %% Flux de communication
-    A7670G -->|"MQTT via LTE<br/>sensors/temp<br/>actuators/led"| Mosquitto
+    A7670G -->|"MQTT via LTE<br/>sensors/*<br/>actuators/*"| Mosquitto
 
-    TBeam -->|"MQTT via WiFi<br/>meshtastic/position<br/>sensors/temp"| Mosquitto
+    TBeam_Distant <-->|"LoRa mesh<br/>Longue portée"| TBeam_Local
+
+    TBeam_Local -->|"MQTT via WiFi local<br/>meshtastic/position"| Mosquitto
 
     CloudflareTunnel <-->|Tunnel mTLS| Internet
     Mosquitto -->|WSS| CloudflareTunnel
-
     Internet <--> ClientDistant
 
     %% Styles
-    classDef device fill:#fef3c7,stroke:#f59e0b,stroke-width:3px,color:#78350f
-    classDef lora fill:#ecfeff,stroke:#06b6d4,stroke-width:3px,color:#164e63
+    classDef lte fill:#fef3c7,stroke:#f59e0b,stroke-width:3px,color:#78350f
+    classDef lora_remote fill:#ecfeff,stroke:#06b6d4,stroke-width:3px,color:#164e63
+    classDef lora_local fill:#fae8ff,stroke:#a855f7,stroke-width:3px,color:#581c87
     classDef infra fill:#e5e7eb,stroke:#4b5563,stroke-width:2px,color:#1f2937
     classDef cloud fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a
 
-    class PCB,A7670G device
-    class TBeam,SensorLora lora
+    class PCB,A7670G lte
+    class TBeam_Distant lora_remote
+    class TBeam_Local lora_local
     class Mosquitto,CloudflareTunnel,InterfaceTactile infra
     class Internet,ClientDistant cloud
 ```
@@ -67,7 +67,7 @@ graph TB
 
 ## 📊 Flux de Données
 
-### Nœud 1: LilyGO A7670G + PCB → Serveur
+### Flux 1: LilyGO A7670G + PCB → Serveur (via LTE)
 
 ```mermaid
 sequenceDiagram
@@ -83,19 +83,22 @@ sequenceDiagram
     Note over UI: Mise à jour écran tactile
 ```
 
-### Nœud 2: T-Beam Distant → Serveur
+### Flux 2: T-Beam Distant → T-Beam Local → Serveur (via LoRa mesh + WiFi)
 
 ```mermaid
 sequenceDiagram
-    participant TB as T-Beam + GPS
+    participant TBD as T-Beam Distant<br/>(LoRa)
+    participant TBL as T-Beam Local<br/>(Gateway WiFi)
     participant M as Mosquitto (Pi5)
     participant UI as Interface Tactile
 
-    TB->>TB: Acquisition GPS
-    Note over TB: Format JSON
-    TB->>M: MQTT Publish (WiFi)<br/>meshtastic/position<br/>{"lat":46.8,"lon":-71.2}
+    TBD->>TBD: Acquisition GPS
+    Note over TBD: Format Meshtastic
+    TBD->>TBL: Message LoRa<br/>Position GPS
+    Note over TBL: Conversion<br/>LoRa → MQTT
+    TBL->>M: MQTT Publish (WiFi)<br/>meshtastic/position<br/>{"lat":46.8,"lon":-71.2}
     M->>UI: Affichage position
-    Note over UI: Carte ou tableau
+    Note over UI: Carte ou liste
 ```
 
 ---
@@ -103,24 +106,31 @@ sequenceDiagram
 ## 🔧 Composants du Projet Final
 
 ### Infrastructure (déjà en place)
-- ✅ **Raspberry Pi 5** configuré
+- ✅ **Raspberry Pi 5** configuré (Labos 1-2)
 - ✅ **Mosquitto Broker** (local + WSS)
 - ✅ **Cloudflare Tunnel** actif
 - ✅ **Interface tactile Python** fonctionnelle
 
-### Nœud 1: LilyGO A7670G + PCB
+### Nœud 1: LilyGO A7670G + PCB (Communication LTE)
 - ✅ **LilyGO A7670G** (Labos 1-2)
-- 🔄 **PCB assemblé** (semaine 10)
-- 🔄 **Capteurs** branchés sur PCB
+- 🔄 **PCB assemblé et soudé** (semaine 10)
+- 🔄 **Capteurs** branchés sur PCB (température, humidité)
 - 🔄 **LEDs et boutons** fonctionnels
 - 🔄 **Communication MQTT via LTE** opérationnelle
 
-### Nœud 2: T-Beam Distant
-- ✅ **T-Beam SUPREME** (semaines 7-9)
-- ✅ **WiFi configuré**
-- ✅ **MQTT activé**
+### Nœud 2: T-Beam Local (Gateway LoRa → WiFi)
+- ✅ **T-Beam SUPREME #1** (semaines 7-9)
+- ✅ **WiFi configuré** (réseau local du labo)
+- ✅ **LoRa activé** (réception mesh)
+- ✅ **MQTT activé** (envoi vers Mosquitto)
+- 🔄 **Rôle gateway** LoRa → MQTT fonctionnel
+
+### Nœud 3: T-Beam Distant (Mobile LoRa)
+- ✅ **T-Beam SUPREME #2** (semaines 7-9)
+- ✅ **LoRa configuré** (transmission mesh)
 - ✅ **GPS fonctionnel**
-- 🔄 **Données envoyées** au serveur
+- 🔄 **Envoi position GPS** via LoRa vers T-Beam local
+- 🔄 **Tests terrain** complétés
 
 ---
 
@@ -150,27 +160,29 @@ mqtt://
 
 ### Ce que chaque étudiant doit livrer:
 
-**1. Nœud IoT complet (LilyGO A7670G + PCB):**
-- PCB assemblé et soudé
-- Capteurs fonctionnels (température, humidité, etc.)
+**1. Infrastructure serveur (déjà en place depuis Labos 1-2):**
+- Raspberry Pi 5 avec Mosquitto Broker
+- Interface tactile Python affichant les données
+- Cloudflare Tunnel pour accès distant sécurisé
+
+**2. Nœud IoT LTE (LilyGO A7670G + PCB):**
+- PCB assemblé et soudé (semaine 10)
+- Capteurs fonctionnels branchés au PCB
 - LEDs et boutons opérationnels
 - Communication MQTT via LTE vers le serveur
 
-**2. Infrastructure serveur (déjà en place):**
-- Raspberry Pi 5 avec Mosquitto
-- Interface tactile Python affichant les données
-- Cloudflare Tunnel pour accès distant
+**3. Système LoRa mesh (2 T-Beam):**
+- **T-Beam local:** Gateway LoRa → MQTT (WiFi réseau local)
+- **T-Beam distant:** Nœud mobile avec GPS (communication LoRa)
+- Communication mesh LoRa fonctionnelle entre les 2 nœuds
+- Données GPS du nœud distant acheminées au serveur
 
-**3. Démonstration LoRa (T-Beam):**
-- T-Beam configuré et connecté en WiFi
-- Envoi de données (position GPS) vers MQTT
-- Intégration dans l'architecture globale
-
-**4. Documentation:**
-- Schéma du PCB
-- Code source (Python, Arduino)
+**4. Documentation complète:**
+- Schéma du PCB (Altium)
+- Code source (Python, Arduino/ESP32)
+- Cartographie de couverture LoRa (GPX)
 - Guide d'utilisation
-- Tests et résultats
+- Résultats de tests (RSSI, SNR, portée)
 
 ---
 
