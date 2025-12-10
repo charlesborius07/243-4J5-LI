@@ -15,9 +15,7 @@ graph TB
         PCB <-->|GPIO/I2C| A7670G
     end
 
-    subgraph Device_LoRa["📡 Nœud 2: T-Beam Distant"]
-        TBeam_Distant["T-Beam SUPREME<br/>• ESP32-S3 + LoRa<br/>• GPS intégré<br/>• Batterie/Mobile"]
-    end
+    TBeam_Distant["📡 T-Beam Distant<br/>• ESP32-S3 + LoRa<br/>• GPS intégré<br/>• Batterie/Mobile"]
 
     TBeam_Local["🔄 T-Beam Local (Gateway)<br/>• ESP32-S3 + LoRa<br/>• WiFi (réseau local)<br/>• Pont LoRa → MQTT"]
 
