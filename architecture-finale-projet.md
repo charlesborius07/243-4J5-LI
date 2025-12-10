@@ -24,41 +24,49 @@ graph TB
     subgraph RaspberryPi["🍓 Raspberry Pi 5"]
         Mosquitto["Mosquitto Broker<br/>• Port 1883 (local)<br/>• Port 9001 (WSS/TLS)"]
 
-        CloudflareTunnel["Cloudflare Tunnel<br/>• Exposition sécurisée"]
-
         InterfaceTactile["Interface Tactile Python<br/>• Affichage données<br/>• Contrôle LEDs"]
 
         Mosquitto --> InterfaceTactile
+        Mosquitto --> CloudflareTunnel
     end
 
-    subgraph Zone_Internet["☁️ Internet"]
-        Internet["Réseau Public"]
-        ClientDistant["Client Web"]
-    end
+    CloudflareTunnel(["☁️ Cloudflare Tunnel<br/>• Exposition sécurisée<br/>• WSS port 443<br/>• domaine.example.com"])
+
+    Internet(["☁️ Internet / LTE<br/>Réseau cellulaire"])
+
+    ClientDistant["💻 Client Web Distant<br/>• Dashboard<br/>• Monitoring"]
 
     %% Flux de communication
-    A7670G -->|"MQTT via LTE<br/>sensors/*<br/>actuators/*"| Mosquitto
 
+    %% Nœud 1 passe par Internet/Cloudflare
+    A7670G -->|"MQTT via LTE"| Internet
+    Internet -->|"WSS:443<br/>TLS/mTLS"| CloudflareTunnel
+    CloudflareTunnel -->|"MQTT<br/>sensors/*<br/>actuators/*"| Mosquitto
+
+    %% Nœud 2 via LoRa mesh
     TBeam_Distant <-->|"LoRa mesh<br/>Longue portée"| TBeam_Local
 
+    %% Gateway local
     TBeam_Local -->|"MQTT via WiFi local<br/>meshtastic/position"| Mosquitto
 
-    CloudflareTunnel <-->|Tunnel mTLS| Internet
-    Mosquitto -->|WSS| CloudflareTunnel
-    Internet <--> ClientDistant
+    %% Accès client distant
+    ClientDistant -->|"HTTPS/WSS"| Internet
+    Internet -->|"WSS:443"| CloudflareTunnel
 
     %% Styles
     classDef lte fill:#fef3c7,stroke:#f59e0b,stroke-width:3px,color:#78350f
     classDef lora_remote fill:#ecfeff,stroke:#06b6d4,stroke-width:3px,color:#164e63
     classDef lora_local fill:#fae8ff,stroke:#a855f7,stroke-width:3px,color:#581c87
     classDef infra fill:#e5e7eb,stroke:#4b5563,stroke-width:2px,color:#1f2937
-    classDef cloud fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a
+    classDef cloud fill:#e6f3ff,stroke:#3b82f6,stroke-width:2px,stroke-dasharray:5 5,color:#1e3a8a
+    classDef client fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#4c1d95
 
     class PCB,A7670G lte
     class TBeam_Distant lora_remote
     class TBeam_Local lora_local
-    class Mosquitto,CloudflareTunnel,InterfaceTactile infra
-    class Internet,ClientDistant cloud
+    class Mosquitto,InterfaceTactile infra
+    class CloudflareTunnel,Internet cloud
+    class ClientDistant client
 ```
 
 ---
