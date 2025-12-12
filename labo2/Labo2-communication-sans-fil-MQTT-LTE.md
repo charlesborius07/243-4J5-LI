@@ -370,6 +370,70 @@ EOF
 </ul>
 </div>
 
+### 2.9 Test avec le client web HiveMQ
+
+HiveMQ fournit un client MQTT WebSocket en ligne qui permet de tester votre broker directement depuis un navigateur, sans installer de logiciel supplémentaire.
+
+**Accéder au client :**
+1. Ouvrez votre navigateur et allez sur : https://www.hivemq.com/demos/websocket-client/
+
+**Configurer la connexion :**
+
+| Paramètre | Valeur |
+|-----------|--------|
+| **Host** | `mqtt.votredomaine.ca` |
+| **Port** | `443` |
+| **ClientID** | `hivemq-test-client` (ou un nom unique) |
+| **Username** | `esp_user` |
+| **Password** | Votre mot de passe Mosquitto |
+| **Keep Alive** | `60` |
+| **SSL** | ✅ Coché (obligatoire pour WSS) |
+
+**Étapes de test :**
+
+1. **Connexion :**
+   - Remplissez les paramètres ci-dessus
+   - Cliquez sur **Connect**
+   - Le statut devrait passer à "Connected" (vert)
+
+2. **S'abonner aux topics :**
+   - Dans la section **Subscriptions**, cliquez sur **Add New Topic Subscription**
+   - Entrez `#` pour recevoir tous les messages (ou un topic spécifique comme `esp32-123456/#`)
+   - Cliquez sur **Subscribe**
+
+3. **Publier un message de test :**
+   - Dans la section **Publish**, entrez :
+     - **Topic** : `test/hello`
+     - **Message** : `Hello from HiveMQ!`
+   - Cliquez sur **Publish**
+   - Le message devrait apparaître dans la section **Messages**
+
+4. **Tester le contrôle des LEDs :**
+   - **Topic** : `esp32-XXXXXX/led/1/set` (remplacez par votre Device ID)
+   - **Message** : `ON` ou `OFF`
+   - Cliquez sur **Publish**
+   - Si votre ESP32 est connecté, la LED devrait réagir
+
+<div style="background:#dbeafe; border:1px solid #3b82f6; padding:10px 12px; border-radius:10px;">
+<strong>💡 Astuce de débogage</strong>
+<p>Le client HiveMQ est très utile pour :</p>
+<ul>
+  <li>Vérifier que votre broker est accessible depuis Internet</li>
+  <li>Tester les topics avant de configurer l'ESP32</li>
+  <li>Déboguer les problèmes de connexion MQTT</li>
+  <li>Envoyer des commandes manuelles aux appareils</li>
+</ul>
+</div>
+
+<div style="background:#fef3c7; border:1px solid #f59e0b; padding:10px 12px; border-radius:10px;">
+<strong>⚠️ Erreurs courantes</strong>
+<ul>
+  <li><strong>"Connection failed" :</strong> Vérifiez que SSL est coché et que le port est 443</li>
+  <li><strong>"Not authorized" :</strong> Vérifiez le nom d'utilisateur et mot de passe</li>
+  <li><strong>"Connection refused" :</strong> Vérifiez que Cloudflare Tunnel est actif et que Mosquitto fonctionne</li>
+</ul>
+</div>
+
 <div style="height: 5px; background: linear-gradient(90deg, #f59e0b, #f97316); border-radius: 999px; margin: 22px 0;"></div>
 
 ## 3. Communication MQTT via WiFi
