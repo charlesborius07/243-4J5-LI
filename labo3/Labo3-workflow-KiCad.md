@@ -116,15 +116,14 @@ Pour ce labo, nous allons créer un circuit minimaliste pour apprendre le workfl
 ```
     Connecteur J1
     ┌─────┐
-    │  1  │─── VCC (3.3V) ────┬──── R1 330Ω ──── LED1 (Anode)
-    │  2  │─── Signal         │                      │
-    │  3  │─── GND ───────────┴──────────────────────┘ (Cathode)
+    │  1  │─── VCC (3.3V) ──────── R1 330Ω ──── LED1 (Anode)
+    │  2  │─── Signal                               │
+    │  3  │─── GND ─────────────────────────────────┘ (Cathode)
     └─────┘
 ```
 
 Ce circuit simple permet d'apprendre toutes les étapes du workflow sans complexité inutile.
-
-<!-- TODO: Ajouter screenshot du schéma final -->
+<img width="3507" height="2480" alt="image" src="https://github.com/user-attachments/assets/1b8be19d-d473-417d-98e2-75e570150df1" />
 
 ### 3.2 Ouvrir l'éditeur de schéma
 
