@@ -47,31 +47,34 @@ GitHub Desktop permet de gérer vos fichiers et de synchroniser votre travail av
 2. Installer et lancer l'application
 3. Se connecter avec votre compte GitHub (créer un compte si nécessaire)
 
-### 0.2 Cloner le dépôt du cours
+### 0.2 Cloner votre fork
+
+Au Labo 1, vous avez créé un **fork** du dépôt du cours sur votre compte GitHub. Vous devez maintenant le cloner sur votre PC Windows.
 
 1. Dans GitHub Desktop: **Fichier → Cloner un dépôt...**
-2. Onglet **URL**
-3. Entrer l'URL du dépôt du cours: `https://github.com/[organisation]/243-4J5-LI`
+2. Onglet **GitHub.com** — votre fork `243-4J5-LI` devrait apparaître dans la liste
+3. Sinon, onglet **URL** et entrer: `https://github.com/VOTRE-USERNAME/243-4J5-LI`
 4. Choisir un emplacement local (ex: `C:\Users\VotreNom\Documents\GitHub\`)
 5. Cliquer sur **Cloner**
 
-### 0.3 Créer votre branche personnelle
+### 0.3 Travailler sur votre branche
 
-Chaque étudiant travaille sur sa propre branche pour éviter les conflits.
+Vous avez déjà créé votre branche `prenom-nom` au Labo 1. Assurez-vous d'être sur cette branche:
 
-1. Dans GitHub Desktop, s'assurer que le dépôt `243-4J5-LI` est sélectionné
-2. Cliquer sur **Branche actuelle** (en haut)
-3. Cliquer sur **Nouvelle branche**
-4. Nommer la branche: `prenom-nom` (ex: `jean-tremblay`)
-5. Cliquer sur **Créer une branche**
+1. Dans GitHub Desktop, cliquer sur **Branche actuelle** (en haut)
+2. Sélectionner votre branche `prenom-nom`
+
+Si votre branche n'existe pas encore sur ce PC:
+1. Cliquer sur **Branche actuelle** → **Nouvelle branche**
+2. Nommer la branche: `prenom-nom` (ex: `jean-tremblay`)
+3. Cliquer sur **Créer une branche**
 
 ```mermaid
 gitGraph
     commit id: "main"
     branch jean-tremblay
-    commit id: "labo3"
-    commit id: "projet-mi-session"
-    branch marie-lavoie
+    commit id: "labo1"
+    commit id: "labo2"
     commit id: "labo3"
 ```
 
@@ -98,11 +101,13 @@ Créer votre projet KiCad dans le dossier du dépôt:
 ```
 C:\Users\VotreNom\Documents\GitHub\243-4J5-LI\
 └── labo3-kicad/          ← Votre dossier de travail
-    ├── circuit-test.kicad_pro
-    ├── circuit-test.kicad_sch
-    ├── circuit-test.kicad_pcb
+    ├── labo3-kicad.kicad_pro
+    ├── labo3-kicad.kicad_sch
+    ├── labo3-kicad.kicad_pcb
     └── gerbers/
 ```
+
+> **Note:** KiCad nomme automatiquement les fichiers projet selon le nom du dossier.
 
 ---
 
@@ -167,19 +172,22 @@ flowchart TD
 
 1. Lancer **KiCad**
 2. **Fichier → Nouveau projet...**
-3. Créer un dossier `labo3-kicad` et nommer le projet `circuit-test`
-4. KiCad crée automatiquement:
-   - `circuit-test.kicad_pro` (fichier projet)
-   - `circuit-test.kicad_sch` (schématique)
-   - `circuit-test.kicad_pcb` (PCB)
+3. Naviguer dans votre dépôt `243-4J5-LI`
+4. Créer un nouveau dossier nommé `labo3-kicad`
+5. Cliquer sur **Enregistrer** (le projet prend automatiquement le nom du dossier)
+
+KiCad crée automatiquement les fichiers suivants:
+- `labo3-kicad.kicad_pro` (fichier projet)
+- `labo3-kicad.kicad_sch` (schématique)
+- `labo3-kicad.kicad_pcb` (PCB)
 
 ### 2.2 Structure recommandée
 
 ```
 labo3-kicad/
-├── circuit-test.kicad_pro
-├── circuit-test.kicad_sch
-├── circuit-test.kicad_pcb
+├── labo3-kicad.kicad_pro
+├── labo3-kicad.kicad_sch
+├── labo3-kicad.kicad_pcb
 ├── gerbers/                    # Fichiers de fabrication
 ├── libs/                       # Bibliothèques personnalisées (optionnel)
 └── docs/                       # Documentation
@@ -214,7 +222,7 @@ Ce circuit simple permet d'apprendre toutes les étapes du workflow sans complex
 
 ### 3.2 Ouvrir l'éditeur de schéma
 
-1. Double-cliquer sur `circuit-test.kicad_sch` dans le gestionnaire de projet
+1. Double-cliquer sur `labo3-kicad.kicad_sch` dans le gestionnaire de projet
 2. L'éditeur **Eeschema** s'ouvre
 
 ### 3.3 Raccourcis clavier essentiels
@@ -833,7 +841,7 @@ Pour l'assemblage automatisé:
 1. Ouvrir le dossier `gerbers/` dans l'Explorateur de fichiers
 2. Sélectionner tous les fichiers (Ctrl+A)
 3. Clic droit → **Envoyer vers → Dossier compressé**
-4. Renommer le fichier ZIP en `circuit-test-gerbers.zip`
+4. Renommer le fichier ZIP en `labo3-kicad-gerbers.zip`
 
 ### 13.2 Fabricants recommandés
 
@@ -879,17 +887,17 @@ C'est un circuit minimaliste qui permet de valider la maîtrise du workflow comp
 
 ```
 labo3-kicad/
-├── circuit-test.kicad_pro
-├── circuit-test.kicad_sch
-├── circuit-test.kicad_pcb
+├── labo3-kicad.kicad_pro
+├── labo3-kicad.kicad_sch
+├── labo3-kicad.kicad_pcb
 ├── gerbers/
-│   ├── circuit-test-F_Cu.gtl
-│   ├── circuit-test-B_Cu.gbl
-│   ├── circuit-test-F_SilkS.gto
-│   ├── circuit-test-F_Mask.gts
-│   ├── circuit-test-B_Mask.gbs
-│   ├── circuit-test-Edge_Cuts.gm1
-│   └── circuit-test.drl
+│   ├── labo3-kicad-F_Cu.gtl
+│   ├── labo3-kicad-B_Cu.gbl
+│   ├── labo3-kicad-F_SilkS.gto
+│   ├── labo3-kicad-F_Mask.gts
+│   ├── labo3-kicad-B_Mask.gbs
+│   ├── labo3-kicad-Edge_Cuts.gm1
+│   └── labo3-kicad.drl
 ├── bom.csv
 └── screenshots/
     ├── schema.png
