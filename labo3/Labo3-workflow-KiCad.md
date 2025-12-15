@@ -9,6 +9,7 @@
 ## Objectifs d'apprentissage
 
 À la fin de ce laboratoire, vous serez capable de:
+- Utiliser GitHub Desktop pour gérer vos fichiers et travailler sur votre branche
 - Créer un projet KiCad et naviguer dans l'interface
 - Réaliser une capture schématique complète avec symboles et connexions
 - Exécuter et corriger les erreurs ERC (Electrical Rules Check)
@@ -16,6 +17,92 @@
 - Placer et router un PCB 2 couches
 - Configurer et exécuter le DRC (Design Rules Check)
 - Générer les fichiers de fabrication (Gerbers, drill, BOM)
+
+---
+
+## 0. Environnement de travail
+
+> **Lien avec le Labo 1:** Vous avez appris à utiliser Git en ligne de commande sur le Raspberry Pi (section 4 du Labo 1). Dans ce labo, nous utilisons **GitHub Desktop** sur Windows, qui offre une interface graphique pour les mêmes opérations.
+
+### Correspondance Git CLI ↔ GitHub Desktop
+
+| Git CLI (Labo 1 - Raspberry Pi) | GitHub Desktop (Labo 3 - Windows) |
+|---------------------------------|-----------------------------------|
+| `git clone <url>` | Fichier → Cloner un dépôt |
+| `git checkout -b prenom-nom` | Branche actuelle → Nouvelle branche |
+| `git status` | Onglet **Modifications** (liste automatique) |
+| `git add .` | Cases à cocher dans Modifications (auto) |
+| `git commit -m "message"` | Résumé + **Commiter vers branche** |
+| `git push origin branche` | **Pousser origin** |
+| `git fetch origin` | **Récupérer origin** |
+| `git pull origin main` | **Tirer origin** |
+
+Les deux méthodes font exactement la même chose — GitHub Desktop ajoute simplement une interface visuelle.
+
+### 0.1 Installation de GitHub Desktop
+
+GitHub Desktop permet de gérer vos fichiers et de synchroniser votre travail avec le dépôt du cours.
+
+1. Télécharger GitHub Desktop: https://desktop.github.com/
+2. Installer et lancer l'application
+3. Se connecter avec votre compte GitHub (créer un compte si nécessaire)
+
+### 0.2 Cloner le dépôt du cours
+
+1. Dans GitHub Desktop: **Fichier → Cloner un dépôt...**
+2. Onglet **URL**
+3. Entrer l'URL du dépôt du cours: `https://github.com/[organisation]/243-4J5-LI`
+4. Choisir un emplacement local (ex: `C:\Users\VotreNom\Documents\GitHub\`)
+5. Cliquer sur **Cloner**
+
+### 0.3 Créer votre branche personnelle
+
+Chaque étudiant travaille sur sa propre branche pour éviter les conflits.
+
+1. Dans GitHub Desktop, s'assurer que le dépôt `243-4J5-LI` est sélectionné
+2. Cliquer sur **Branche actuelle** (en haut)
+3. Cliquer sur **Nouvelle branche**
+4. Nommer la branche: `prenom-nom` (ex: `jean-tremblay`)
+5. Cliquer sur **Créer une branche**
+
+```mermaid
+gitGraph
+    commit id: "main"
+    branch jean-tremblay
+    commit id: "labo3"
+    commit id: "projet-mi-session"
+    branch marie-lavoie
+    commit id: "labo3"
+```
+
+### 0.4 Workflow Git quotidien
+
+**Au début de chaque séance:**
+1. Ouvrir GitHub Desktop
+2. S'assurer d'être sur votre branche (`prenom-nom`)
+3. Cliquer sur **Récupérer origin** pour vérifier les mises à jour
+
+**Pendant le travail:**
+- Sauvegarder régulièrement vos fichiers dans KiCad
+
+**À la fin de chaque séance:**
+1. Dans GitHub Desktop, vos modifications apparaissent dans l'onglet **Modifications**
+2. Écrire un résumé dans **Résumé** (ex: "Schéma terminé, début routage")
+3. Cliquer sur **Commiter vers prenom-nom**
+4. Cliquer sur **Pousser origin** pour envoyer vers GitHub
+
+### 0.5 Structure de votre projet
+
+Créer votre projet KiCad dans le dossier du dépôt:
+
+```
+C:\Users\VotreNom\Documents\GitHub\243-4J5-LI\
+└── labo3-kicad/          ← Votre dossier de travail
+    ├── circuit-test.kicad_pro
+    ├── circuit-test.kicad_sch
+    ├── circuit-test.kicad_pcb
+    └── gerbers/
+```
 
 ---
 
@@ -35,43 +122,42 @@ KiCad est une suite logicielle open-source de conception électronique (EDA) qui
 | **Gerber Viewer** | Visualiseur de fichiers Gerber |
 | **3D Viewer** | Visualisation 3D du PCB |
 
-### 1.2 Installation
+### 1.2 Installation (Windows)
 
-```bash
-# Ubuntu/Debian
-sudo apt update
-sudo apt install kicad
+1. Télécharger KiCad depuis le site officiel: https://www.kicad.org/download/windows/
+2. Exécuter l'installateur et suivre les instructions
+3. **Version recommandée:** 8.0 ou plus récente
+4. Lors de l'installation, cocher **toutes les bibliothèques** (symboles, empreintes, modèles 3D)
 
-# Vérifier la version (8.0+ recommandée)
-kicad --version
-```
+**Vérifier l'installation:**
+- Lancer KiCad depuis le menu Démarrer
+- Le gestionnaire de projet doit s'ouvrir sans erreur
 
 ### 1.3 Workflow de conception PCB
 
+```mermaid
+flowchart TD
+    A[📋 1. Schématique<br/>*.kicad_sch] -->|ERC| B{Erreurs?}
+    B -->|Oui| A
+    B -->|Non| C[🔗 2. Association<br/>Footprints]
+    C -->|Mise à jour PCB| D[🖥️ 3. Layout PCB<br/>*.kicad_pcb]
+    D -->|DRC| E{Erreurs?}
+    E -->|Oui| D
+    E -->|Non| F[📦 4. Fabrication<br/>Gerbers + BOM]
+
+    style A fill:#e1f5fe
+    style C fill:#fff3e0
+    style D fill:#e8f5e9
+    style F fill:#fce4ec
 ```
-┌─────────────────┐
-│ 1. Schématique  │  ← Capture du circuit (Eeschema)
-│    (*.kicad_sch)│
-└────────┬────────┘
-         │ ERC (vérification électrique)
-         ▼
-┌─────────────────┐
-│ 2. Association  │  ← Lier symboles aux empreintes
-│    footprints   │
-└────────┬────────┘
-         │ Mise à jour PCB
-         ▼
-┌─────────────────┐
-│ 3. Layout PCB   │  ← Placement et routage
-│   (*.kicad_pcb) │
-└────────┬────────┘
-         │ DRC (vérification design)
-         ▼
-┌─────────────────┐
-│ 4. Fabrication  │  ← Gerbers, drill, BOM
-│    (gerbers/)   │
-└─────────────────┘
-```
+
+**Résumé des étapes:**
+| Étape | Fichier | Action |
+|-------|---------|--------|
+| 1. Schématique | `*.kicad_sch` | Capture du circuit, symboles, connexions |
+| 2. Footprints | - | Associer chaque symbole à une empreinte physique |
+| 3. Layout PCB | `*.kicad_pcb` | Placement des composants, routage des pistes |
+| 4. Fabrication | `gerbers/` | Génération des fichiers pour le fabricant |
 
 ---
 
@@ -743,10 +829,11 @@ Pour l'assemblage automatisé:
 
 ### 13.1 Préparer l'archive
 
-```bash
-cd labo3-kicad/gerbers/
-zip -r circuit-test-gerbers.zip *.g* *.drl
-```
+**Windows:**
+1. Ouvrir le dossier `gerbers/` dans l'Explorateur de fichiers
+2. Sélectionner tous les fichiers (Ctrl+A)
+3. Clic droit → **Envoyer vers → Dossier compressé**
+4. Renommer le fichier ZIP en `circuit-test-gerbers.zip`
 
 ### 13.2 Fabricants recommandés
 
@@ -790,7 +877,7 @@ C'est un circuit minimaliste qui permet de valider la maîtrise du workflow comp
 
 ### 14.3 Structure de remise
 
-```bash
+```
 labo3-kicad/
 ├── circuit-test.kicad_pro
 ├── circuit-test.kicad_sch
