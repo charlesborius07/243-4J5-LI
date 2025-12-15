@@ -123,7 +123,8 @@ Pour ce labo, nous allons créer un circuit minimaliste pour apprendre le workfl
 ```
 
 Ce circuit simple permet d'apprendre toutes les étapes du workflow sans complexité inutile.
-<img width="3507" height="2480" alt="image" src="https://github.com/user-attachments/assets/1b8be19d-d473-417d-98e2-75e570150df1" />
+<img width="3507" height="2480" alt="image" src="https://github.com/user-attachments/assets/304d8c43-4a78-46ba-b09b-c3c74eccff1b" />
+
 
 ### 3.2 Ouvrir l'éditeur de schéma
 
