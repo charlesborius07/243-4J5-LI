@@ -8,7 +8,7 @@
 ```mermaid
 graph TB
     subgraph Device_LTE["📟 LilyGO A7670G + PCB"]
-        PCB["PCB Assemblé<br/>• Capteurs (temp, humidité)<br/>• LEDs (rouge/verte)<br/>• Boutons poussoirs"]
+        PCB["PCB Assemblé<br/>• 2 DELs<br/>• 2 Boutons<br/>• 2 Potentiomètres<br/>• Accéléromètre"]
 
         A7670G["LilyGO A7670G<br/>• ESP32 + LTE Cat-1<br/>• GPS intégré<br/>• Config: WSS:443"]
 
@@ -126,8 +126,9 @@ sequenceDiagram
 ### LilyGO A7670G + PCB (Communication LTE)
 - ✅ **LilyGO A7670G** (Labos 1-2)
 - 🔄 **PCB assemblé et soudé** (semaine 10)
-- 🔄 **Capteurs** branchés sur PCB (température, humidité)
-- 🔄 **LEDs et boutons** fonctionnels
+- 🔄 **2 DELs et 2 boutons** fonctionnels
+- 🔄 **2 potentiomètres** pour entrées analogiques
+- 🔄 **Accéléromètre** (MPU6050/ADXL345) via I2C
 - 🔄 **Communication MQTT via LTE** opérationnelle
 
 ### T-Beam Local (Gateway LoRa → WiFi)
@@ -179,8 +180,9 @@ mqtt://
 
 **2. Module IoT LTE (LilyGO A7670G + PCB):**
 - PCB assemblé et soudé (semaine 10)
-- Capteurs fonctionnels branchés au PCB
-- LEDs et boutons opérationnels
+- 2 DELs et 2 boutons opérationnels
+- 2 potentiomètres pour entrées analogiques
+- Accéléromètre (MPU6050/ADXL345) fonctionnel
 - Communication MQTT via LTE vers le serveur
 
 **3. Système LoRa mesh (2 T-Beam SUPREME):**
@@ -190,7 +192,7 @@ mqtt://
 - Données GPS du T-Beam distant acheminées au serveur
 
 **4. Documentation complète:**
-- Schéma du PCB (Altium)
+- Schéma du PCB (KiCad)
 - Code source (Python, Arduino/ESP32)
 - Cartographie de couverture LoRa (GPX)
 - Guide d'utilisation

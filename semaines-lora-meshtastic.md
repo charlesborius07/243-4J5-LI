@@ -18,12 +18,13 @@ Vous avez déjà:
 - ✅ Mis en œuvre des communications **MQTT via WiFi et LTE**
 - ✅ Maîtrisé les **bases de Python** pour l'acquisition de données et l'interfaçage GPIO
 
-**Phase 2 (Semaines 4-6) — PCB et communications avancées**
+**Phase 2 (Semaines 4-7) — Projet de mi-session: Shield PCB**
 Vous avez:
-- ✅ Conçu et routé un **PCB dans Altium** pour interfacer capteurs/actionneurs
-- ✅ Envoyé le PCB en **fabrication** (réception prévue semaine 10)
-- ✅ Complété le **TP Communications MQTT/HTTP** (pipeline pub/sub, API REST)
-- ✅ Sécurisé vos communications (authentification, chiffrement TLS)
+- ✅ Appris le **workflow complet KiCad** (schéma → PCB → Gerbers)
+- ✅ Réalisé le **projet de mi-session**: shield PCB pour LilyGO A7670G
+  - 2 DELs, 2 boutons, 2 potentiomètres, accéléromètre
+  - Prototype breadboard fonctionnel
+  - Schéma et routage PCB complets
 
 ### Nouvelle phase: LoRa et réseau mesh (Semaines 7-9)
 
