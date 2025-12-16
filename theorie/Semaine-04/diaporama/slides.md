@@ -157,7 +157,7 @@ Notre système IoT est **fonctionnel** et **robuste**!
 
 # Notre chaîne s'agrandit encore!
 
-```mermaid {scale: 0.45}
+```mermaid {scale: 0.65}
 graph LR
     subgraph "Sem. 1-3 : Logiciel"
         CODE[Code] --> COMM[Communication]
@@ -305,16 +305,21 @@ layout: section
 
 # Le workflow de conception PCB
 
-```mermaid {scale: 0.55}
+```mermaid {scale: 0.5}
 graph LR
-    A[Schéma] -->|ERC| B[Vérification]
-    B --> C[Assignation empreintes]
-    C --> D[Placement composants]
-    D --> E[Routage pistes]
-    E -->|DRC| F[Vérification]
-    F --> G[Gerbers]
-    G --> H[Fabricant]
-    H --> I[PCB physique]
+    subgraph "Conception (KiCad)"
+        A[Schéma] -->|ERC| B[Vérif.]
+        B --> C[Empreintes]
+        C --> D[Placement]
+        D --> E[Routage]
+    end
+
+    subgraph "Production"
+        E -->|DRC| F[Vérif.]
+        F --> G[Gerbers]
+        G --> H[Fabricant]
+        H --> I[PCB]
+    end
 
     style A fill:#69f
     style G fill:#f96
