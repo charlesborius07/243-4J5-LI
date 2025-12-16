@@ -1,17 +1,17 @@
 {
-  "name": "243-4j5-li-presentations",
+  "name": "243-4j5-li-theorie",
   "private": true,
   "scripts": {
-    "semaine1": "slidev semaine1/slides.md --open",
-    "semaine2": "slidev semaine2/slides.md --open",
-    "semaine3": "slidev semaine3/slides.md --open",
-    "build:semaine1": "slidev build semaine1/slides.md --out ../docs/semaine1",
-    "build:semaine2": "slidev build semaine2/slides.md --out ../docs/semaine2",
-    "build:semaine3": "slidev build semaine3/slides.md --out ../docs/semaine3",
-    "build:all": "npm run build:semaine1 && npm run build:semaine2 && npm run build:semaine3",
-    "export:semaine1": "slidev export semaine1/slides.md --output semaine1/semaine1.pdf",
-    "export:semaine2": "slidev export semaine2/slides.md --output semaine2/semaine2.pdf",
-    "export:semaine3": "slidev export semaine3/slides.md --output semaine3/semaine3.pdf"
+    "dev:s01": "slidev Semaine-01/diaporama/slides.md --open",
+    "dev:s02": "slidev Semaine-02/diaporama/slides.md --open",
+    "dev:s03": "slidev Semaine-03/diaporama/slides.md --open",
+    "build:s01": "slidev build Semaine-01/diaporama/slides.md --out ../docs/semaine-01",
+    "build:s02": "slidev build Semaine-02/diaporama/slides.md --out ../docs/semaine-02",
+    "build:s03": "slidev build Semaine-03/diaporama/slides.md --out ../docs/semaine-03",
+    "build:all": "pnpm run build:s01 && pnpm run build:s02 && pnpm run build:s03",
+    "export:s01": "slidev export Semaine-01/diaporama/slides.md --output Semaine-01/diaporama/slides.pdf",
+    "export:s02": "slidev export Semaine-02/diaporama/slides.md --output Semaine-02/diaporama/slides.pdf",
+    "export:s03": "slidev export Semaine-03/diaporama/slides.md --output Semaine-03/diaporama/slides.pdf"
   },
   "devDependencies": {
     "@slidev/cli": "^0.50.0",

@@ -191,14 +191,14 @@ L'évaluation formative se fait:
 
 #### Paramètres de l'évaluation sommative – Plan général d'évaluation sommative
 
-**Capacité 1 : Concevoir et programmer des objets connectés (45.0%)**
+**Capacité 1 : Concevoir et programmer des objets connectés (60%)**
 
 | Niveau | Critères | Méthodes d'évaluation |
 |--------|----------|----------------------|
 | **Cible (Niveau optimal)** | • Concevoir un schéma fonctionnel complet d'un objet connecté intégrant plusieurs capteurs<br>• Assembler correctement tous les composants matériels nécessaires à l'objet connecté<br>• Programmer des scripts Python avancés pour la gestion de multiples capteurs<br>• Lire et interpréter avec précision les données de différents capteurs<br>• Mettre en œuvre des algorithmes de traitement et de filtrage avancés<br>• Enregistrer les données dans des formats adaptés pour différentes applications<br>• Développer une interface utilisateur interactive pour la visualisation des données<br>• Identifier et résoudre efficacement les problèmes complexes<br>• Rédiger une documentation complète et détaillée du projet<br>• Travailler de manière efficace et proactive au sein de l'équipe<br>• PCB fonctionnel avec un routage optimisé, connecteurs adaptés aux capteurs/actionneurs, bonne disposition des composants | • Projet pratique de conception et programmation d'un objet connecté<br>• Évaluation en laboratoire sur l'interaction avec les capteurs via Python<br>• Présentation orale du projet réalisé<br>• Rapport de documentation technique du projet |
 | **Seuil de réussite (Niveau minimal)** | • Concevoir un schéma fonctionnel élémentaire d'un objet connecté avec un capteur<br>• Assembler les composants matériels de base de l'objet connecté<br>• Programmer des scripts Python simples pour lire les données d'un capteur<br>• Lire les données de base d'un capteur<br>• Appliquer des techniques de filtrage simples aux données<br>• Enregistrer les données dans un format standard tel que CSV<br>• Créer une interface de base pour afficher les données collectées<br>• Identifier et résoudre les problèmes simples courants<br>• Fournir une documentation de base couvrant les aspects essentiels<br>• Participer aux tâches en équipe de manière acceptable<br>• Concevoir un PCB presque fonctionnel avec un schéma correct et un routage partiellement opérationnel | |
 
-**Capacité 2 : Maîtriser les protocoles de communication IdO (50.0%)**
+**Capacité 2 : Maîtriser les protocoles de communication IdO (40%)**
 
 | Niveau | Critères | Méthodes d'évaluation |
 |--------|----------|----------------------|
@@ -218,19 +218,19 @@ Les modalités spécifiques pour la valorisation de l'expression et de la commun
 La réussite du cours (243-4J5-LI – Objets connectés) est atteinte à partir de **60%** sur l'ensemble du cours.
 
 La pondération par capacités est la suivante:
-- **Concevoir et programmer des objets connectés:** 60–65%
-- **Maîtriser les protocoles de communication IdO:** 35–40%
+- **Concevoir et programmer des objets connectés:** 60%
+- **Maîtriser les protocoles de communication IdO:** 40%
 
 La note finale par capacité ne correspond pas nécessairement à la moyenne arithmétique des résultats des différentes évaluations : elle reflète un jugement global fondé sur des observations continues en cours de session et sur l'atteinte des capacités visées.
 
 #### Répartition des évaluations sommatives
 
-| Évaluations sommatives | Capacité 1 (45.0%) | Capacité 2 (50.0%) |
+| Évaluations sommatives | Capacité 1 (60%) | Capacité 2 (40%) |
 |------------------------|--------------------|--------------------|
 | Laboratoire capteurs et Python | 15% | - |
-| Projet de mi-session — Shield PCB | 15% | 5% |
-| TP Intégration LLM et automatisation | 15% | 15% |
-| Projet final IdO avec PCB et déploiement | 10% | 25% |
+| Projet mi-session | 20% | 10% |
+| Laboratoire intégration LLM | 15% | 5% |
+| Projet final | 10% | 25% |
 
 ---
 
