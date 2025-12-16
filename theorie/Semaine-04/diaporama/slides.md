@@ -907,15 +907,15 @@ layout: section
 
 <div>
 
-### Suggestions
+### Idées d'applications
 
 <v-clicks>
 
-- **Station météo** : Température, humidité, pression
-- **Tracker GPS** : Position + accéléromètre
-- **Contrôle d'accès** : Boutons + LEDs status
-- **Moniteur environnemental** : Qualité air, lumière
-- **Télécommande IoT** : Boutons + feedback LED
+- **Tracker GPS** : Position + détection mouvement
+- **Détecteur de chute** : Accéléromètre + alerte LED
+- **Télécommande IoT** : Boutons → actions distantes
+- **Indicateur d'état** : LEDs selon données MQTT
+- **Compteur d'activité** : Pas/mouvements via accéléro
 
 </v-clicks>
 
@@ -925,14 +925,19 @@ layout: section
 
 <v-click>
 
-### Composants disponibles
+### Composants du shield
 
-| Type | Options |
-|------|---------|
-| Entrées | Boutons, potentiomètres |
-| Sorties | LEDs, buzzer |
-| Capteurs | Accéléromètre, température |
-| Communication | I2C, GPIO |
+| Type | Quantité |
+|------|----------|
+| Boutons | 1 à 4 (selon projet) |
+| LEDs | 1 à 4 (selon projet) |
+| Accéléromètre | 1 (I2C) |
+
+**Intégré au LilyGO :**
+- GPS (via modem A7670G)
+- LTE / WiFi
+
+<div class="text-xs mt-1">Chaque étudiant choisit sa config!</div>
 
 </v-click>
 
