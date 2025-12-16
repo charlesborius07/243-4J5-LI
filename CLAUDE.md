@@ -241,3 +241,88 @@ Git
 Commits en français
 Messages descriptifs du contenu modifié
 Un commit par fonctionnalité/correction logique
+
+### Grilles d'évaluation
+
+Les grilles d'évaluation utilisent une **échelle de notation de 0 à 5** avec des descripteurs alignés sur les capacités et savoir-faire du plan de cours.
+
+#### Échelle de notation standard
+
+| Niveau | Description | Équivalence |
+|:------:|-------------|:-----------:|
+| **0** | Aucun travail remis ou travail non fonctionnel | 0% |
+| **1** | Travail incomplet avec lacunes majeures | 40% |
+| **2** | Travail partiel, en dessous du seuil | 50% |
+| **3** | **Seuil de réussite** — Exigences minimales atteintes | 60% |
+| **4** | Travail de bonne qualité, au-delà des attentes | 80% |
+| **5** | Travail excellent, niveau optimal atteint | 100% |
+
+#### Structure d'une grille d'évaluation
+
+```markdown
+# Grille d'évaluation — Titre
+
+**Cours:** 243-4Q5-LI – Communication radio
+**Évaluation:** Description de l'évaluation
+**Pondération totale:** XX% (Capacité X : XX%, Capacité Y : XX%)
+
+---
+
+## Échelle de notation
+[Tableau standard ci-dessus]
+
+---
+
+## Partie X : Titre (XX%)
+
+### Critère X.1 : Titre du critère (XX%)
+
+*Capacité X : [Nom de la capacité du plan de cours]*
+*Savoir-faire évalué : [Savoir-faire spécifique du plan de cours]*
+
+| Niveau | Descripteur |
+|:------:|-------------|
+| **0** | Description niveau 0 |
+| **1** | Description niveau 1 |
+| **2** | Description niveau 2 |
+| **3** | **Seuil :** Description du seuil de réussite |
+| **4** | Description niveau 4 |
+| **5** | Description niveau 5 (niveau optimal) |
+
+---
+
+## Tableau récapitulatif
+
+| Partie | Critère | Pondération | Note /5 | Points |
+|--------|---------|:-----------:|:-------:|:------:|
+| **X. Titre** | X.1 Critère | XX% | /5 | |
+| | **TOTAL** | **100%** | | **/100** |
+
+---
+
+## Calcul de la note finale
+
+Pour chaque critère :
+$\text{Points} = \text{Note sur 5} \times \frac{\text{Pondération}}{5}$
+
+---
+
+## Correspondance avec les capacités du cours
+
+| Capacité | Critères associés | Pondération |
+|----------|-------------------|:-----------:|
+| **Capacité X** : Nom | X.1, X.2 | XX% |
+
+---
+
+## Livrables attendus
+- [ ] Livrable 1
+- [ ] Livrable 2
+```
+
+#### Principes de rédaction des descripteurs
+
+- **Niveau 3 (seuil)** : Correspond aux critères du seuil de réussite du plan de cours
+- **Niveau 5 (optimal)** : Correspond aux critères de la cible (niveau optimal) du plan de cours
+- Chaque critère doit référencer explicitement un savoir-faire du plan de cours
+- Les descripteurs doivent être observables et mesurables
