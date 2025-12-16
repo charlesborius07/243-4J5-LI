@@ -1,0 +1,21 @@
+{
+  "name": "243-4j5-li-presentations",
+  "private": true,
+  "scripts": {
+    "semaine1": "slidev semaine1/slides.md --open",
+    "semaine2": "slidev semaine2/slides.md --open",
+    "semaine3": "slidev semaine3/slides.md --open",
+    "build:semaine1": "slidev build semaine1/slides.md --out ../docs/semaine1",
+    "build:semaine2": "slidev build semaine2/slides.md --out ../docs/semaine2",
+    "build:semaine3": "slidev build semaine3/slides.md --out ../docs/semaine3",
+    "build:all": "npm run build:semaine1 && npm run build:semaine2 && npm run build:semaine3",
+    "export:semaine1": "slidev export semaine1/slides.md --output semaine1/semaine1.pdf",
+    "export:semaine2": "slidev export semaine2/slides.md --output semaine2/semaine2.pdf",
+    "export:semaine3": "slidev export semaine3/slides.md --output semaine3/semaine3.pdf"
+  },
+  "devDependencies": {
+    "@slidev/cli": "^0.50.0",
+    "@slidev/theme-default": "latest",
+    "@slidev/theme-seriph": "latest"
+  }
+}
