@@ -1219,46 +1219,51 @@ String sendATCommand(const char* cmd, int timeout = 2000, int retries = 3) {
 
 # Récapitulatif : Notre chaîne IoT complète
 
-```mermaid {scale: 0.5}
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+```mermaid {scale: 0.4}
 graph LR
-    subgraph "Semaine 1 : Infrastructure"
+    subgraph "Sem. 1"
         YOU[Vous] -->|SSH| CF[Cloudflare]
         CF --> RPI[RPi]
-        RPI --> GIT[Git]
-        RPI --> CLAUDE[Claude Code]
-        RPI --> ARDU[Arduino CLI]
     end
 
-    subgraph "Semaine 2-3 : Communication"
+    subgraph "Sem. 2-3"
         RPI --> MOSQ[Mosquitto]
-        LILY[LilyGO] -->|WiFi/LTE| CF2[Cloudflare]
-        CF2 <-->|WSS + TLS| MOSQ
-    end
-
-    subgraph "Semaine 3 : Robustesse"
-        LILY -.->|Reconnexion auto| CF2
-        MOSQ -.->|Auth + TLS| SEC[🔒]
+        LILY[LilyGO] -->|WiFi/LTE| CF2[CF]
+        CF2 <-->|TLS| MOSQ
     end
 
     style YOU fill:#6f6
     style RPI fill:#69f
     style LILY fill:#f96
     style MOSQ fill:#f9f
-    style SEC fill:#4CAF50
 ```
 
-<v-click>
+</div>
 
-<div class="mt-4 p-3 bg-blue-500 bg-opacity-20 rounded-lg text-center">
+<div>
 
-| Problème | Solution | Semaine |
-|----------|----------|:-------:|
+| Problème | Solution | Sem. |
+|----------|----------|:----:|
 | Accès distant | SSH + Cloudflare | 1 |
 | Synchronisation | Git | 1 |
 | Communication | MQTT + WSS | 2 |
 | Mobilité | LTE | 3 |
 | Sécurité | TLS + Auth | 3 |
 | Fiabilité | Reconnexion auto | 3 |
+
+</div>
+
+</div>
+
+<v-click>
+
+<div class="mt-2 p-2 bg-green-500 bg-opacity-20 rounded-lg text-center text-sm">
+
+**Chaque problème résolu a créé un nouveau défi** → C'est ainsi qu'on construit un système IoT robuste!
 
 </div>
 
