@@ -1071,28 +1071,47 @@ Détection → Diagnostic → Reconnexion → Reprise
 
 # Pattern de reconnexion
 
-```mermaid {scale: 0.65}
-stateDiagram-v2
-    [*] --> Initialisation
-    Initialisation --> Connexion: Boot
+<div class="grid grid-cols-2 gap-4">
 
+<div>
+
+```mermaid {scale: 0.5}
+stateDiagram-v2
+    [*] --> Init
+    Init --> Connexion: Boot
     Connexion --> Connecté: Succès
     Connexion --> Attente: Échec
-
-    Connecté --> Déconnecté: Perte connexion
-    Connecté --> Connecté: Opération normale
-
-    Déconnecté --> Attente: Détection
-
-    Attente --> Connexion: Timer expiré
-    Attente --> Attente: Backoff exponentiel
-
-    state Attente {
-        [*] --> Calcul_délai
-        Calcul_délai --> Sleep
-        Sleep --> [*]
-    }
+    Connecté --> Attente: Perte
+    Attente --> Connexion: Retry
 ```
+
+</div>
+
+<div>
+
+### États du système
+
+| État | Description |
+|------|-------------|
+| **Init** | Démarrage |
+| **Connexion** | Tentative en cours |
+| **Connecté** | Opération normale |
+| **Attente** | Backoff avant retry |
+
+<v-click>
+
+### Cycle de reconnexion
+
+1. Détection de la perte
+2. Calcul du délai (backoff)
+3. Attente
+4. Nouvelle tentative
+
+</v-click>
+
+</div>
+
+</div>
 
 ---
 
