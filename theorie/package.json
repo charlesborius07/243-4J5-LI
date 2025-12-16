@@ -5,13 +5,16 @@
     "dev:s01": "slidev Semaine-01/diaporama/slides.md --open",
     "dev:s02": "slidev Semaine-02/diaporama/slides.md --open",
     "dev:s03": "slidev Semaine-03/diaporama/slides.md --open",
+    "dev:s04": "slidev Semaine-04/diaporama/slides.md --open",
     "build:s01": "slidev build Semaine-01/diaporama/slides.md --out ../docs/semaine-01",
     "build:s02": "slidev build Semaine-02/diaporama/slides.md --out ../docs/semaine-02",
     "build:s03": "slidev build Semaine-03/diaporama/slides.md --out ../docs/semaine-03",
-    "build:all": "pnpm run build:s01 && pnpm run build:s02 && pnpm run build:s03",
+    "build:s04": "slidev build Semaine-04/diaporama/slides.md --out ../docs/semaine-04",
+    "build:all": "pnpm run build:s01 && pnpm run build:s02 && pnpm run build:s03 && pnpm run build:s04",
     "export:s01": "slidev export Semaine-01/diaporama/slides.md --output Semaine-01/diaporama/slides.pdf",
     "export:s02": "slidev export Semaine-02/diaporama/slides.md --output Semaine-02/diaporama/slides.pdf",
-    "export:s03": "slidev export Semaine-03/diaporama/slides.md --output Semaine-03/diaporama/slides.pdf"
+    "export:s03": "slidev export Semaine-03/diaporama/slides.md --output Semaine-03/diaporama/slides.pdf",
+    "export:s04": "slidev export Semaine-04/diaporama/slides.md --output Semaine-04/diaporama/slides.pdf"
   },
   "devDependencies": {
     "@slidev/cli": "^0.50.0",

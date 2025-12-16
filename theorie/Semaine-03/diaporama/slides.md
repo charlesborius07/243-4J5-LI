@@ -1549,11 +1549,22 @@ projet/
 - Réviser la théorie MQTT
 - Pratiquer le dépannage
 - Documenter votre configuration
-- Préparer questions/réponses
 
 </div>
 
 </div>
+
+<v-click>
+
+<div class="mt-2 p-2 bg-orange-500 bg-opacity-20 rounded-lg">
+
+**Pour la semaine prochaine** : Installer **KiCad 8.x** sur votre PC
+
+https://www.kicad.org/download/
+
+</div>
+
+</v-click>
 
 <v-click>
 
