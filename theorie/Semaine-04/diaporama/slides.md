@@ -911,39 +911,33 @@ layout: section
 
 Le shield s'interface avec le **LilyGO** qui échange avec le **RPi** (écran tactile)!
 
-<v-clicks>
+<div class="text-sm mt-2">
 
 - **Jeu de réflexes** : Appuyer au bon moment
 - **Simon Says** : Mémoriser séquences LEDs
 - **Manette de jeu** : Contrôler un jeu sur RPi
-- **Tracker GPS** : Carte en temps réel
-- **Détecteur de mouvement** : Alertes visuelles
 - **Dashboard IoT** : Monitoring + contrôle
 
-</v-clicks>
+</div>
 
 </div>
 
 <div>
 
-<v-click>
-
 ### Assignation par étudiant
 
-| # | Boutons | LEDs |
-|:-:|:-------:|:----:|
-| 1 | 2 | 1 |
-| 2 | 1 | 2 |
-| 3 | 3 | 1 |
-| 4 | 1 | 3 |
-| 5 | 2 | 2 |
-| 6 | 3 | 2 |
-| 7 | 2 | 3 |
-| 8 | 1 | 4 |
+<div class="text-sm">
 
-<div class="text-xs">**Obligatoire pour tous :**<br/>Accéléromètre + connecteurs LilyGO</div>
+| # | Btn | LED | | # | Btn | LED |
+|:-:|:---:|:---:|---|:-:|:---:|:---:|
+| 1 | 2 | 1 | | 5 | 2 | 2 |
+| 2 | 1 | 2 | | 6 | 3 | 2 |
+| 3 | 3 | 1 | | 7 | 2 | 3 |
+| 4 | 1 | 3 | | 8 | 1 | 4 |
 
-</v-click>
+</div>
+
+<div class="text-xs mt-2 p-1 bg-gray-100 rounded">**Obligatoire pour tous :** Accéléromètre + connecteurs</div>
 
 </div>
 
