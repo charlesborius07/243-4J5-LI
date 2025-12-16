@@ -853,21 +853,69 @@ layout: section
 
 # Le projet de mi-session
 
-### Shield pour LilyGO A7670G
+### Ce n'est pas juste un PCB!
+
+<div class="grid grid-cols-3 gap-3">
+
+<div class="p-2 bg-blue-500 bg-opacity-20 rounded-lg text-sm">
+
+**Matériel**
+
+- Shield PCB pour LilyGO
+- Capteurs/actionneurs
+- Schéma + routage
+
+</div>
+
+<div class="p-2 bg-green-500 bg-opacity-20 rounded-lg text-sm">
+
+**Code**
+
+- Firmware Arduino
+- Lecture capteurs
+- Communication MQTT
+
+</div>
+
+<div class="p-2 bg-purple-500 bg-opacity-20 rounded-lg text-sm">
+
+**Infrastructure**
+
+- Broker Mosquitto
+- Interface Python
+- Cloudflare Tunnel
+
+</div>
+
+</div>
+
+<v-click>
+
+<div class="mt-4 p-2 bg-orange-500 bg-opacity-20 rounded-lg text-center text-sm">
+
+**Cette semaine** : Choisir votre projet et établir vos requis!
+
+</div>
+
+</v-click>
+
+---
+
+# Idées de projets
 
 <div class="grid grid-cols-2 gap-4">
 
 <div>
 
-**Composants requis :**
+### Suggestions
 
 <v-clicks>
 
-- 2 LEDs avec résistances
-- 2 boutons poussoirs
-- 2 potentiomètres
-- 1 accéléromètre (I2C)
-- Connecteurs pour le LilyGO
+- **Station météo** : Température, humidité, pression
+- **Tracker GPS** : Position + accéléromètre
+- **Contrôle d'accès** : Boutons + LEDs status
+- **Moniteur environnemental** : Qualité air, lumière
+- **Télécommande IoT** : Boutons + feedback LED
 
 </v-clicks>
 
@@ -877,13 +925,54 @@ layout: section
 
 <v-click>
 
-**Livrables :**
+### Composants disponibles
 
-- Prototype breadboard fonctionnel
-- Schéma KiCad complet
-- PCB routé
-- Fichiers Gerber
-- Documentation
+| Type | Options |
+|------|---------|
+| Entrées | Boutons, potentiomètres |
+| Sorties | LEDs, buzzer |
+| Capteurs | Accéléromètre, température |
+| Communication | I2C, GPIO |
+
+</v-click>
+
+</div>
+
+</div>
+
+---
+
+# Établir vos requis
+
+### Questions à se poser
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+<v-clicks>
+
+- Quel **problème** je veux résoudre?
+- Quels **capteurs** me faut-il?
+- Quelles **données** à transmettre?
+- Quelle **interface** utilisateur?
+- Quelles **contraintes** physiques?
+
+</v-clicks>
+
+</div>
+
+<div>
+
+<v-click>
+
+### Livrables attendus
+
+1. **Description** du projet (1 page)
+2. **Liste des composants**
+3. **Schéma fonctionnel**
+4. **Topics MQTT** prévus
+5. **Maquette** interface Python
 
 </v-click>
 
