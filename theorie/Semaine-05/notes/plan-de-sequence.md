@@ -4,61 +4,73 @@
 Projet de mi-session - Shield LilyGO A7670G
 
 ## Objectifs de la semaine
-- Débuter la conception du shield PCB pour le LilyGO A7670G
-- Réaliser un prototype breadboard fonctionnel
-- Capturer le schéma électronique dans KiCad
-- Définir l'architecture du projet et les topics MQTT
+- Réaliser un prototype breadboard fonctionnel et validé
+- Programmer le code de test pour chaque composant
+- Intégrer l'interface avec l'écran tactile du Raspberry Pi
+- Documenter le projet avec Markdown sur GitHub
 
 ## Contenu théorique
 
-### Conception de shields
-- Qu'est-ce qu'un shield (carte d'extension)
-- Contraintes de conception pour s'adapter au LilyGO
-- Choix des connecteurs et du brochage
+### Communication I2C et accéléromètre
+- Protocole I2C : adressage, SDA/SCL, vitesse
+- Accéléromètre : axes X/Y/Z, registres, calibration
+- Bibliothèques Arduino pour I2C
+- Lecture et interprétation des données d'accélération
 
-### Composants du projet
-- LEDs : caractéristiques et dimensionnement des résistances
-- Boutons poussoirs : debouncing matériel vs logiciel
-- Potentiomètres : diviseurs de tension et ADC
-- Accéléromètre I2C : protocole et adressage
+### Conversion analogique-numérique (ADC)
+- Principes de l'ADC sur ESP32
+- Résolution et plage de tension
+- Lecture des potentiomètres
+- Filtrage et lissage des valeurs
 
-### Méthodologie de conception
-- Du prototype breadboard au schéma
-- Documentation des choix techniques
-- Gestion de projet et livrables
+### Architecture applicative
+- Flux de données : capteurs → LilyGO → MQTT → RPi
+- Structure des topics MQTT pour le projet
+- Interface utilisateur sur écran tactile (GUI terminal Python)
+- Scénarios d'interaction (jeu, dashboard, contrôle)
+
+### Documentation technique avec GitHub
+- Structure d'un README.md efficace
+- Syntaxe Markdown : titres, listes, code, tableaux, images
+- Organisation de la documentation dans un dépôt
+- Bonnes pratiques : badges, table des matières, exemples
+- Utilisation des Issues et Projects pour le suivi
 
 ## Activités
 
 ### Théorie (2h)
-- Rappel du workflow KiCad
-- Présentation des requis du projet de mi-session
-- Assignation des composants par étudiant
-- Stratégies de conception
+- Communication I2C et lecture de l'accéléromètre
+- ADC et lecture des potentiomètres
+- Interface tactile GUI terminal sur RPi
+- Documentation Markdown et GitHub
+- Présentation des requis et assignations
 
 ### Laboratoire (3h)
-- Réalisation du montage breadboard
-  - 2 LEDs avec résistances
-  - 2 boutons poussoirs
-  - 2 potentiomètres
-  - Accéléromètre I2C
-- Test du fonctionnement avec code de test
-- Début de la capture schématique KiCad
+- Montage breadboard complet
+  - LEDs, boutons, potentiomètres, accéléromètre
+- Code de test pour chaque composant
+- Intégration MQTT avec le broker existant
+- Ébauche de l'interface GUI terminal sur RPi
+- Création du README.md du projet sur GitHub
 
 ## Travaux hors classe
-- Avancer le prototype breadboard
-- Commencer la documentation du projet
-- Définir les topics MQTT pour l'application
+- Finaliser le prototype breadboard
+- Développer l'interface GUI terminal sur RPi
+- Compléter la documentation GitHub (README, schémas)
 
 ## Évaluation
 - Suivi de progression (formatif)
-- Vérification du prototype breadboard
+- Démonstration du prototype fonctionnel
 
 ## Ressources
-- Documentation KiCad
-- Fiches techniques des composants
-- Guide du projet de mi-session
+- Fiche technique de l'accéléromètre
+- Documentation ESP32 ADC
+- Exemples de code I2C Arduino
+- Code de l'interface GUI terminal (Labo 1-2)
+- Guide Markdown de GitHub
 
 ## Notes pour l'enseignant
 - Vérifier les assignations de composants par étudiant
-- S'assurer que tous ont les composants nécessaires
-- Accompagner les étudiants dans leurs choix de conception
+- S'assurer que les accéléromètres I2C sont fonctionnels
+- Avoir des exemples de code prêts pour le dépannage
+- Accompagner le développement de l'interface RPi
