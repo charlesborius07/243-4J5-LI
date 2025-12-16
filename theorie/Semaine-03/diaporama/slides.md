@@ -343,21 +343,47 @@ L'APN est le point d'entrée vers le réseau de données de l'opérateur.
 
 <div>
 
-### APN courants (Québec)
+### APN courants
 
 | Opérateur | APN |
 |-----------|-----|
-| Rogers | ltemobile.apn |
+| Rogers/Fizz | ltemobile.apn |
 | Bell | pda.bell.ca |
 | Telus | sp.telus.com |
-| Vidéotron | media.videotron |
-| Fizz | ltemobile.apn |
+| **Hologram** | hologram |
+| **Soracom** | soracom.io |
 
 </div>
 
 <div>
 
-### Configuration
+### Fournisseurs IoT
+
+<v-click>
+
+| Service | Avantage |
+|---------|----------|
+| **Hologram** | SIM globale 200+ pays |
+| **Soracom** | Console cloud intégrée |
+| **Twilio** | API programmable |
+
+Ces services offrent des **SIM multi-opérateurs** idéales pour l'IoT!
+
+</v-click>
+
+</div>
+
+</div>
+
+---
+
+# Configuration APN dans le code
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+### Configuration de base
 
 ```cpp
 // Définir l'APN
@@ -370,6 +396,30 @@ sendATCommand("AT+CGACT=1,1");
 sendATCommand("AT+CGPADDR=1");
 // +CGPADDR: 1,"10.45.128.xxx"
 ```
+
+</div>
+
+<div>
+
+### Avec Hologram
+
+```cpp
+// APN Hologram (pas d'auth requise)
+sendATCommand("AT+CGDCONT=1,\"IP\",\"hologram\"");
+
+// Activer
+sendATCommand("AT+CGACT=1,1");
+```
+
+<v-click>
+
+<div class="mt-2 p-2 bg-blue-500 bg-opacity-20 rounded-lg text-sm">
+
+**Avantage Hologram** : Même SIM fonctionne partout dans le monde!
+
+</div>
+
+</v-click>
 
 </div>
 
@@ -458,35 +508,58 @@ AT+CCID
 
 # Processus de connexion LTE
 
-```mermaid {scale: 0.65}
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+```mermaid {scale: 0.45}
 sequenceDiagram
     participant ESP as ESP32
-    participant MOD as Modem A7670G
-    participant NET as Réseau LTE
+    participant MOD as Modem
+    participant NET as Réseau
 
     ESP->>MOD: AT (test)
     MOD-->>ESP: OK
-
     ESP->>MOD: AT+CPIN?
     MOD-->>ESP: +CPIN: READY
-
     ESP->>MOD: AT+CSQ
     MOD-->>ESP: +CSQ: 18,0
-
     ESP->>MOD: AT+CREG?
-    MOD-->>ESP: +CREG: 0,1 (enregistré)
-
-    ESP->>MOD: AT+CGDCONT=1,"IP","apn"
+    MOD-->>ESP: +CREG: 0,1
+    ESP->>MOD: AT+CGDCONT
     MOD-->>ESP: OK
-
     ESP->>MOD: AT+CGACT=1,1
     MOD->>NET: Activation PDP
     NET-->>MOD: IP assignée
     MOD-->>ESP: OK
-
-    ESP->>MOD: AT+CGPADDR=1
-    MOD-->>ESP: +CGPADDR: 1,"10.x.x.x"
 ```
+
+</div>
+
+<div>
+
+### Étapes de connexion
+
+1. **Test** : `AT` → `OK`
+2. **SIM** : `AT+CPIN?` → `READY`
+3. **Signal** : `AT+CSQ` → force
+4. **Réseau** : `AT+CREG?` → enregistré
+5. **APN** : `AT+CGDCONT` → config
+6. **Activation** : `AT+CGACT` → IP
+
+<v-click>
+
+<div class="mt-2 p-2 bg-green-500 bg-opacity-20 rounded-lg text-sm">
+
+Une fois l'IP obtenue, on peut établir des connexions TCP/UDP!
+
+</div>
+
+</v-click>
+
+</div>
+
+</div>
 
 ---
 
