@@ -113,7 +113,7 @@ On peut **programmer** à distance et **communiquer** via WiFi!
 
 <v-click>
 
-```mermaid {scale: 0.6}
+```mermaid {scale: 0.4}
 graph TB
     subgraph "Avec WiFi"
         LILY1[LilyGO] -->|WiFi| AP[Access Point]
@@ -241,6 +241,7 @@ layout: section
 | Cat-M1 (LTE-M) | 1 Mbps | 1 Mbps | Wearables, trackers |
 | NB-IoT | 250 kbps | 250 kbps | Capteurs statiques |
 | Cat-4 | 150 Mbps | 50 Mbps | Routeurs, caméras |
+| Cat-6 à Cat-18 | 300-1200 Mbps | 50-150 Mbps | **Téléphones** |
 
 </div>
 
@@ -249,8 +250,8 @@ layout: section
 ### LilyGO A7670G - Cat-1
 
 - **Idéal pour**: Communication bidirectionnelle régulière
-- **Avantages**: Bonne bande passante, latence acceptable
-- **Consommation**: ~200mA en transmission
+- **Avantages**: Bonne bande passante, latence acceptable, **faible consommation**
+- **Consommation**: ~200mA (vs ~500mA+ pour Cat-6)
 
 </v-click>
 
@@ -258,36 +259,25 @@ layout: section
 
 # Architecture du modem A7670G
 
-```mermaid {scale: 0.7}
-graph TB
+```mermaid {scale: 0.6}
+graph LR
     subgraph "LilyGO A7670G"
-        ESP32[ESP32<br/>Microcontrôleur]
-
-        subgraph "Module A7670G"
-            MODEM[Modem LTE Cat-1]
-            SIM[Lecteur SIM]
-            GPS[Module GPS]
-            ANT_LTE[Antenne LTE]
-            ANT_GPS[Antenne GPS]
-        end
-
-        UART[UART<br/>Serial2]
+        ESP32[ESP32] <-->|AT Commands| UART[UART]
+        UART <--> MODEM[Modem LTE]
+        SIM[SIM] --> MODEM
+        GPS[GPS] --> ANT_GPS[Ant. GPS]
+        MODEM --> ANT_LTE[Ant. LTE]
     end
 
     subgraph "Réseau"
-        TOWER[Tour cellulaire]
-        CORE[Cœur réseau]
-        INET[Internet]
+        ANT_LTE -->|Radio| TOWER[Tour cell.]
+        TOWER --> CORE[Cœur réseau]
+        CORE --> INET[Internet]
     end
 
-    ESP32 <-->|AT Commands| UART
-    UART <--> MODEM
-    SIM --> MODEM
-    MODEM --> ANT_LTE
-    GPS --> ANT_GPS
-    ANT_LTE -->|Radio| TOWER
-    TOWER --> CORE
-    CORE --> INET
+    style ESP32 fill:#69f
+    style MODEM fill:#f96
+    style INET fill:#6f6
 ```
 
 ---
@@ -497,6 +487,67 @@ sequenceDiagram
     ESP->>MOD: AT+CGPADDR=1
     MOD-->>ESP: +CGPADDR: 1,"10.x.x.x"
 ```
+
+---
+
+# On communique de partout... mais est-ce sécurisé?
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+### Ce qu'on a construit
+
+<v-clicks>
+
+- Communication WiFi et LTE
+- Données qui transitent sur **Internet**
+- Via des réseaux **publics**
+- Vers un broker **distant**
+
+</v-clicks>
+
+</div>
+
+<div>
+
+<v-click>
+
+### Le problème
+
+```mermaid {scale: 0.45}
+graph LR
+    LILY[LilyGO] -->|"Données en clair?"| INET[Internet]
+    INET -->|"Qui peut voir?"| MOSQ[Broker]
+
+    HACKER[👤 Attaquant] -.->|"Écoute?"| INET
+```
+
+</v-click>
+
+<v-click>
+
+<div class="mt-2 p-2 bg-red-500 bg-opacity-20 rounded-lg text-sm">
+
+**Sans protection**, nos données sont **visibles** par quiconque écoute le réseau!
+
+</div>
+
+</v-click>
+
+</div>
+
+</div>
+
+<v-click>
+
+<div class="mt-4 p-3 bg-green-500 bg-opacity-20 rounded-lg text-center">
+
+**Nouvelle exigence** : Sécuriser toutes nos communications
+
+</div>
+
+</v-click>
 
 ---
 layout: section
@@ -730,7 +781,7 @@ const char* WIFI_PASS = "wifi_secret";
 #endif
 ```
 
-```gitignore
+```bash
 # .gitignore
 auth.h
 *_secrets.*
@@ -768,6 +819,73 @@ const char* SIM_PIN = "";  // Laisser vide si pas de PIN
 
 #endif
 ```
+
+---
+
+# Sécurisé... mais que faire si ça plante?
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+### Notre système actuel
+
+<v-clicks>
+
+- Communication WiFi/LTE ✅
+- Sécurité TLS ✅
+- Authentification ✅
+
+</v-clicks>
+
+<v-click>
+
+**Mais un capteur IoT sur le terrain...**
+
+- Est loin de nous
+- Doit fonctionner **24/7**
+- Ne peut pas être redémarré manuellement
+
+</v-click>
+
+</div>
+
+<div>
+
+<v-click>
+
+### Scénarios réels
+
+- 📶 Perte de signal momentanée
+- 🔌 Micro-coupure électrique
+- 🌐 Redémarrage du broker
+- ⏱️ Timeout réseau
+
+</v-click>
+
+<v-click>
+
+<div class="mt-2 p-2 bg-orange-500 bg-opacity-20 rounded-lg text-sm">
+
+**Question** : Si le LilyGO perd la connexion à 3h du matin, que se passe-t-il?
+
+</div>
+
+</v-click>
+
+</div>
+
+</div>
+
+<v-click>
+
+<div class="mt-4 p-3 bg-green-500 bg-opacity-20 rounded-lg text-center">
+
+**Solution** : Code **résilient** avec reconnexion automatique
+
+</div>
+
+</v-click>
 
 ---
 layout: section
@@ -945,6 +1063,55 @@ String sendATCommand(const char* cmd, int timeout = 2000, int retries = 3) {
     return "TIMEOUT";
 }
 ```
+
+---
+
+# Récapitulatif : Notre chaîne IoT complète
+
+```mermaid {scale: 0.5}
+graph LR
+    subgraph "Semaine 1 : Infrastructure"
+        YOU[Vous] -->|SSH| CF[Cloudflare]
+        CF --> RPI[RPi]
+        RPI --> GIT[Git]
+        RPI --> CLAUDE[Claude Code]
+        RPI --> ARDU[Arduino CLI]
+    end
+
+    subgraph "Semaine 2-3 : Communication"
+        RPI --> MOSQ[Mosquitto]
+        LILY[LilyGO] -->|WiFi/LTE| CF2[Cloudflare]
+        CF2 <-->|WSS + TLS| MOSQ
+    end
+
+    subgraph "Semaine 3 : Robustesse"
+        LILY -.->|Reconnexion auto| CF2
+        MOSQ -.->|Auth + TLS| SEC[🔒]
+    end
+
+    style YOU fill:#6f6
+    style RPI fill:#69f
+    style LILY fill:#f96
+    style MOSQ fill:#f9f
+    style SEC fill:#4CAF50
+```
+
+<v-click>
+
+<div class="mt-4 p-3 bg-blue-500 bg-opacity-20 rounded-lg text-center">
+
+| Problème | Solution | Semaine |
+|----------|----------|:-------:|
+| Accès distant | SSH + Cloudflare | 1 |
+| Synchronisation | Git | 1 |
+| Communication | MQTT + WSS | 2 |
+| Mobilité | LTE | 3 |
+| Sécurité | TLS + Auth | 3 |
+| Fiabilité | Reconnexion auto | 3 |
+
+</div>
+
+</v-click>
 
 ---
 layout: section
