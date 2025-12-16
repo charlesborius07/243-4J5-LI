@@ -1407,7 +1407,7 @@ sequenceDiagram
 ### Matériel
 
 ❌ Antenne mal connectée
-❌ SIM sans crédit
+❌ SIM mal insérée
 ❌ Mauvais GPIO
 ❌ Résistances oubliées
 
@@ -1471,7 +1471,7 @@ projet/
 
 1. **Testez tout** la veille
 2. Préparez un **backup** de config
-3. Vérifiez le **crédit SIM**
+3. Vérifiez que la **SIM est bien insérée**
 4. Chargez les **batteries**
 5. Documentez votre **setup**
 
