@@ -351,7 +351,6 @@ L'APN est le point d'entrée vers le réseau de données de l'opérateur.
 | Bell | pda.bell.ca |
 | Telus | sp.telus.com |
 | **Hologram** | hologram |
-| **Soracom** | soracom.io |
 
 </div>
 
@@ -364,8 +363,6 @@ L'APN est le point d'entrée vers le réseau de données de l'opérateur.
 | Service | Avantage |
 |---------|----------|
 | **Hologram** | SIM globale 200+ pays |
-| **Soracom** | Console cloud intégrée |
-| **Twilio** | API programmable |
 
 Ces services offrent des **SIM multi-opérateurs** idéales pour l'IoT!
 
@@ -1075,7 +1072,7 @@ Détection → Diagnostic → Reconnexion → Reprise
 
 <div>
 
-```mermaid {scale: 0.5}
+```mermaid {scale: 0.8}
 stateDiagram-v2
     [*] --> Init
     Init --> Connexion: Boot
@@ -1223,7 +1220,7 @@ String sendATCommand(const char* cmd, int timeout = 2000, int retries = 3) {
 
 <div>
 
-```mermaid {scale: 0.4}
+```mermaid {scale: 0.5}
 graph LR
     subgraph "Sem. 1"
         YOU[Vous] -->|SSH| CF[Cloudflare]
@@ -1313,33 +1310,45 @@ Ce n'est pas un examen formel — c'est une **vérification de l'avancement** de
 
 # Démonstration attendue
 
-```mermaid {scale: 0.6}
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+```mermaid {scale: 0.4}
 sequenceDiagram
-    participant UI as Interface RPi
-    participant MQTT as Broker MQTT
-    participant LILYGO as LilyGO
+    participant UI as RPi
+    participant MQTT as Broker
+    participant DEV as LilyGO
 
-    Note over UI,LILYGO: Test WiFi
-
-    UI->>MQTT: Subscribe sensors/#
-    LILYGO->>MQTT: Connect (WiFi)
-    LILYGO->>MQTT: Publish button state
-    MQTT->>UI: Receive button state
-
-    UI->>MQTT: Publish LED command
-    MQTT->>LILYGO: Receive command
-    Note over LILYGO: LED s'allume
-
-    Note over UI,LILYGO: Test LTE
-
-    LILYGO->>MQTT: Reconnect (LTE)
-    LILYGO->>MQTT: Publish status
-    MQTT->>UI: Receive status
-
-    UI->>MQTT: Publish LED command
-    MQTT->>LILYGO: Receive command
-    Note over LILYGO: LED change d'état
+    DEV->>MQTT: Connect WiFi
+    DEV->>MQTT: Publish état
+    MQTT->>UI: Reçoit état
+    UI->>MQTT: Commande LED
+    MQTT->>DEV: LED ON
 ```
+
+</div>
+
+<div>
+
+### Tests à effectuer
+
+**Mode WiFi**
+- Connexion au broker
+- Publish état boutons
+- Réception commandes LED
+
+**Mode LTE**
+- Reconnexion via cellulaire
+- Mêmes fonctionnalités
+
+**Interface Python**
+- Affichage des états
+- Envoi de commandes
+
+</div>
+
+</div>
 
 ---
 
