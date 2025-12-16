@@ -48,7 +48,7 @@ layout: section
 - RPi comme station distante
 - SSH + Cloudflare Tunnel
 - Git pour synchroniser
-- Claude Code pour coder
+- Gemini-cli pour coder
 - Arduino CLI pour compiler
 
 </v-clicks>
@@ -1274,31 +1274,38 @@ layout: section
 ---
 
 # Partie 4
-## Préparation à l'évaluation
+## Évaluation des laboratoires 1 et 2
 
 ---
 
-# Évaluation semaine 3
+# Évaluation des labos (semaines 1-3)
 
-### Lab capteurs et Python (15%)
+### Laboratoire capteurs et Python (15%)
 
 <div class="p-4 bg-blue-500 bg-opacity-20 rounded-lg mt-4">
 
-**Objectif**: Démontrer une chaîne de communication IoT complète
+**Objectif** : Démontrer le travail accompli dans les **Labo 1** et **Labo 2**
 
 </div>
 
 <v-click>
 
-### Éléments évalués
+### Ce qui sera vérifié
 
-| Critère | Points |
-|---------|:------:|
-| Configuration Mosquitto fonctionnelle | 20% |
-| Communication MQTT via WiFi | 25% |
-| Communication MQTT via LTE | 25% |
-| Interface Python sur RPi | 20% |
-| Qualité du code et documentation | 10% |
+| Labo | Éléments |
+|------|----------|
+| **Labo 1** | Environnement RPi, SSH, Cloudflare Tunnel, Git |
+| **Labo 2** | MQTT (WiFi + LTE), Interface Python |
+
+</v-click>
+
+<v-click>
+
+<div class="mt-4 p-2 bg-green-500 bg-opacity-20 rounded-lg text-center text-sm">
+
+Ce n'est pas un examen formel — c'est une **vérification de l'avancement** de vos laboratoires!
+
+</div>
 
 </v-click>
 
@@ -1461,31 +1468,31 @@ projet/
 
 ---
 
-# Conseils pour l'évaluation
+# Conseils pour la vérification
 
 <div class="grid grid-cols-2 gap-6">
 
 <div>
 
-### Avant l'évaluation
+### Avant la vérification
 
 1. **Testez tout** la veille
 2. Préparez un **backup** de config
 3. Vérifiez que la **SIM est bien insérée**
 4. Chargez les **batteries**
-5. Documentez votre **setup**
+5. Relisez vos **notes de labo**
 
 </div>
 
 <div>
 
-### Pendant l'évaluation
+### Pendant la vérification
 
-1. **Commencez** par ce qui fonctionne
+1. **Montrez** ce qui fonctionne
 2. **Expliquez** votre démarche
-3. **Débuggez** méthodiquement
+3. **Débuggez** méthodiquement si besoin
 4. Utilisez le **moniteur série**
-5. **Gardez votre calme**
+5. Posez des **questions** si bloqué
 
 </div>
 
@@ -1520,7 +1527,7 @@ projet/
 
 <div>
 
-### Préparation évaluation
+### Préparation vérification
 
 - Réviser la théorie MQTT
 - Pratiquer le dépannage
@@ -1533,10 +1540,10 @@ projet/
 
 <v-click>
 
-<div class="mt-4 p-3 bg-yellow-500 bg-opacity-20 rounded-lg">
+<div class="mt-4 p-3 bg-blue-500 bg-opacity-20 rounded-lg">
 
-⚠️ **Rappel**: L'évaluation compte pour **15%** de la note finale.
-Compétence 1 uniquement.
+📋 **Rappel** : Cette vérification porte sur les **Labo 1 et 2** (15% - Capacité 1).
+Assurez-vous que tout fonctionne!
 
 </div>
 
@@ -1550,7 +1557,7 @@ class: text-center
 # Questions?
 
 <div class="text-xl mt-8">
-Bonne chance pour l'évaluation!
+Bonne continuation pour vos laboratoires!
 </div>
 
 <div class="mt-4">
