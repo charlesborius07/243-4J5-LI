@@ -909,13 +909,16 @@ layout: section
 
 ### Idées d'applications
 
+Le shield s'interface avec l'**écran tactile du RPi**!
+
 <v-clicks>
 
-- **Tracker GPS** : Position + détection mouvement
-- **Détecteur de chute** : Accéléromètre + alerte LED
-- **Télécommande IoT** : Boutons → actions distantes
-- **Indicateur d'état** : LEDs selon données MQTT
-- **Compteur d'activité** : Pas/mouvements via accéléro
+- **Jeu de réflexes** : Appuyer au bon moment
+- **Simon Says** : Mémoriser séquences LEDs
+- **Manette de jeu** : Contrôler un jeu sur RPi
+- **Tracker GPS** : Carte en temps réel
+- **Détecteur de mouvement** : Alertes visuelles
+- **Dashboard IoT** : Monitoring + contrôle
 
 </v-clicks>
 
@@ -925,19 +928,20 @@ layout: section
 
 <v-click>
 
-### Composants du shield
+### Assignation par étudiant
 
-| Type | Quantité |
-|------|----------|
-| Boutons | 1 à 4 (selon projet) |
-| LEDs | 1 à 4 (selon projet) |
-| Accéléromètre | 1 (I2C) |
+| # | Boutons | LEDs |
+|:-:|:-------:|:----:|
+| 1 | 2 | 1 |
+| 2 | 1 | 2 |
+| 3 | 3 | 1 |
+| 4 | 1 | 3 |
+| 5 | 2 | 2 |
+| 6 | 3 | 2 |
+| 7 | 2 | 3 |
+| 8 | 1 | 4 |
 
-**Intégré au LilyGO :**
-- GPS (via modem A7670G)
-- LTE / WiFi
-
-<div class="text-xs mt-1">Chaque étudiant choisit sa config!</div>
+<div class="text-xs">+ accéléromètre + GPS pour tous</div>
 
 </v-click>
 
