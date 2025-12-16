@@ -867,6 +867,65 @@ auth.h
 
 ---
 
+# Le fichier .gitignore
+
+### Qu'est-ce que c'est?
+
+Un fichier texte à la racine du projet qui liste les fichiers que Git doit **ignorer**.
+
+<div class="grid grid-cols-2 gap-6 mt-4">
+
+<div>
+
+### Syntaxe
+
+```bash
+# Commentaire
+fichier.txt      # Fichier spécifique
+*.log            # Tous les .log
+build/           # Dossier entier
+!important.log   # Exception (ne pas ignorer)
+**/temp          # temp dans tous les dossiers
+```
+
+</div>
+
+<div>
+
+### Exemple IoT
+
+```bash
+# Secrets - NE JAMAIS COMMIT
+auth.h
+*_secrets.*
+*.pem
+*.key
+
+# Fichiers de build
+.pio/
+build/
+
+# IDE
+.vscode/
+*.swp
+```
+
+</div>
+
+</div>
+
+<v-click>
+
+<div class="mt-2 p-2 bg-orange-500 bg-opacity-20 rounded-lg text-center text-sm">
+
+⚠️ **Important** : `.gitignore` n'efface pas les fichiers déjà commités! Il faut les retirer manuellement.
+
+</div>
+
+</v-click>
+
+---
+
 # Fichier auth.h.example
 
 ### Template pour les utilisateurs
