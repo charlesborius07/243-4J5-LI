@@ -1277,34 +1277,42 @@ layout: section
 
 # Évaluation des labos (semaines 1-3)
 
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
 ### Laboratoire capteurs et Python (15%)
 
-<div class="p-4 bg-blue-500 bg-opacity-20 rounded-lg mt-4">
-
-**Objectif** : Démontrer le travail accompli dans les **Labo 1** et **Labo 2**
-
-</div>
+**Objectif** : Vérifier l'avancement des **Labo 1** et **Labo 2**
 
 <v-click>
-
-### Ce qui sera vérifié
 
 | Labo | Éléments |
 |------|----------|
-| **Labo 1** | Environnement RPi, SSH, Cloudflare Tunnel, Git |
-| **Labo 2** | MQTT (WiFi + LTE), Interface Python |
+| **Labo 1** | RPi, SSH, Cloudflare, Git |
+| **Labo 2** | MQTT, LTE, Python |
 
 </v-click>
-
-<v-click>
-
-<div class="mt-4 p-2 bg-green-500 bg-opacity-20 rounded-lg text-center text-sm">
-
-Ce n'est pas un examen formel — c'est une **vérification de l'avancement** de vos laboratoires!
 
 </div>
 
+<div>
+
+<v-click>
+
+### Ce n'est pas un examen!
+
+C'est une **vérification** de votre travail :
+
+- Montrez ce qui fonctionne
+- Expliquez votre démarche
+- Posez des questions si besoin
+
 </v-click>
+
+</div>
+
+</div>
 
 ---
 
@@ -1314,7 +1322,7 @@ Ce n'est pas un examen formel — c'est une **vérification de l'avancement** de
 
 <div>
 
-```mermaid {scale: 0.4}
+```mermaid {scale: 0.7}
 sequenceDiagram
     participant UI as RPi
     participant MQTT as Broker
