@@ -94,7 +94,7 @@
 | **4** | Contrôle avancé : patterns lumineux, feedback série de l'état des LEDs, code bien structuré |
 | **5** | Contrôle sophistiqué : PWM pour variation d'intensité, animations, gestion de l'état persistant |
 
-### Critère 3.2 : Communication MQTT via WiFi ou LTE (15%)
+### Critère 3.2 : Communication MQTT via WiFi ou LTE (25%)
 
 *Capacité 1 : Concevoir et programmer des objets connectés*
 
@@ -104,8 +104,8 @@
 | **1** | Tentative de connexion MQTT mais échecs; erreurs de configuration |
 | **2** | Connexion au broker établie mais communication unidirectionnelle seulement (publication OU souscription) |
 | **3** | **Seuil :** Communication MQTT bidirectionnelle fonctionnelle via WiFi OU LTE; LEDs contrôlables à distance via topics MQTT; souscription aux commandes et publication de l'état |
-| **4** | Communication robuste : reconnexion automatique, QoS approprié, structure de topics cohérente, gestion des déconnexions |
-| **5** | Communication optimale : WSS sécurisé fonctionnel, heartbeat régulier, support WiFi ET LTE, documentation des topics |
+| **4** | Communication robuste : reconnexion automatique, QoS approprié, structure de topics cohérente, gestion des déconnexions; fonctionne via WiFi ET LTE |
+| **5** | Communication optimale : WSS sécurisé fonctionnel, heartbeat régulier, support WiFi ET LTE testé et validé, architecture MQTT bien conçue |
 
 ---
 
@@ -139,36 +139,6 @@
 
 ---
 
-## Partie 5 : Documentation et Git (10%)
-
-### Critère 5.1 : Utilisation de Git et organisation du dépôt (5%)
-
-*Capacité 1 : Concevoir et programmer des objets connectés*
-
-| Niveau | Descripteur |
-|:------:|-------------|
-| **0** | Aucun commit ou dépôt non accessible |
-| **1** | Très peu de commits; messages non descriptifs; fichiers manquants |
-| **2** | Commits présents mais irréguliers; organisation des fichiers confuse |
-| **3** | **Seuil :** Branche personnelle créée correctement; commits réguliers avec messages descriptifs; tous les fichiers requis présents |
-| **4** | Historique Git propre; messages de commit clairs et informatifs; bonne organisation des fichiers |
-| **5** | Utilisation exemplaire de Git : commits atomiques, messages suivant les conventions, .gitignore approprié, structure de projet claire |
-
-### Critère 5.2 : Documentation et qualité du code (5%)
-
-*Capacité 1 : Concevoir et programmer des objets connectés*
-
-| Niveau | Descripteur |
-|:------:|-------------|
-| **0** | Aucune documentation; code illisible |
-| **1** | Documentation très insuffisante; code difficile à comprendre |
-| **2** | Commentaires minimaux; code partiellement documenté |
-| **3** | **Seuil :** Fichiers de configuration documentés (auth.h, mqtt_config.py); commentaires essentiels présents; code lisible |
-| **4** | Documentation claire : README avec instructions, commentaires pertinents, nommage cohérent des variables |
-| **5** | Documentation professionnelle : guide d'installation complet, commentaires explicatifs, code propre et maintenable |
-
----
-
 ## Tableau récapitulatif
 
 | Partie | Critère | Pondération | Note /5 | Points |
@@ -178,11 +148,9 @@
 | **2. Interface Python** | 2.1 Interface curses et événements | 15% | /5 | |
 | | 2.2 Communication série | 10% | /5 | |
 | **3. LilyGO** | 3.1 Contrôle des LEDs | 10% | /5 | |
-| | 3.2 Communication MQTT | 15% | /5 | |
+| | 3.2 Communication MQTT | 25% | /5 | |
 | **4. Intégration** | 4.1 Circuit breadboard | 10% | /5 | |
 | | 4.2 Boutons physiques MQTT | 5% | /5 | |
-| **5. Documentation** | 5.1 Git et organisation | 5% | /5 | |
-| | 5.2 Documentation et code | 5% | /5 | |
 | | **TOTAL** | **100%** | | **/100** |
 
 ---
@@ -192,8 +160,8 @@
 Pour chaque critère :
 $$\text{Points} = \text{Note sur 5} \times \frac{\text{Pondération}}{5}$$
 
-**Exemple :** Critère 3.2 Communication MQTT (15%), note 4/5
-$$\text{Points} = 4 \times \frac{15}{5} = 4 \times 3 = 12 \text{ points}$$
+**Exemple :** Critère 3.2 Communication MQTT (25%), note 4/5
+$$\text{Points} = 4 \times \frac{25}{5} = 4 \times 5 = 20 \text{ points}$$
 
 **Note finale du laboratoire :** Somme des points sur 100, puis ×0.15 pour la pondération dans le cours.
 
@@ -203,7 +171,7 @@ $$\text{Points} = 4 \times \frac{15}{5} = 4 \times 3 = 12 \text{ points}$$
 
 | Capacité | Critères associés | Pondération |
 |----------|-------------------|:-----------:|
-| **Capacité 1** : Concevoir et programmer des objets connectés | 1.1, 1.2, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1, 5.2 | 100% |
+| **Capacité 1** : Concevoir et programmer des objets connectés | 1.1, 1.2, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2 | 100% |
 
 ---
 
