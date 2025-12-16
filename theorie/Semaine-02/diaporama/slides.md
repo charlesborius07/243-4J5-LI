@@ -30,6 +30,200 @@ Semaine 2 - Protocole MQTT et communication sans fil
 layout: section
 ---
 
+# Récapitulatif
+## Où en sommes-nous?
+
+---
+
+# La semaine dernière...
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+### Problèmes résolus
+
+<v-clicks>
+
+- **Programmer à distance** → RPi comme relais
+- **Se connecter au RPi** → SSH
+- **Pas d'IP publique** → Cloudflare Tunnel
+- **Synchroniser le code** → Git
+- **Coder efficacement** → Claude Code
+- **Compiler sans GUI** → Arduino CLI
+
+</v-clicks>
+
+</div>
+
+<div>
+
+<v-click>
+
+```mermaid {scale: 0.8}
+graph TB
+    YOU[Vous] -->|SSH via Cloudflare| RPI[RPi]
+    RPI -->|Arduino CLI| LILY[LilyGO]
+
+    style YOU fill:#6f6
+    style RPI fill:#69f
+    style LILY fill:#f96
+```
+
+</v-click>
+
+<v-click>
+
+<div class="mt-4 p-2 bg-green-500 bg-opacity-20 rounded-lg text-sm">
+
+On peut maintenant **programmer** le LilyGO à distance!
+
+</div>
+
+</v-click>
+
+</div>
+
+</div>
+
+---
+
+# Mais il manque quelque chose...
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+### On sait programmer, mais...
+
+<v-clicks>
+
+- Comment le LilyGO **envoie** ses données?
+- Comment le RPi **reçoit** les mesures?
+- Comment **commander** le LilyGO depuis le RPi?
+- Comment faire communiquer **plusieurs appareils**?
+
+</v-clicks>
+
+</div>
+
+<div>
+
+<v-click>
+
+```mermaid {scale: 1.4}
+graph LR
+    LILY[LilyGO] -.->|"???"| RPI[RPi]
+    RPI -.->|"???"| LILY
+
+    style LILY fill:#f96
+    style RPI fill:#69f
+```
+
+</v-click>
+
+<v-click>
+
+<div class="mt-4 p-2 bg-yellow-500 bg-opacity-20 rounded-lg text-sm">
+
+**Nouveau problème** : Les appareils doivent pouvoir **communiquer** entre eux!
+
+</div>
+
+</v-click>
+
+</div>
+
+</div>
+
+---
+
+# Options de communication
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+### Ce qu'on pourrait utiliser
+
+| Protocole | Problème |
+|-----------|----------|
+| HTTP REST | Lourd, polling constant |
+| Raw TCP | Complexe à gérer |
+| Serial USB | Pas sans fil! |
+| Email | Sérieusement? |
+
+</div>
+
+<div>
+
+<v-click>
+
+### Ce qu'il nous faut
+
+- **Léger** (batterie limitée)
+- **Bidirectionnel** (envoyer ET recevoir)
+- **Sans fil** (WiFi/LTE)
+- **Fiable** (messages importants)
+- **Sécurisé** (données sensibles)
+
+</v-click>
+
+<v-click>
+
+<div class="mt-2 p-2 bg-green-500 bg-opacity-20 rounded-lg text-center">
+
+**Solution** : MQTT
+
+Le protocole conçu pour l'IoT!
+
+</div>
+
+</v-click>
+
+</div>
+
+</div>
+
+---
+
+# Notre chaîne s'agrandit
+
+```mermaid {scale: 0.6}
+graph LR
+    subgraph "Semaine 1"
+        YOU[Vous] -->|SSH| CF[Cloudflare]
+        CF --> RPI[RPi]
+        RPI -->|Arduino CLI| LILY[LilyGO]
+    end
+
+    subgraph "Semaine 2"
+        LILY2[LilyGO] <-->|MQTT| MOSQ[Mosquitto]
+        MOSQ <--> UI[Interface]
+    end
+
+    RPI -.-> MOSQ
+
+    style YOU fill:#6f6
+    style RPI fill:#69f
+    style LILY fill:#f96
+    style MOSQ fill:#f9f
+```
+
+<v-click>
+
+<div class="mt-4 p-3 bg-blue-500 bg-opacity-20 rounded-lg text-center">
+
+**Cette semaine** : On ajoute la **communication** entre le LilyGO et le RPi avec MQTT
+
+</div>
+
+</v-click>
+
+---
+layout: section
+---
+
 # Partie 1
 ## Introduction à MQTT
 
@@ -238,30 +432,32 @@ Correspond à:
 
 # QoS - Quality of Service
 
-<div class="mt-4">
+<div class="grid grid-cols-3 gap-2">
 
-```mermaid {scale: 0.65}
-graph LR
-    subgraph "QoS 0 - At Most Once"
-        P0[Publisher] -->|Message| B0[Broker]
-        B0 -->|Message| S0[Subscriber]
-    end
+<div class="text-center">
+
+**QoS 0** - At Most Once
+
+```mermaid {scale: 1}
+graph TB
+    P[Publisher] -->|Message| B[Broker]
+    B -->|Message| S[Subscriber]
 ```
 
 </div>
 
 <v-click>
 
-<div class="mt-2">
+<div class="text-center">
 
-```mermaid {scale: 0.65}
-graph LR
-    subgraph "QoS 1 - At Least Once"
-        P1[Publisher] -->|Message| B1[Broker]
-        B1 -->|PUBACK| P1
-        B1 -->|Message| S1[Subscriber]
-        S1 -->|PUBACK| B1
-    end
+**QoS 1** - At Least Once
+
+```mermaid {scale: 1}
+graph TB
+    P[Publisher] -->|Message| B[Broker]
+    B -->|PUBACK| P
+    B -->|Message| S[Subscriber]
+    S -->|PUBACK| B
 ```
 
 </div>
@@ -270,21 +466,23 @@ graph LR
 
 <v-click>
 
-<div class="mt-2">
+<div class="text-center">
 
-```mermaid {scale: 0.65}
-graph LR
-    subgraph "QoS 2 - Exactly Once"
-        P2[Publisher] -->|PUBLISH| B2[Broker]
-        B2 -->|PUBREC| P2
-        P2 -->|PUBREL| B2
-        B2 -->|PUBCOMP| P2
-    end
+**QoS 2** - Exactly Once
+
+```mermaid {scale: 0.9}
+graph TB
+    P[Publisher] -->|PUBLISH| B[Broker]
+    B -->|PUBREC| P
+    P -->|PUBREL| B
+    B -->|PUBCOMP| P
 ```
 
 </div>
 
 </v-click>
+
+</div>
 
 ---
 
@@ -546,7 +744,67 @@ mosquitto_pub -h localhost \
 
 ---
 
-# WebSocket - Communication temps réel
+# Problème : MQTT à travers Cloudflare?
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+### MQTT standard
+
+- Port **1883** (TCP brut)
+- Ou port **8883** (TLS)
+- Protocole **binaire** propriétaire
+
+### Cloudflare Tunnel
+
+- Ne supporte que **HTTP/HTTPS**
+- Port **443** uniquement
+- Protocole **web** standard
+
+</div>
+
+<div>
+
+<v-click>
+
+```mermaid {scale: 0.55}
+graph LR
+    LILY[LilyGO] -->|"MQTT :1883"| CF[Cloudflare]
+    CF -.->|"❌ Bloqué!"| MOSQ[Mosquitto]
+
+    style CF fill:#f66
+```
+
+</v-click>
+
+<v-click>
+
+<div class="mt-4 p-2 bg-yellow-500 bg-opacity-20 rounded-lg text-sm">
+
+**Problème** : Cloudflare ne laisse pas passer le protocole MQTT natif!
+
+</div>
+
+</v-click>
+
+<v-click>
+
+<div class="mt-2 p-2 bg-green-500 bg-opacity-20 rounded-lg text-sm">
+
+**Solution** : Encapsuler MQTT dans WebSocket (protocole web)
+
+</div>
+
+</v-click>
+
+</div>
+
+</div>
+
+---
+
+# WebSocket - Le pont vers MQTT
 
 ### Pourquoi WebSocket?
 
@@ -554,20 +812,12 @@ mosquitto_pub -h localhost \
 
 <div>
 
-**HTTP traditionnel**
-```
-Client ──► GET /data ──► Server
-Client ◄── Response ◄── Server
-Client ──► GET /data ──► Server
-Client ◄── Response ◄── Server
-(polling répétitif)
-```
+**Le principe**
 
-**WebSocket**
+WebSocket = connexion **bidirectionnelle persistante** qui passe par le port **443** (HTTPS)
+
 ```
-Client ◄──────────────► Server
-       connexion bidirectionnelle
-       persistante
+MQTT  →  WebSocket  →  HTTPS  →  Cloudflare  →  OK!
 ```
 
 </div>
@@ -576,14 +826,14 @@ Client ◄──────────────► Server
 
 ### Avantages
 
-- **Temps réel** - Push instantané
-- **Efficace** - Pas de polling
-- **Bidirectionnel** - Les deux sens
-- **Compatible navigateur** - JavaScript natif
+- **Port 443** - Passe partout (pare-feux, proxies)
+- **Bidirectionnel** - Parfait pour MQTT
+- **TLS natif** - Sécurisé (WSS)
+- **Compatible Cloudflare** - C'est du web!
 
 ### MQTT over WebSocket
 
-Permet aux navigateurs web de communiquer en MQTT!
+Mosquitto écoute sur le port **9001** en WebSocket, Cloudflare le tunnel vers l'extérieur.
 
 </div>
 
@@ -637,6 +887,62 @@ layout: section
 
 ---
 
+# Problème : Le WiFi du Cégep
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+### WiFi à la maison
+
+```cpp
+// Simple!
+WiFi.begin("MonWiFi", "motdepasse123");
+```
+
+<v-click>
+
+### WiFi au Cégep
+
+```cpp
+// ???
+WiFi.begin("CegepWiFi", ???);
+// Un mot de passe ne suffit pas!
+```
+
+</v-click>
+
+</div>
+
+<div>
+
+<v-click>
+
+### Le problème
+
+Le réseau du Cégep utilise **WPA-Enterprise** :
+- Identifiant **personnel** (DA)
+- Mot de passe **individuel**
+- Pas un simple mot de passe partagé
+
+</v-click>
+
+<v-click>
+
+<div class="mt-4 p-2 bg-yellow-500 bg-opacity-20 rounded-lg text-sm">
+
+L'ESP32 doit s'authentifier avec **votre compte** du Cégep, pas juste un mot de passe WiFi!
+
+</div>
+
+</v-click>
+
+</div>
+
+</div>
+
+---
+
 # WPA-EAP vs WPA-PSK
 
 <div class="grid grid-cols-2 gap-6">
@@ -682,7 +988,7 @@ Pass: personnel123
 
 # Architecture WPA-EAP
 
-```mermaid {scale: 0.7}
+```mermaid {scale: 0.6}
 graph LR
     subgraph "Client"
         DEV[Appareil WiFi]
@@ -754,6 +1060,49 @@ layout: section
 
 ---
 
+# On assemble les pièces du puzzle
+
+<div class="text-center mb-4">
+
+Tout ce qu'on a construit jusqu'ici va **enfin servir**!
+
+</div>
+
+```mermaid {scale: 0.55}
+graph LR
+    subgraph "Sem. 1 : Infrastructure"
+        YOU[Vous] -->|SSH| CF[Cloudflare]
+        CF --> RPI[RPi]
+        RPI -->|Arduino CLI| CODE[Code]
+    end
+
+    subgraph "Sem. 2 : Communication"
+        CODE -->|Flash| LILY[LilyGO]
+        LILY <-->|"MQTT via WSS"| CF2[Cloudflare]
+        CF2 <--> MOSQ[Mosquitto]
+        MOSQ <--> UI[Interface]
+    end
+
+    CF -.-> CF2
+
+    style YOU fill:#6f6
+    style RPI fill:#69f
+    style LILY fill:#f96
+    style MOSQ fill:#f9f
+```
+
+<v-click>
+
+<div class="mt-2 p-2 bg-green-500 bg-opacity-20 rounded-lg text-sm text-center">
+
+Le tunnel Cloudflare sert **deux fois** : SSH pour programmer, WSS pour communiquer!
+
+</div>
+
+</v-click>
+
+---
+
 # Objectifs du Labo 2
 
 <div class="text-xl mb-6">
@@ -799,46 +1148,36 @@ graph LR
 
 # Architecture détaillée
 
-```mermaid {scale: 0.6}
-graph TB
-    subgraph "LilyGO A7670G"
-        direction TB
+```mermaid {scale: 0.55}
+graph LR
+    subgraph LILY["LilyGO A7670G"]
         ESP32[ESP32]
-        MODEM[Modem A7670G]
-
-        subgraph "GPIO"
-            LED_R[LED Rouge - GPIO 32]
-            LED_G[LED Verte - GPIO 33]
-            BTN_1[Bouton 1 - GPIO 34]
-            BTN_2[Bouton 2 - GPIO 35]
-        end
-
+        GPIO[GPIO: LEDs + Boutons]
+        MODEM[Modem LTE]
         ESP32 --> GPIO
         ESP32 --> MODEM
     end
 
-    subgraph "Réseau"
-        WIFI[WiFi Cégep<br/>WPA-EAP]
-        CELL[Réseau cellulaire<br/>LTE Cat-1]
+    subgraph NET["Réseau"]
+        WIFI[WiFi WPA-EAP]
+        CELL[LTE Cat-1]
     end
 
-    subgraph "Cloudflare"
-        CF_EDGE[Edge Network]
-        CF_TUNNEL[Tunnel]
+    subgraph CF["Cloudflare"]
+        EDGE[Edge + Tunnel]
     end
 
-    subgraph "Raspberry Pi 5"
-        MOSQUITTO[Mosquitto<br/>:9001 WSS]
-        PYTHON_UI[Interface Python<br/>Écran tactile]
+    subgraph RPI["Raspberry Pi 5"]
+        MOSQ[Mosquitto :9001]
+        UI[Interface Python]
+        MOSQ <--> UI
     end
 
-    ESP32 -->|Option 1| WIFI
-    MODEM -->|Option 2| CELL
-    WIFI --> CF_EDGE
-    CELL --> CF_EDGE
-    CF_EDGE --> CF_TUNNEL
-    CF_TUNNEL --> MOSQUITTO
-    MOSQUITTO <--> PYTHON_UI
+    ESP32 -->|WiFi| WIFI
+    MODEM -->|Cellulaire| CELL
+    WIFI --> EDGE
+    CELL --> EDGE
+    EDGE --> MOSQ
 ```
 
 ---
@@ -875,32 +1214,44 @@ etudiant/{prenom-nom}/
 
 # Connexion via Cloudflare Tunnel
 
-### Pourquoi passer par Cloudflare?
+<div class="grid grid-cols-2 gap-4">
 
-```mermaid {scale: 0.65}
+<div>
+
+### Sans Cloudflare
+
+```mermaid {scale: 0.7}
 graph LR
-    subgraph "Sans Cloudflare"
-        L1[LilyGO] -->|❌ Bloqué| FW[Pare-feu<br/>NAT]
-        FW -->|❌| R1[RPi]
-    end
+    L1[LilyGO] -->|"❌ Bloqué"| FW[NAT]
+    FW -.->|"❌"| R1[RPi]
+    style FW fill:#f66
 ```
 
-```mermaid {scale: 0.65}
+</div>
+
+<div>
+
+### Avec Cloudflare
+
+```mermaid {scale: 0.7}
 graph LR
-    subgraph "Avec Cloudflare Tunnel"
-        L2[LilyGO] -->|WSS :443| CF2[mqtt.domaine.com]
-        CF2 -->|Tunnel| R2[RPi :9001]
-    end
+    L2[LilyGO] -->|"WSS :443"| CF[Cloudflare]
+    CF -->|Tunnel| R2[RPi]
+    style CF fill:#6f6
 ```
+
+</div>
+
+</div>
 
 <v-click>
 
 ### Avantages
 
-- ✅ Pas besoin d'IP publique sur le RPi
+- ✅ Pas d'IP publique sur le RPi
 - ✅ Pas de configuration routeur
 - ✅ Chiffrement de bout en bout
-- ✅ Fonctionne depuis n'importe où (WiFi ou LTE)
+- ✅ Fonctionne depuis n'importe où
 
 </v-click>
 
@@ -1022,6 +1373,29 @@ GPIO 35 ──[BTN 2]── GND
 </v-click>
 
 ---
+
+# Récapitulatif : La chaîne s'allonge
+
+| Semaine | Problème | Solution |
+|:-------:|----------|----------|
+| 1 | Programmer à distance | RPi + SSH + Cloudflare |
+| 1 | Synchroniser le code | Git |
+| 1 | Coder efficacement | Claude Code / IA CLI |
+| 1 | Compiler sans GUI | Arduino CLI |
+| **2** | **Communiquer entre appareils** | **MQTT + Mosquitto** |
+| **2** | **Accès MQTT sans IP publique** | **Cloudflare WSS** |
+
+<v-click>
+
+<div class="mt-4 p-3 bg-blue-500 bg-opacity-20 rounded-lg text-center">
+
+**Prochaine étape** : Finaliser la communication et préparer le montage breadboard pour le PCB!
+
+</div>
+
+</v-click>
+
+---
 layout: center
 class: text-center
 ---
@@ -1029,7 +1403,11 @@ class: text-center
 # Questions?
 
 <div class="text-xl mt-8">
-Semaine prochaine: Communication LTE et préparation à l'évaluation
+Semaine prochaine: Finalisation communication + début montage breadboard
+</div>
+
+<div class="text-sm mt-4 opacity-70">
+Évaluation "Laboratoire capteurs et Python" en semaine 3
 </div>
 
 ---

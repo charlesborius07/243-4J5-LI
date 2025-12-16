@@ -30,6 +30,159 @@ Semaine 3 - Communication LTE et sécurité IoT
 layout: section
 ---
 
+# Récapitulatif
+## Notre chaîne IoT jusqu'ici
+
+---
+
+# Les semaines précédentes
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+### Semaine 1 : Infrastructure
+
+<v-clicks>
+
+- RPi comme station distante
+- SSH + Cloudflare Tunnel
+- Git pour synchroniser
+- Claude Code pour coder
+- Arduino CLI pour compiler
+
+</v-clicks>
+
+</div>
+
+<div>
+
+### Semaine 2 : Communication
+
+<v-clicks>
+
+- MQTT pour échanger des données
+- Mosquitto comme broker
+- WebSocket via Cloudflare
+- WiFi Enterprise (WPA-EAP)
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<v-click>
+
+<div class="mt-4 p-2 bg-green-500 bg-opacity-20 rounded-lg text-center">
+
+On peut **programmer** à distance et **communiquer** via WiFi!
+
+</div>
+
+</v-click>
+
+---
+
+# Mais il reste un problème...
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+### Le WiFi a ses limites
+
+<v-clicks>
+
+- Portée **~100 mètres** maximum
+- Nécessite une **infrastructure**
+- Pas de **mobilité** réelle
+- Zones rurales = **aucun WiFi**
+
+</v-clicks>
+
+<v-click>
+
+**Et si notre capteur est sur un tracteur? Dans une forêt? Sur un camion de livraison?**
+
+</v-click>
+
+</div>
+
+<div>
+
+<v-click>
+
+```mermaid {scale: 0.6}
+graph TB
+    subgraph "Avec WiFi"
+        LILY1[LilyGO] -->|WiFi| AP[Access Point]
+        AP --> INET1[Internet]
+    end
+
+    subgraph "Sans WiFi ?"
+        LILY2[LilyGO] -.->|"❌ ???"| INET2[Internet]
+    end
+
+    style LILY2 fill:#f96
+```
+
+</v-click>
+
+<v-click>
+
+<div class="mt-2 p-2 bg-green-500 bg-opacity-20 rounded-lg text-center text-sm">
+
+**Solution** : Communication cellulaire LTE
+
+Le réseau mobile est partout!
+
+</div>
+
+</v-click>
+
+</div>
+
+</div>
+
+---
+
+# Notre chaîne s'enrichit encore
+
+```mermaid {scale: 0.55}
+graph LR
+    subgraph "Infrastructure (Sem. 1)"
+        YOU[Vous] -->|SSH| CF[Cloudflare]
+        CF --> RPI[RPi]
+    end
+
+    subgraph "Communication (Sem. 2-3)"
+        RPI --> MOSQ[Mosquitto]
+        LILY[LilyGO] -->|WiFi| CF2[Cloudflare]
+        LILY -->|"LTE 📱"| CF2
+        CF2 <--> MOSQ
+    end
+
+    style YOU fill:#6f6
+    style RPI fill:#69f
+    style LILY fill:#f96
+    style MOSQ fill:#f9f
+```
+
+<v-click>
+
+<div class="mt-4 p-3 bg-blue-500 bg-opacity-20 rounded-lg text-center">
+
+**Cette semaine** : Ajouter le LTE pour que le LilyGO fonctionne **n'importe où**!
+
+</div>
+
+</v-click>
+
+---
+layout: section
+---
+
 # Partie 1
 ## Communication cellulaire LTE
 
