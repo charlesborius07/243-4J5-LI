@@ -909,7 +909,7 @@ layout: section
 
 ### Idées d'applications
 
-Le shield s'interface avec l'**écran tactile du RPi**!
+Le shield s'interface avec le **LilyGO** qui échange avec le **RPi** (écran tactile)!
 
 <v-clicks>
 
@@ -941,7 +941,7 @@ Le shield s'interface avec l'**écran tactile du RPi**!
 | 7 | 2 | 3 |
 | 8 | 1 | 4 |
 
-<div class="text-xs">+ accéléromètre + GPS pour tous</div>
+<div class="text-xs">**Obligatoire pour tous :**<br/>Accéléromètre + connecteurs LilyGO</div>
 
 </v-click>
 
@@ -961,11 +961,11 @@ Le shield s'interface avec l'**écran tactile du RPi**!
 
 <v-clicks>
 
-- Quel **problème** je veux résoudre?
-- Quels **capteurs** me faut-il?
-- Quelles **données** à transmettre?
-- Quelle **interface** utilisateur?
-- Quelles **contraintes** physiques?
+- Quelle **application** je veux créer?
+- Comment utiliser mes **boutons/LEDs**?
+- Quelles **données** envoyer via MQTT?
+- Quelle **interface** sur le RPi?
+- Comment exploiter l'**accéléromètre**?
 
 </v-clicks>
 
@@ -978,10 +978,10 @@ Le shield s'interface avec l'**écran tactile du RPi**!
 ### Livrables attendus
 
 1. **Description** du projet (1 page)
-2. **Liste des composants**
-3. **Schéma fonctionnel**
-4. **Topics MQTT** prévus
-5. **Maquette** interface Python
+2. **Schéma fonctionnel** (LilyGO ↔ RPi)
+3. **Topics MQTT** prévus
+4. **Maquette** interface Python
+5. **Brochage** GPIO du shield
 
 </v-click>
 
