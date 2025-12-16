@@ -271,40 +271,13 @@ layout: section
 
 # Architecture Publish/Subscribe
 
-```mermaid {scale: 0.75}
-graph TB
-    subgraph "Publishers"
-        P1[Capteur Temp]
-        P2[Capteur Humidité]
-        P3[Capteur Mouvement]
-    end
-
-    subgraph "Broker MQTT"
-        B[Mosquitto]
-    end
-
-    subgraph "Subscribers"
-        S1[Dashboard]
-        S2[Application Mobile]
-        S3[Système Alerte]
-    end
-
-    P1 -->|publish| B
-    P2 -->|publish| B
-    P3 -->|publish| B
-
-    B -->|deliver| S1
-    B -->|deliver| S2
-    B -->|deliver| S3
-```
+<MQTTVisualizer />
 
 <v-click>
 
-<div class="mt-4 text-center">
+<div class="mt-2 text-center text-sm">
 
-Les **publishers** et **subscribers** ne se connaissent pas directement.
-
-Le **broker** gère tout le routage des messages.
+Les **publishers** et **subscribers** ne se connaissent pas directement. Le **broker** gère tout le routage.
 
 </div>
 

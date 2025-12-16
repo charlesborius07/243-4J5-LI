@@ -16,6 +16,10 @@ Structure du projet
 │   └── Labo-XX/
 │       └── Laboratoire XX - *.md
 │
+├── evaluations/             # Évaluations sommatives et formatives
+│   └── Evaluation-XX/
+│       └── *.md
+│
 ├── Plan de cours - *.md     # Plan de cours global
 └── CLAUDE.md
 Présentations Slidev (diaporama/)
@@ -194,6 +198,34 @@ Les plans de séquence et notes de cours suivent ce format :
 
 ## Évaluation
 ...
+
+Évaluations (evaluations/)
+Les évaluations sont organisées par dossier dans `evaluations/Evaluation-XX/`.
+
+Structure type d'une évaluation
+# Évaluation XX - Titre
+
+## Informations
+- **Date** : JJ/MM/AAAA
+- **Durée** : XX minutes
+- **Pondération** : XX%
+- **Documents permis** : ...
+
+## Objectifs évalués
+- Objectif 1
+- Objectif 2
+
+## Questions
+
+### Question 1 (XX points)
+...
+
+### Question 2 (XX points)
+...
+
+## Barème de correction
+...
+
 Conventions générales
 Langue
 Contenu en français
@@ -202,6 +234,7 @@ Pas d'emojis sauf si explicitement demandé
 Nommage des fichiers
 Semaines : Semaine-XX/ (avec zéro de remplissage)
 Laboratoires : Labo-XX/Laboratoire XX - Titre descriptif.md
+Évaluations : Evaluation-XX/Evaluation XX - Titre descriptif.md
 Composants Vue : PascalCase.vue (ex: SmithChartDemo.vue)
 Images : kebab-case.png
 Git

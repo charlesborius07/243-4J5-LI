@@ -102,38 +102,10 @@ graph TD
 </v-click>
 
 ---
-layout: center
----
 
 # Architecture typique IoT
 
-```mermaid {scale: 0.6}
-graph LR
-    subgraph Perception
-        S1[Temp.]
-        S2[Humidité]
-        S3[Accéléro.]
-    end
-
-    subgraph Réseau
-        G[Gateway]
-        N[MQTT/LoRa/WiFi]
-    end
-
-    subgraph Application
-        C[Cloud]
-        A[Apps]
-        D[Dashboard]
-    end
-
-    S1 --> G
-    S2 --> G
-    S3 --> G
-    G --> N
-    N --> C
-    C --> A
-    C --> D
-```
+<IoTArchitectureDemo />
 
 ---
 

@@ -1,6 +1,6 @@
 # Projet de mi-session — Système IoT complet avec Shield LilyGO A7670G
 
-> Objectif : concevoir un **système IoT complet** intégrant un shield PCB pour le LilyGO A7670G, un programme embarqué, la communication MQTT et une interface sur Raspberry Pi 5.
+> Objectif : concevoir un **système IoT complet** intégrant un shield PCB pour le LilyGO A7670G, un programme embarqué, la communication MQTT et une interface sur Raspberry Pi 5 (écran tactile).
 
 ---
 
@@ -11,30 +11,42 @@ Ce projet combine toutes les compétences acquises depuis le début de la sessio
 ```
 ┌─────────────────────┐         MQTT/LTE          ┌─────────────────────┐
 │  LilyGO A7670G      │ ─────────────────────────▶│  Raspberry Pi 5     │
-│  + Shield PCB       │                           │                     │
-│                     │                           │  • Broker Mosquitto │
-│  • 2 DELs           │◀───────────────────────── │  • Interface Python │
-│  • 2 Boutons        │      Commandes MQTT       │  • Cloudflare Tunnel│
-│  • 2 Potentiomètres │                           │                     │
-│  • Accéléromètre    │                           └─────────────────────┘
-└─────────────────────┘
+│  + Shield PCB       │                           │  (écran tactile)    │
+│                     │                           │                     │
+│  • Boutons (1-3)    │◀───────────────────────── │  • Broker Mosquitto │
+│  • LEDs (1-4)       │      Commandes MQTT       │  • Interface Python │
+│  • Accéléromètre    │                           │  • Cloudflare Tunnel│
+│  • Connecteurs      │                           │                     │
+└─────────────────────┘                           └─────────────────────┘
 ```
 
 ---
 
 ## Partie 1 : Shield PCB
 
-### Cahier des charges matériel
+### Assignation des composants par étudiant
 
-Concevez un shield qui intègre:
+Chaque étudiant reçoit une assignation différente de boutons et LEDs :
 
-| Composant | Quantité | Spécifications |
-|-----------|----------|----------------|
-| DELs | 2 | Avec résistances de limitation (330Ω) |
-| Boutons poussoirs | 2 | Avec pull-up/pull-down appropriés |
-| Potentiomètres | 2 | 10kΩ pour entrées analogiques |
-| Accéléromètre | 1 | MPU6050 ou ADXL345 (I2C) |
-| Connecteurs | - | Headers compatibles LilyGO A7670G |
+| Étudiant | Boutons | LEDs |
+|:--------:|:-------:|:----:|
+| 1 | 2 | 1 |
+| 2 | 1 | 2 |
+| 3 | 3 | 1 |
+| 4 | 1 | 3 |
+| 5 | 2 | 2 |
+| 6 | 3 | 2 |
+| 7 | 2 | 3 |
+| 8 | 1 | 4 |
+
+### Composants obligatoires pour tous
+
+| Composant | Spécifications |
+|-----------|----------------|
+| LEDs | Selon assignation, avec résistances de limitation (330Ω) |
+| Boutons poussoirs | Selon assignation, avec pull-up/pull-down appropriés |
+| Accéléromètre | MPU6050 ou ADXL345 (I2C) |
+| Connecteurs | Headers compatibles LilyGO A7670G (obligatoire) |
 
 ### Livrables PCB
 
@@ -51,10 +63,10 @@ Concevez un shield qui intègre:
 
 Le programme sur le LilyGO A7670G doit:
 
-1. **Lire les capteurs** du shield (boutons, potentiomètres, accéléromètre)
-2. **Contrôler les actionneurs** (DELs)
+1. **Lire les capteurs** du shield (boutons, accéléromètre)
+2. **Contrôler les actionneurs** (LEDs)
 3. **Publier les données** vers le broker MQTT sur le Raspberry Pi 5 via LTE
-4. **Recevoir des commandes** MQTT pour contrôler les DELs ou modifier le comportement
+4. **Recevoir des commandes** MQTT pour contrôler les LEDs ou modifier le comportement
 
 ### Structure MQTT suggérée
 
@@ -62,59 +74,62 @@ Le programme sur le LilyGO A7670G doit:
 Votre topic racine: etudiant/{prenom-nom}/
 
 Publications (LilyGO → Broker):
-  etudiant/{prenom-nom}/sensors/buttons      → {"btn1": true, "btn2": false}
-  etudiant/{prenom-nom}/sensors/pots         → {"pot1": 512, "pot2": 1023}
+  etudiant/{prenom-nom}/sensors/buttons      → {"btn1": true, "btn2": false, ...}
   etudiant/{prenom-nom}/sensors/accel        → {"x": 0.12, "y": -0.05, "z": 9.81}
   etudiant/{prenom-nom}/status               → {"uptime": 3600, "rssi": -65}
 
 Souscriptions (Broker → LilyGO):
   etudiant/{prenom-nom}/actuators/led1       → {"state": "on"} ou {"state": "off"}
   etudiant/{prenom-nom}/actuators/led2       → {"state": "on"} ou {"state": "off"}
+  ...                                        → (selon le nb de LEDs assignées)
   etudiant/{prenom-nom}/config               → {"interval": 1000}
 ```
 
+> **Note:** Le nombre de boutons et LEDs varie selon votre assignation. Adaptez les topics en conséquence.
+
 ---
 
-## Partie 3 : Interface Raspberry Pi 5
+## Partie 3 : Interface Raspberry Pi 5 (écran tactile)
 
 ### Exigences
 
 L'interface Python sur le Raspberry Pi 5 doit:
 
 1. **Afficher les données** reçues des capteurs en temps réel
-2. **Permettre le contrôle** des DELs via l'interface
+2. **Permettre le contrôle** des LEDs via l'interface tactile
 3. **Être fonctionnelle** sur l'écran tactile du Raspberry Pi
+4. **Implémenter la logique applicative** de votre projet
 
 ### Fonctionnalités minimales
 
-- Affichage des valeurs des potentiomètres
 - Affichage de l'état des boutons
-- Affichage des données de l'accéléromètre
-- Boutons pour contrôler les DELs à distance
+- Affichage des données de l'accéléromètre (axes X, Y, Z)
+- Boutons tactiles pour contrôler les LEDs à distance
+- Interface adaptée à votre concept de projet (jeu, dashboard, etc.)
 
 ---
 
 ## Partie 4 : Idées de projets (au choix)
 
-La fonctionnalité exacte de votre système est **libre**. Voici des idées pour vous inspirer:
+La fonctionnalité exacte de votre système est **libre**. Le shield s'interface avec le **LilyGO** qui échange avec le **RPi** (écran tactile). Voici des idées pour vous inspirer:
 
 ### Idées simples
 
 | Projet | Description |
 |--------|-------------|
-| **Télécommande IoT** | Les boutons et potentiomètres contrôlent des paramètres affichés sur l'interface Pi |
-| **Moniteur d'inclinaison** | L'accéléromètre détecte l'orientation, les DELs indiquent si l'appareil est à niveau |
+| **Télécommande IoT** | Les boutons du shield contrôlent des paramètres affichés sur l'interface tactile |
+| **Moniteur d'inclinaison** | L'accéléromètre détecte l'orientation, les LEDs indiquent si l'appareil est à niveau |
 | **Compteur d'événements** | Chaque pression de bouton incrémente un compteur affiché sur le Pi |
-| **Dimmer à distance** | Les potentiomètres ajustent l'intensité (PWM) des DELs |
+| **Dashboard IoT** | Monitoring temps réel des capteurs + contrôle des LEDs depuis l'écran tactile |
 
 ### Idées intermédiaires
 
 | Projet | Description |
 |--------|-------------|
-| **Détecteur de mouvement** | L'accéléromètre déclenche une alerte (DEL + notification) lors d'un mouvement |
-| **Jeu Simon** | Séquence de DELs à reproduire avec les boutons, score affiché sur le Pi |
-| **Contrôleur de seuils** | Les potentiomètres définissent des seuils, l'accéléromètre déclenche des alertes |
-| **Tableau de bord véhicule** | Simulation d'indicateurs (vitesse=pot1, régime=pot2, alertes=accéléromètre) |
+| **Jeu de réflexes** | Appuyer sur le bon bouton au bon moment, score affiché sur l'écran tactile |
+| **Jeu Simon** | Séquence de LEDs à reproduire avec les boutons, score affiché sur le Pi |
+| **Détecteur de mouvement** | L'accéléromètre déclenche une alerte (LED + notification) lors d'un mouvement |
+| **Manette de jeu** | Contrôler un jeu affiché sur l'écran tactile du RPi avec les boutons et l'accéléromètre |
 
 ### Idées avancées
 
@@ -122,14 +137,16 @@ La fonctionnalité exacte de votre système est **libre**. Voici des idées pour
 |--------|-------------|
 | **Podomètre IoT** | L'accéléromètre compte les pas, historique affiché sur le Pi |
 | **Système d'alarme** | Armement par bouton, détection par accéléromètre, notification sur le Pi |
-| **Contrôleur MIDI** | Les potentiomètres et boutons envoient des valeurs interprétables comme contrôleur |
-| **Station météo mobile** | Ajout d'un capteur temp/humidité, données GPS incluses |
+| **Tracker GPS** | Position en temps réel sur une carte affichée sur l'écran tactile |
+| **Jeu de labyrinthe** | L'inclinaison (accéléromètre) contrôle une balle sur l'écran tactile |
 
 ### Votre propre idée
 
 Vous pouvez proposer votre propre projet. Il doit:
-- Utiliser **au moins 3 des 4 types d'entrées** (boutons, potentiomètres, accéléromètre)
-- Utiliser **les 2 DELs** comme indicateurs
+- Utiliser vos **boutons** assignés
+- Utiliser vos **LEDs** assignées
+- Utiliser l'**accéléromètre** de façon pertinente
+- Avoir une **interface tactile** sur le RPi
 - Avoir une **logique applicative** cohérente
 - Être **documenté** clairement
 
@@ -204,11 +221,11 @@ Votre projet doit **partir du code développé dans les labos précédents**:
 | `labo1/lilygo-test/lilygo-test.ino` | Test de base du LilyGO |
 
 **À ajouter au code du Labo 2:**
-- Lecture des entrées analogiques (potentiomètres) avec `analogRead()`
 - Lecture des entrées numériques (boutons) avec `digitalRead()`
+- Contrôle des LEDs avec `digitalWrite()`
 - Communication I2C avec l'accéléromètre (bibliothèque MPU6050 ou ADXL345)
 - Publication des données capteurs sur vos topics MQTT
-- Souscription aux topics de commande pour les DELs
+- Souscription aux topics de commande pour les LEDs
 
 #### Interface Python Raspberry Pi (Labos 1 et 2)
 
@@ -219,9 +236,9 @@ Votre projet doit **partir du code développé dans les labos précédents**:
 | `labo1/code/touch_ui.py` | Exemple d'interface pygame |
 
 **À ajouter au code du Labo 2:**
-- Affichage des données des capteurs (potentiomètres, boutons, accéléromètre)
-- Graphiques ou jauges pour visualiser les valeurs
-- Boutons de contrôle pour les DELs distantes
+- Affichage des données des capteurs (boutons, accéléromètre)
+- Graphiques ou jauges pour visualiser les valeurs de l'accéléromètre
+- Boutons tactiles de contrôle pour les LEDs distantes
 - Logique applicative selon votre projet choisi
 
 ### Outils

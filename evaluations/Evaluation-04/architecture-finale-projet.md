@@ -8,7 +8,7 @@
 ```mermaid
 graph TB
     subgraph Device_LTE["📟 LilyGO A7670G + PCB"]
-        PCB["PCB Assemblé<br/>• 2 DELs<br/>• 2 Boutons<br/>• 2 Potentiomètres<br/>• Accéléromètre"]
+        PCB["PCB Assemblé<br/>• LEDs (1-4)<br/>• Boutons (1-3)<br/>• Accéléromètre"]
 
         A7670G["LilyGO A7670G<br/>• ESP32 + LTE Cat-1<br/>• GPS intégré<br/>• Config: WSS:443"]
 
@@ -86,11 +86,11 @@ sequenceDiagram
     participant M as Mosquitto (Pi5)
     participant UI as Interface Tactile
 
-    PCB->>A7670G: Lecture GPIO<br/>(température, boutons)
+    PCB->>A7670G: Lecture GPIO/I2C<br/>(boutons, accéléromètre)
     Note over A7670G: Format JSON
     A7670G->>LTE: MQTT over WSS:443<br/>wss://domain.example.com
     LTE->>CF: Via Cloudflare CDN
-    CF->>M: Tunnel → Port 9001<br/>sensors/temp {"value":22.5}
+    CF->>M: Tunnel → Port 9001<br/>sensors/accel {"x":0.1,"y":0.2}
     M->>UI: Affichage temps réel
     Note over UI: Mise à jour écran tactile
 ```
@@ -126,8 +126,8 @@ sequenceDiagram
 ### LilyGO A7670G + PCB (Communication LTE)
 - ✅ **LilyGO A7670G** (Labos 1-2)
 - 🔄 **PCB assemblé et soudé** (semaine 10)
-- 🔄 **2 DELs et 2 boutons** fonctionnels
-- 🔄 **2 potentiomètres** pour entrées analogiques
+- 🔄 **LEDs** fonctionnelles (selon assignation: 1-4)
+- 🔄 **Boutons** fonctionnels (selon assignation: 1-3)
 - 🔄 **Accéléromètre** (MPU6050/ADXL345) via I2C
 - 🔄 **Communication MQTT via LTE** opérationnelle
 
@@ -153,17 +153,17 @@ sequenceDiagram
 
 ```
 mqtt://
-├── sensors/               # Nœud A7670G + PCB
-│   ├── temperature        # {"value": 22.5, "unit": "C"}
-│   ├── humidity           # {"value": 65, "unit": "%"}
-│   └── gps                # {"lat": 46.8, "lon": -71.2}
+├── etudiant/{prenom-nom}/    # Nœud A7670G + PCB
+│   ├── sensors/
+│   │   ├── buttons           # {"btn1": true, "btn2": false, ...}
+│   │   └── accel             # {"x": 0.12, "y": -0.05, "z": 9.81}
+│   ├── actuators/
+│   │   ├── led1              # {"state": "on" | "off"}
+│   │   └── led2              # {"state": "on" | "off"} ...
+│   └── status                # {"uptime": 3600, "rssi": -65}
 │
-├── actuators/             # Contrôle des LEDs
-│   ├── led/red            # {"state": "on" | "off"}
-│   └── led/green          # {"state": "on" | "off"}
-│
-└── meshtastic/            # Nœud T-Beam distant
-    └── position           # {"lat": 46.8, "lon": -71.2, "alt": 100}
+└── meshtastic/               # Nœud T-Beam distant
+    └── position              # {"lat": 46.8, "lon": -71.2, "alt": 100}
 ```
 
 ---
@@ -180,8 +180,8 @@ mqtt://
 
 **2. Module IoT LTE (LilyGO A7670G + PCB):**
 - PCB assemblé et soudé (semaine 10)
-- 2 DELs et 2 boutons opérationnels
-- 2 potentiomètres pour entrées analogiques
+- LEDs opérationnelles (selon assignation: 1-4)
+- Boutons opérationnels (selon assignation: 1-3)
 - Accéléromètre (MPU6050/ADXL345) fonctionnel
 - Communication MQTT via LTE vers le serveur
 
