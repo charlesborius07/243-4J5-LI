@@ -1,0 +1,1796 @@
+{
+  "nodes": [
+    {
+      "id": 139,
+      "slug": "start",
+      "kind": "start",
+      "display_name": "Début",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 1,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "auto_start": true
+      },
+      "metadata": {
+        "order": 1
+      }
+    },
+    {
+      "id": 140,
+      "slug": "assistant-message-intro",
+      "kind": "assistant_message",
+      "display_name": "Introduction du laboratoire",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 2,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "# Labo 3 — Workflow complet KiCad\n\n**Durée:** 5 heures (2h théorie + 3h pratique)\n\n**Objectif:** Maîtriser le workflow complet de conception PCB avec KiCad, de la capture schématique à la génération des fichiers de fabrication.\n\n## Objectifs d'apprentissage\n\nÀ la fin de ce laboratoire, tu seras capable de:\n- Utiliser GitHub Desktop pour gérer tes fichiers et travailler sur ta branche\n- Créer un projet KiCad et naviguer dans l'interface\n- Réaliser une capture schématique complète avec symboles et connexions\n- Exécuter et corriger les erreurs ERC (Electrical Rules Check)\n- Associer les empreintes (footprints) aux symboles\n- Placer et router un PCB 2 couches\n- Configurer et exécuter le DRC (Design Rules Check)\n- Générer les fichiers de fabrication (Gerbers, drill, BOM)\n\n## 📐 Workflow de conception PCB\n\n```mermaid\nflowchart TD\n    A[📋 1. Schématique] -->|ERC| B{Erreurs?}\n    B -->|Oui| A\n    B -->|Non| C[🔗 2. Association Footprints]\n    C -->|Mise à jour PCB| D[🖥️ 3. Layout PCB]\n    D -->|DRC| E{Erreurs?}\n    E -->|Oui| D\n    E -->|Non| F[📦 4. Fabrication Gerbers + BOM]\n```\n\n## 🛠️ Logiciels requis\n\n- **KiCad 8.0** ou plus récent (télécharger sur kicad.org)\n- **GitHub Desktop** pour Windows\n\n## 🎯 Circuit à réaliser\n\nUn circuit minimaliste pour apprendre le workflow:\n- 1 connecteur 3 broches (VCC, Signal, GND)\n- 1 résistance 330Ω\n- 1 LED\n\n---\n\nAssure-toi d'avoir KiCad et GitHub Desktop installés. Dis-moi quand tu es prêt!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 2
+      }
+    },
+    {
+      "id": 141,
+      "slug": "widget-pret-logiciels",
+      "kind": "widget",
+      "display_name": "Logiciels installés?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 3,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "KiCad et GitHub Desktop sont installés!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 3
+      }
+    },
+    {
+      "id": 142,
+      "slug": "condition-pret-logiciels",
+      "kind": "condition",
+      "display_name": "Logiciels prêts?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 4,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 4
+      }
+    },
+    {
+      "id": 143,
+      "slug": "end-abandon-logiciels",
+      "kind": "end",
+      "display_name": "Fin - Abandon logiciels",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 5,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant pas prêt"
+        },
+        "message": "Reviens quand KiCad et GitHub Desktop seront installés!"
+      },
+      "metadata": {
+        "order": 5
+      }
+    },
+    {
+      "id": 200,
+      "slug": "assistant-message-section0",
+      "kind": "assistant_message",
+      "display_name": "Section 0: Environnement Git",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 10,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 0. Environnement de travail\n\n> **Lien avec le Labo 1:** Tu as appris à utiliser Git en ligne de commande sur le Raspberry Pi (section 4 du Labo 1). Dans ce labo, nous utilisons **GitHub Desktop** sur Windows, qui offre une interface graphique pour les mêmes opérations.\n\n### Correspondance Git CLI ↔ GitHub Desktop\n\n| Git CLI (Labo 1 - Raspberry Pi) | GitHub Desktop (Labo 3 - Windows) |\n|---------------------------------|-----------------------------------|\n| `git clone <url>` | Fichier → Cloner un dépôt |\n| `git checkout -b prenom-nom` | Branche actuelle → Nouvelle branche |\n| `git status` | Onglet **Modifications** (liste automatique) |\n| `git add .` | Cases à cocher dans Modifications (auto) |\n| `git commit -m \"message\"` | Résumé + **Commiter vers branche** |\n| `git push origin branche` | **Pousser origin** |\n| `git fetch origin` | **Récupérer origin** |\n| `git pull origin main` | **Tirer origin** |\n\n### 0.1 Cloner ton fork\n\nAu Labo 1, tu as créé un **fork** du dépôt du cours sur ton compte GitHub.\n\n1. Dans GitHub Desktop: **Fichier → Cloner un dépôt...**\n2. Onglet **GitHub.com** — ton fork `243-4J5-LI` devrait apparaître\n3. Sinon, onglet **URL** et entrer: `https://github.com/VOTRE-USERNAME/243-4J5-LI`\n4. Choisir un emplacement local (ex: `C:\\Users\\VotreNom\\Documents\\GitHub\\`)\n5. Cliquer sur **Cloner**\n\n### 0.2 Travailler sur ta branche\n\nAssure-toi d'être sur ta branche `prenom-nom`:\n\n1. Dans GitHub Desktop, cliquer sur **Branche actuelle** (en haut)\n2. Sélectionner ta branche `prenom-nom`\n\nSi ta branche n'existe pas encore:\n1. **Branche actuelle** → **Nouvelle branche**\n2. Nommer: `prenom-nom` (ex: `jean-tremblay`)\n3. Cliquer sur **Créer une branche**\n\n### 0.3 Structure du projet\n\nCréer ton projet KiCad dans le dépôt:\n\n```\nC:\\Users\\VotreNom\\Documents\\GitHub\\243-4J5-LI\\\n└── labo3-kicad/          ← Ton dossier de travail\n    ├── labo3-kicad.kicad_pro\n    ├── labo3-kicad.kicad_sch\n    ├── labo3-kicad.kicad_pcb\n    └── gerbers/\n```\n\n---\n\nClone ton fork et assure-toi d'être sur ta branche. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 10
+      }
+    },
+    {
+      "id": 201,
+      "slug": "widget-section0-done",
+      "kind": "widget",
+      "display_name": "Git configuré?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 11,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Mon dépôt est cloné et je suis sur ma branche!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 11
+      }
+    },
+    {
+      "id": 202,
+      "slug": "condition-section0-done",
+      "kind": "condition",
+      "display_name": "Git OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 12,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 12
+      }
+    },
+    {
+      "id": 203,
+      "slug": "end-section0-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 0",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 13,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand ton dépôt sera cloné!"
+      },
+      "metadata": {
+        "order": 13
+      }
+    },
+    {
+      "id": 300,
+      "slug": "assistant-message-section1",
+      "kind": "assistant_message",
+      "display_name": "Section 1: Introduction KiCad",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 20,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 1. Introduction à KiCad\n\n### 1.1 Présentation de KiCad\n\nKiCad est une suite logicielle open-source de conception électronique (EDA) qui comprend:\n\n| Application | Fonction |\n|-------------|----------|\n| **KiCad** | Gestionnaire de projet |\n| **Eeschema** | Éditeur de schémas |\n| **PCB Editor** | Éditeur de circuits imprimés |\n| **Footprint Editor** | Éditeur d'empreintes |\n| **Symbol Editor** | Éditeur de symboles |\n| **Gerber Viewer** | Visualiseur de fichiers Gerber |\n| **3D Viewer** | Visualisation 3D du PCB |\n\n### 1.2 Workflow de conception\n\n| Étape | Fichier | Action |\n|-------|---------|--------|\n| 1. Schématique | `*.kicad_sch` | Capture du circuit, symboles, connexions |\n| 2. Footprints | - | Associer chaque symbole à une empreinte physique |\n| 3. Layout PCB | `*.kicad_pcb` | Placement des composants, routage des pistes |\n| 4. Fabrication | `gerbers/` | Génération des fichiers pour le fabricant |\n\n### 1.3 Vérification installation\n\n- Lancer KiCad depuis le menu Démarrer\n- Le gestionnaire de projet doit s'ouvrir sans erreur\n- Vérifier que les bibliothèques sont installées (symboles, empreintes, modèles 3D)\n\n---\n\n## 2. Création du projet\n\n### 2.1 Nouveau projet\n\n1. Lancer **KiCad**\n2. **Fichier → Nouveau projet...**\n3. Naviguer dans ton dépôt `243-4J5-LI`\n4. Créer un nouveau dossier nommé `labo3-kicad`\n5. Cliquer sur **Enregistrer** (le projet prend automatiquement le nom du dossier)\n\nKiCad crée automatiquement:\n- `labo3-kicad.kicad_pro` (fichier projet)\n- `labo3-kicad.kicad_sch` (schématique)\n- `labo3-kicad.kicad_pcb` (PCB)\n\n---\n\nCrée ton projet KiCad dans le dossier `labo3-kicad`. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 20
+      }
+    },
+    {
+      "id": 301,
+      "slug": "widget-section1-done",
+      "kind": "widget",
+      "display_name": "Projet créé?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 21,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Mon projet KiCad est créé dans labo3-kicad!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 21
+      }
+    },
+    {
+      "id": 302,
+      "slug": "condition-section1-done",
+      "kind": "condition",
+      "display_name": "Projet OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 22,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 22
+      }
+    },
+    {
+      "id": 303,
+      "slug": "end-section1-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 23,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand ton projet sera créé!"
+      },
+      "metadata": {
+        "order": 23
+      }
+    },
+    {
+      "id": 400,
+      "slug": "assistant-message-section3",
+      "kind": "assistant_message",
+      "display_name": "Section 3: Capture schématique",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 30,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 3. Capture schématique\n\n### 3.1 Ouvrir l'éditeur de schéma\n\n1. Double-cliquer sur `labo3-kicad.kicad_sch` dans le gestionnaire de projet\n2. L'éditeur **Eeschema** s'ouvre\n\n### 3.2 Raccourcis clavier essentiels\n\n| Raccourci | Action |\n|-----------|--------|\n| `A` | Ajouter un symbole |\n| `P` | Ajouter une alimentation (power) |\n| `W` | Tracer un fil (wire) |\n| `L` | Ajouter un label |\n| `R` | Rotation (pendant le placement) |\n| `M` | Déplacer |\n| `C` | Copier |\n| `E` | Éditer les propriétés |\n| `Delete` | Supprimer |\n| `Ctrl+Z` | Annuler |\n| `F` | Zoom fit |\n\n### 3.3 Ajouter les symboles\n\n1. **Appuyer sur `A`** pour ouvrir la bibliothèque de symboles\n2. Rechercher et placer:\n\n| Composant | Bibliothèque | Symbole |\n|-----------|--------------|--------|\n| Résistance | Device | R |\n| LED | Device | LED |\n| Connecteur | Connector_Generic | Conn_01x03 |\n\n3. **Symboles d'alimentation** (appuyer sur `P`):\n   - `+3.3V` (ou `+3V3`)\n   - `GND`\n\n### 3.4 Éditer les valeurs\n\n1. Double-cliquer sur un composant ou appuyer sur `E`\n2. Modifier le champ **Valeur**:\n\n| Référence | Valeur |\n|-----------|--------|\n| R1 | 330 |\n| D1 | LED_Rouge |\n| J1 | Conn_3pin |\n\n### 3.5 Connecter les composants\n\n1. **Appuyer sur `W`** pour tracer des fils\n2. Cliquer sur une broche, puis sur la broche de destination\n\n**Connexions à réaliser:**\n- Broche 1 du connecteur (VCC) → symbole `+3.3V`\n- Broche 1 du connecteur → une patte de R1\n- Autre patte de R1 → Anode de la LED (triangle)\n- Cathode de la LED (barre) → symbole `GND`\n- Broche 3 du connecteur → symbole `GND`\n\n### 3.6 Annoter les composants\n\n1. **Outils → Annoter la schématique...**\n2. Options: Schématique entière, de gauche à droite\n3. Cliquer sur **Annoter**\n\n---\n\nRéalise le schéma avec tous les composants et connexions. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 30
+      }
+    },
+    {
+      "id": 401,
+      "slug": "widget-section3-done",
+      "kind": "widget",
+      "display_name": "Schéma terminé?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 31,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Mon schéma est complet avec tous les composants connectés!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 31
+      }
+    },
+    {
+      "id": 402,
+      "slug": "condition-section3-done",
+      "kind": "condition",
+      "display_name": "Schéma OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 32,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 32
+      }
+    },
+    {
+      "id": 403,
+      "slug": "end-section3-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 33,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand ton schéma sera terminé!"
+      },
+      "metadata": {
+        "order": 33
+      }
+    },
+    {
+      "id": 500,
+      "slug": "assistant-message-section4",
+      "kind": "assistant_message",
+      "display_name": "Section 4: ERC",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 40,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 4. Vérification électrique (ERC)\n\n### 4.1 Exécuter l'ERC\n\n1. **Inspection → Vérificateur de règles électriques** (ou icône dans la barre d'outils)\n2. Cliquer sur **Exécuter l'ERC**\n\n### 4.2 Types d'erreurs courantes\n\n| Type | Description | Solution |\n|------|-------------|----------|\n| **Broche non connectée** | Une broche n'est reliée à rien | Connecter ou ajouter un flag \"No Connect\" |\n| **Conflit de type** | Deux sorties connectées ensemble | Vérifier le circuit |\n| **Entrée non pilotée** | Entrée sans source | Ajouter pull-up/pull-down |\n| **Alimentation non connectée** | Symbol power isolé | Connecter au réseau |\n\n### 4.3 Flag \"No Connect\"\n\nPour les broches intentionnellement non connectées:\n1. Appuyer sur `Q` ou **Placer → No Connect Flag**\n2. Placer le X sur la broche non utilisée (broche 2 du connecteur)\n\n### 4.4 Power Flags\n\n**Erreur courante:** \"Pin connected to other pins, but not driven by any pin\"\n\nCette erreur apparaît quand KiCad ne détecte pas de source d'alimentation.\n\n**Solution — Ajouter des Power Flags:**\n\n1. Appuyer sur `P` pour ouvrir les symboles d'alimentation\n2. Rechercher **PWR_FLAG**\n3. Placer un PWR_FLAG sur:\n   - La ligne **+3.3V**\n   - La ligne **GND**\n\n```\n    ┌──────────┐\n    │ PWR_FLAG │\n    └────┬─────┘\n         │\n    ─────┴──────── +3.3V ────────\n\n    ─────┬──────── GND ──────────\n         │\n    ┌────┴─────┐\n    │ PWR_FLAG │\n    └──────────┘\n```\n\n### 4.5 Corriger jusqu'à 0 erreur\n\n- L'ERC doit afficher **0 erreurs** et idéalement **0 avertissements**\n- Certains avertissements peuvent être ignorés si justifiés\n\n---\n\nExécute l'ERC et corrige toutes les erreurs. Dis-moi quand tu as 0 erreurs!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 40
+      }
+    },
+    {
+      "id": 501,
+      "slug": "assistant-message-question-erc",
+      "kind": "assistant_message",
+      "display_name": "Question ERC",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 41,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "### 📝 Question de compréhension\n\nÀ quoi sert le **PWR_FLAG** dans KiCad et pourquoi est-il nécessaire quand l'alimentation provient d'un connecteur externe?",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 41
+      }
+    },
+    {
+      "id": 502,
+      "slug": "state-init-compteur-q1",
+      "kind": "state",
+      "display_name": "Init compteur Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 42,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "0"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 42
+      }
+    },
+    {
+      "id": 503,
+      "slug": "wait-reponse-q1",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente réponse Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 43,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 43
+      }
+    },
+    {
+      "id": 504,
+      "slug": "agent-eval-q1",
+      "kind": "agent",
+      "display_name": "Évaluation Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 44,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "# Rôle\nÉvaluateur. Produis uniquement un JSON strict.\n\n# Question\n« À quoi sert le PWR_FLAG dans KiCad et pourquoi est-il nécessaire avec un connecteur externe? »\n\n# Critères\nLa réponse doit mentionner:\n- Le PWR_FLAG indique qu'une alimentation externe sera fournie\n- Sans ce flag, KiCad pense qu'aucune source ne \"pilote\" la ligne d'alimentation\n- Nécessaire quand l'alimentation vient d'un connecteur (source externe au schéma)\n- Évite l'erreur \"not driven by any pin\"\n\n# Règles\n- Si correct → `\"ok\": true`\n- Sinon → `\"ok\": false`",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "response_format": {
+          "name": "workflow_output",
+          "type": "json_schema",
+          "schema": {
+            "type": "object",
+            "required": ["ok"],
+            "properties": {
+              "ok": { "type": "boolean" }
+            }
+          },
+          "strict": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 44
+      }
+    },
+    {
+      "id": 505,
+      "slug": "condition-eval-q1",
+      "kind": "condition",
+      "display_name": "Bonne réponse Q1?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 45,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.output_structured.ok",
+        "tools": null
+      },
+      "metadata": {
+        "order": 45
+      }
+    },
+    {
+      "id": 506,
+      "slug": "state-incr-compteur-q1",
+      "kind": "state",
+      "display_name": "Incrémentation compteur Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 46,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "(state.get('compteur', 0) or 0) + 1"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 46
+      }
+    },
+    {
+      "id": 507,
+      "slug": "condition-max-tentatives-q1",
+      "kind": "condition",
+      "display_name": "Max tentatives Q1?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 47,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "state.compteur",
+        "tools": null
+      },
+      "metadata": {
+        "order": 47
+      }
+    },
+    {
+      "id": 508,
+      "slug": "assistant-message-appel-prof-q1",
+      "kind": "assistant_message",
+      "display_name": "Appel enseignant Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 48,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Tu sembles avoir de la difficulté. Ton enseignant va venir t'aider.\n\nEntre le code de l'enseignant pour continuer:",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 48
+      }
+    },
+    {
+      "id": 509,
+      "slug": "wait-code-prof-q1",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente code Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 49,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 49
+      }
+    },
+    {
+      "id": 510,
+      "slug": "condition-code-prof-q1",
+      "kind": "condition",
+      "display_name": "Code correct Q1?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 50,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.user_message",
+        "tools": null
+      },
+      "metadata": {
+        "order": 50
+      }
+    },
+    {
+      "id": 511,
+      "slug": "agent-retroaction-q1",
+      "kind": "agent",
+      "display_name": "Rétroaction Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 51,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "Aide l'utilisateur à comprendre le rôle du PWR_FLAG. Donne un indice sur le fait que KiCad doit savoir d'où vient l'alimentation, sans donner la réponse complète.",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 51
+      }
+    },
+    {
+      "id": 512,
+      "slug": "assistant-message-q1-ok",
+      "kind": "assistant_message",
+      "display_name": "Réponse Q1 correcte",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 52,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Excellent! Tu as bien compris le rôle du PWR_FLAG.\n\nEn résumé:\n- Le **PWR_FLAG** indique à KiCad qu'une source d'alimentation externe sera connectée\n- Sans ce flag, KiCad considère que rien ne \"pilote\" la ligne d'alimentation\n- C'est particulièrement nécessaire quand l'alimentation vient d'un connecteur externe\n\nMaintenant, passons à l'association des empreintes!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 52
+      }
+    },
+    {
+      "id": 600,
+      "slug": "assistant-message-section5",
+      "kind": "assistant_message",
+      "display_name": "Section 5: Footprints",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 60,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 5. Association des empreintes (Footprints)\n\n### 5.1 Ouvrir l'éditeur d'empreintes\n\n1. **Outils → Assigner les empreintes...** (ou icône dans la barre)\n2. L'interface affiche trois colonnes:\n   - Bibliothèques d'empreintes (gauche)\n   - Composants du schéma (centre)\n   - Empreintes filtrées (droite)\n\n### 5.2 Choisir les empreintes\n\n**Option SMD (composants montés en surface):**\n\n| Composant | Empreinte | Bibliothèque |\n|-----------|----------|-------------|\n| R (330Ω) | `R_0805_2012Metric` | Resistor_SMD |\n| LED | `LED_0805_2012Metric` | LED_SMD |\n| Conn_01x03 | `PinHeader_1x03_P2.54mm_Vertical` | Connector_PinHeader_2.54mm |\n\n**Option THT (traversant, plus facile à souder):**\n\n| Composant | Empreinte THT | Bibliothèque |\n|-----------|--------------|-------------|\n| R (330Ω) | `R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal` | Resistor_THT |\n| LED | `LED_D5.0mm` | LED_THT |\n| Conn_01x03 | `PinHeader_1x03_P2.54mm_Vertical` | Connector_PinHeader_2.54mm |\n\n### 5.3 Types d'empreintes\n\n**SMD (Surface Mount Device):**\n- Notation: `XXXX_YYYY` où XXXX = taille impériale, YYYY = taille métrique\n- Exemples: 0805, 0603, 0402 (plus petit = plus difficile à souder)\n- **Recommandé pour débutants:** 0805 ou 1206\n\n**THT (Through-Hole Technology):**\n- Composants traversants avec pattes\n- Plus facile à souder manuellement\n- Prend plus de place sur le PCB\n\n### 5.4 Appliquer et sauvegarder\n\n1. Double-cliquer sur chaque composant (centre) puis sur son empreinte (droite)\n2. Cliquer sur **Appliquer, Sauvegarder la Schématique et Continuer**\n3. Vérifier dans le schéma que chaque composant a une empreinte assignée\n\n---\n\nAssocie les empreintes à tous tes composants. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 60
+      }
+    },
+    {
+      "id": 601,
+      "slug": "widget-section5-done",
+      "kind": "widget",
+      "display_name": "Footprints assignés?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 61,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Tous mes composants ont une empreinte assignée!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 61
+      }
+    },
+    {
+      "id": 602,
+      "slug": "condition-section5-done",
+      "kind": "condition",
+      "display_name": "Footprints OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 62,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 62
+      }
+    },
+    {
+      "id": 603,
+      "slug": "end-section5-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 5",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 63,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand les footprints seront assignés!"
+      },
+      "metadata": {
+        "order": 63
+      }
+    },
+    {
+      "id": 700,
+      "slug": "assistant-message-section6",
+      "kind": "assistant_message",
+      "display_name": "Section 6: Création PCB",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 70,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 6. Création du PCB\n\n### 6.1 Mise à jour du PCB depuis le schéma\n\n1. Dans Eeschema: **Outils → Mettre à jour le PCB depuis la schématique...** (F8)\n2. Dans la boîte de dialogue:\n   - Vérifier les correspondances\n   - Cliquer sur **Mettre à jour le PCB**\n3. L'éditeur de PCB s'ouvre avec les composants regroupés\n\n### 6.2 Interface de l'éditeur PCB\n\n**Couches importantes:**\n\n| Couche | Couleur | Fonction |\n|--------|---------|----------|\n| F.Cu | Rouge | Cuivre face avant (top) |\n| B.Cu | Bleu | Cuivre face arrière (bottom) |\n| F.SilkS | Jaune | Sérigraphie avant |\n| Edge.Cuts | Jaune | Contour de la carte |\n| F.Mask | Violet | Masque de soudure avant |\n\n### 6.3 Définir le contour de la carte\n\n1. Sélectionner la couche **Edge.Cuts**\n2. **Placer → Ligne** ou utiliser l'outil rectangle\n3. Dessiner un rectangle pour le contour\n\n**Dimensions suggérées:** 30mm × 20mm\n\n### 6.4 Configurer les règles de conception\n\n1. **Fichier → Configuration de la carte...**\n2. **Règles de conception → Contraintes**\n\n**Règles recommandées pour JLCPCB:**\n\n| Paramètre | Valeur minimum |\n|-----------|----------------|\n| Largeur de piste | 0.2 mm |\n| Espacement | 0.2 mm |\n| Diamètre de via | 0.6 mm |\n| Perçage de via | 0.3 mm |\n| Anneau de cuivre | 0.15 mm |\n\n3. **Classes de pistes:**\n   - Défaut: 0.25 mm\n   - Alimentation: 0.4 mm ou plus\n\n---\n\nMets à jour le PCB depuis le schéma et définis le contour de la carte. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 70
+      }
+    },
+    {
+      "id": 701,
+      "slug": "widget-section6-done",
+      "kind": "widget",
+      "display_name": "PCB initialisé?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 71,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Mon PCB est initialisé avec le contour défini!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 71
+      }
+    },
+    {
+      "id": 702,
+      "slug": "condition-section6-done",
+      "kind": "condition",
+      "display_name": "PCB init OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 72,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 72
+      }
+    },
+    {
+      "id": 703,
+      "slug": "end-section6-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 6",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 73,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand le PCB sera initialisé!"
+      },
+      "metadata": {
+        "order": 73
+      }
+    },
+    {
+      "id": 800,
+      "slug": "assistant-message-section7-8",
+      "kind": "assistant_message",
+      "display_name": "Sections 7-8: Placement et Routage",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 80,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 7. Placement des composants\n\n### 7.1 Principes de placement\n\n1. **Placer les connecteurs** en premier (ils définissent l'interface mécanique)\n2. **Regrouper par fonction**: alimentation, entrées, sorties\n3. **Minimiser les croisements** de pistes\n4. **Orientation cohérente**: tous les composants SMD dans le même sens si possible\n\n### 7.2 Raccourcis utiles\n\n| Raccourci | Action |\n|-----------|--------|\n| `M` | Déplacer |\n| `R` | Rotation (90°) |\n| `F` | Flip (changer de face) |\n| `E` | Éditer propriétés |\n| `X` | Routage de piste |\n| `V` | Ajouter un via (pendant le routage) |\n| `Escape` | Annuler l'action en cours |\n\n### 7.3 Placement suggéré\n\n```\n┌─────────────────────────────┐\n│                             │\n│   ┌─────┐                   │\n│   │ J1  │    [R1]──[LED1]   │\n│   │ 1 2 │                   │\n│   │ 3   │                   │\n│   └─────┘                   │\n│                             │\n└─────────────────────────────┘\n```\n\n### 7.4 Vérifier le ratsnest\n\nLe **ratsnest** (chevelu) montre les connexions à router:\n- Lignes fines = connexions non routées\n- **Affichage → Ratsnest** pour afficher/masquer\n\n---\n\n## 8. Routage\n\n### 8.1 Routage manuel\n\n1. Appuyer sur `X` ou sélectionner l'outil de routage\n2. Cliquer sur un pad pour commencer\n3. Tracer la piste jusqu'au pad de destination\n4. Cliquer pour fixer les points de passage\n\n### 8.2 Techniques de routage\n\n**Changer de couche:**\n- Appuyer sur `V` pendant le routage pour ajouter un via\n\n**Largeur de piste:**\n- Pistes d'alimentation plus larges (0.4-0.5 mm)\n- Pistes de signal standard (0.25 mm)\n\n**Bonnes pratiques:**\n- Éviter les angles à 90° (préférer 45°)\n- Pistes courtes et directes\n- Ne pas passer entre les pads d'un composant SMD\n\n### 8.3 Plan de masse (Ground Plane)\n\n1. Sélectionner la couche **B.Cu** (face arrière)\n2. **Placer → Zone remplie** (ou icône)\n3. Dans la boîte de dialogue:\n   - Net: `GND`\n   - Couche: B.Cu\n   - Clearance: 0.3 mm\n4. Dessiner le contour de la zone (suivre Edge.Cuts)\n5. Appuyer sur `B` pour remplir les zones\n\n---\n\nPlace les composants et route toutes les connexions. Ajoute un plan de masse sur B.Cu. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 80
+      }
+    },
+    {
+      "id": 801,
+      "slug": "widget-section7-8-done",
+      "kind": "widget",
+      "display_name": "Routage terminé?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 81,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Mes composants sont placés et toutes les pistes sont routées!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 81
+      }
+    },
+    {
+      "id": 802,
+      "slug": "condition-section7-8-done",
+      "kind": "condition",
+      "display_name": "Routage OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 82,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 82
+      }
+    },
+    {
+      "id": 803,
+      "slug": "end-section7-8-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Sections 7-8",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 83,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand le routage sera terminé!"
+      },
+      "metadata": {
+        "order": 83
+      }
+    },
+    {
+      "id": 900,
+      "slug": "assistant-message-section9",
+      "kind": "assistant_message",
+      "display_name": "Section 9: DRC",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 90,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 9. Vérification du design (DRC)\n\n### 9.1 Exécuter le DRC\n\n1. **Inspection → Vérificateur de règles de conception** (ou icône)\n2. Cliquer sur **Exécuter le DRC**\n\n### 9.2 Types d'erreurs courantes\n\n| Erreur | Description | Solution |\n|--------|-------------|----------|\n| **Clearance** | Espacement insuffisant | Déplacer pistes/composants |\n| **Track width** | Piste trop étroite | Élargir la piste |\n| **Unconnected** | Connexion manquante | Router la connexion |\n| **Via hole too small** | Perçage trop petit | Modifier les règles ou le via |\n| **Courtyard overlap** | Composants qui se chevauchent | Déplacer les composants |\n\n### 9.3 Corriger jusqu'à 0 erreur\n\n- Le DRC doit afficher **0 erreurs**\n- Les **avertissements** peuvent être acceptables selon le contexte\n\n---\n\n## 10. Visualisation 3D\n\n### 10.1 Ouvrir la vue 3D\n\n1. **Affichage → Visionneuse 3D** (Alt+3)\n2. Navigation:\n   - Molette: zoom\n   - Clic gauche + glisser: rotation\n   - Clic milieu + glisser: déplacement\n\n### 10.2 Vérifications visuelles\n\n- Orientation des composants\n- Hauteur des composants (interférences)\n- Position des connecteurs\n- Lisibilité de la sérigraphie\n\n---\n\nExécute le DRC et corrige toutes les erreurs. Vérifie la vue 3D. Dis-moi quand tu as 0 erreurs!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 90
+      }
+    },
+    {
+      "id": 901,
+      "slug": "assistant-message-question-drc",
+      "kind": "assistant_message",
+      "display_name": "Question DRC",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 91,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "### 📝 Question de compréhension\n\nQuelle est la différence entre l'**ERC** (Electrical Rules Check) et le **DRC** (Design Rules Check)? À quelle étape du workflow chacun est-il exécuté?",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 91
+      }
+    },
+    {
+      "id": 902,
+      "slug": "state-init-compteur-q2",
+      "kind": "state",
+      "display_name": "Init compteur Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 92,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "0"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 92
+      }
+    },
+    {
+      "id": 903,
+      "slug": "wait-reponse-q2",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente réponse Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 93,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 93
+      }
+    },
+    {
+      "id": 904,
+      "slug": "agent-eval-q2",
+      "kind": "agent",
+      "display_name": "Évaluation Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 94,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "# Rôle\nÉvaluateur. Produis uniquement un JSON strict.\n\n# Question\n« Différence entre ERC et DRC? À quelle étape chacun est-il exécuté? »\n\n# Critères\nLa réponse doit mentionner:\n- ERC: vérification des règles électriques (connexions, types de broches, alimentations)\n- ERC: exécuté sur le schéma (schématique), avant le layout PCB\n- DRC: vérification des règles de conception physique (espacement, largeur pistes, perçages)\n- DRC: exécuté sur le PCB, après le routage\n\n# Règles\n- Si correct → `\"ok\": true`\n- Sinon → `\"ok\": false`",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "response_format": {
+          "name": "workflow_output",
+          "type": "json_schema",
+          "schema": {
+            "type": "object",
+            "required": ["ok"],
+            "properties": {
+              "ok": { "type": "boolean" }
+            }
+          },
+          "strict": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 94
+      }
+    },
+    {
+      "id": 905,
+      "slug": "condition-eval-q2",
+      "kind": "condition",
+      "display_name": "Bonne réponse Q2?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 95,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.output_structured.ok",
+        "tools": null
+      },
+      "metadata": {
+        "order": 95
+      }
+    },
+    {
+      "id": 906,
+      "slug": "state-incr-compteur-q2",
+      "kind": "state",
+      "display_name": "Incrémentation compteur Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 96,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "(state.get('compteur', 0) or 0) + 1"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 96
+      }
+    },
+    {
+      "id": 907,
+      "slug": "condition-max-tentatives-q2",
+      "kind": "condition",
+      "display_name": "Max tentatives Q2?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 97,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "state.compteur",
+        "tools": null
+      },
+      "metadata": {
+        "order": 97
+      }
+    },
+    {
+      "id": 908,
+      "slug": "assistant-message-appel-prof-q2",
+      "kind": "assistant_message",
+      "display_name": "Appel enseignant Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 98,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Tu sembles avoir de la difficulté. Ton enseignant va venir t'aider.\n\nEntre le code de l'enseignant pour continuer:",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 98
+      }
+    },
+    {
+      "id": 909,
+      "slug": "wait-code-prof-q2",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente code Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 99,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 99
+      }
+    },
+    {
+      "id": 910,
+      "slug": "condition-code-prof-q2",
+      "kind": "condition",
+      "display_name": "Code correct Q2?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 100,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.user_message",
+        "tools": null
+      },
+      "metadata": {
+        "order": 100
+      }
+    },
+    {
+      "id": 911,
+      "slug": "agent-retroaction-q2",
+      "kind": "agent",
+      "display_name": "Rétroaction Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 101,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "Aide l'utilisateur à comprendre la différence entre ERC et DRC. Donne un indice sur le fait que l'un concerne le schéma (électrique) et l'autre le PCB (physique), sans donner la réponse complète.",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 101
+      }
+    },
+    {
+      "id": 912,
+      "slug": "assistant-message-q2-ok",
+      "kind": "assistant_message",
+      "display_name": "Réponse Q2 correcte",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 102,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Parfait! Tu as bien compris la différence entre ERC et DRC.\n\nEn résumé:\n- **ERC (Electrical Rules Check):** Vérifie les règles électriques sur le **schéma** (connexions, types de broches, alimentations). Exécuté **avant** de passer au PCB.\n- **DRC (Design Rules Check):** Vérifie les règles de conception physique sur le **PCB** (espacement, largeur de pistes, perçages). Exécuté **après** le routage.\n\nPassons maintenant à la génération des fichiers de fabrication!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 102
+      }
+    },
+    {
+      "id": 1000,
+      "slug": "assistant-message-section12",
+      "kind": "assistant_message",
+      "display_name": "Section 12: Fabrication",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 110,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 12. Génération des fichiers de fabrication\n\n### 12.1 Fichiers Gerber\n\nLes fichiers Gerber sont le standard industriel pour la fabrication de PCB.\n\n1. **Fichier → Tracer...** (ou Fichier → Fabrication Outputs → Gerbers)\n2. Configuration:\n\n**Couches à inclure:**\n\n| Couche | Extension | Description |\n|--------|-----------|-------------|\n| F.Cu | .gtl | Cuivre top |\n| B.Cu | .gbl | Cuivre bottom |\n| F.SilkS | .gto | Sérigraphie top |\n| B.SilkS | .gbo | Sérigraphie bottom |\n| F.Mask | .gts | Masque soudure top |\n| B.Mask | .gbs | Masque soudure bottom |\n| Edge.Cuts | .gm1 | Contour carte |\n\n**Options:**\n- Format: Gerber X2 (ou 4.6 pour compatibilité)\n- Utiliser les extensions Protel\n- Exclure la valeur des footprints de la sérigraphie\n\n3. **Dossier de sortie:** `gerbers/`\n4. Cliquer sur **Tracer**\n\n### 12.2 Fichiers de perçage (Drill)\n\n1. Dans la même fenêtre, cliquer sur **Générer le fichier de perçage...**\n2. Options:\n   - Format: Excellon\n   - Unités: mm\n   - Zéros: Format décimal\n3. Cliquer sur **Générer le fichier de perçage**\n\n### 12.3 Bill of Materials (BOM)\n\n1. **Fichier → Fabrication Outputs → BOM...**\n2. Choisir un format (CSV recommandé)\n3. Sauvegarder dans le dossier du projet\n\n### 12.4 Vérifier les Gerbers\n\n1. **Outils → Visionneuse Gerber externe** ou utiliser le Gerber Viewer intégré\n2. Ouvrir tous les fichiers générés\n3. Vérifier:\n   - Toutes les couches sont présentes\n   - Les pistes sont complètes\n   - Le contour est correct\n   - Les perçages sont bien placés\n\n---\n\n## 13. Soumission pour fabrication\n\n### 13.1 Préparer l'archive\n\n**Windows:**\n1. Ouvrir le dossier `gerbers/` dans l'Explorateur\n2. Sélectionner tous les fichiers (Ctrl+A)\n3. Clic droit → **Envoyer vers → Dossier compressé**\n4. Renommer: `labo3-kicad-gerbers.zip`\n\n### 13.2 Fabricants recommandés\n\n| Fabricant | URL | Délai | Prix (5 PCB) |\n|-----------|-----|-------|-------------|\n| JLCPCB | jlcpcb.com | 7-15 jours | ~$2 + livraison |\n| PCBWay | pcbway.com | 7-15 jours | ~$5 + livraison |\n| OSH Park | oshpark.com | 12 jours | ~$10 (US) |\n\n### 13.3 Paramètres typiques\n\n- **Couches:** 2\n- **Épaisseur:** 1.6 mm\n- **Cuivre:** 1 oz (35 µm)\n- **Finition:** HASL (ou ENIG pour SMD fin)\n- **Couleur:** Vert (standard)\n\n---\n\nGénère les fichiers Gerber et de perçage. Crée le BOM. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 110
+      }
+    },
+    {
+      "id": 1001,
+      "slug": "widget-section12-done",
+      "kind": "widget",
+      "display_name": "Gerbers générés?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 111,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Mes fichiers Gerber, drill et BOM sont générés!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 111
+      }
+    },
+    {
+      "id": 1002,
+      "slug": "condition-section12-done",
+      "kind": "condition",
+      "display_name": "Fabrication OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 112,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 112
+      }
+    },
+    {
+      "id": 1003,
+      "slug": "end-section12-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 12",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 113,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand les fichiers de fabrication seront générés!"
+      },
+      "metadata": {
+        "order": 113
+      }
+    },
+    {
+      "id": 1100,
+      "slug": "assistant-message-section14",
+      "kind": "assistant_message",
+      "display_name": "Section 14: Exercice et livrables",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 120,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 14. Exercice pratique — Livrables\n\n### 14.1 À réaliser\n\nTu as créé un PCB fonctionnel avec:\n- 1 connecteur 3 broches (VCC, Signal, GND)\n- 1 résistance 330Ω\n- 1 LED\n\nC'est un circuit minimaliste qui valide la maîtrise du workflow complet.\n\n### 14.2 Livrables\n\nÀ la fin du labo, tu dois avoir:\n\n- [ ] Schéma complet avec ERC = 0 erreurs\n- [ ] PCB routé avec DRC = 0 erreurs\n- [ ] Capture d'écran de la vue 3D\n- [ ] Dossier `gerbers/` avec tous les fichiers\n- [ ] Fichier BOM (CSV)\n\n### 14.3 Structure de remise\n\n```\nlabo3-kicad/\n├── labo3-kicad.kicad_pro\n├── labo3-kicad.kicad_sch\n├── labo3-kicad.kicad_pcb\n├── gerbers/\n│   ├── labo3-kicad-F_Cu.gtl\n│   ├── labo3-kicad-B_Cu.gbl\n│   ├── labo3-kicad-F_SilkS.gto\n│   ├── labo3-kicad-F_Mask.gts\n│   ├── labo3-kicad-B_Mask.gbs\n│   ├── labo3-kicad-Edge_Cuts.gm1\n│   └── labo3-kicad.drl\n├── bom.csv\n└── screenshots/\n    ├── schema.png\n    ├── pcb-2d.png\n    └── pcb-3d.png\n```\n\n### 14.4 Workflow Git quotidien (rappel)\n\n**À la fin de chaque séance:**\n1. Dans GitHub Desktop, tes modifications apparaissent dans l'onglet **Modifications**\n2. Écrire un résumé (ex: \"Schéma terminé, début routage\")\n3. Cliquer sur **Commiter vers prenom-nom**\n4. Cliquer sur **Pousser origin** pour envoyer vers GitHub\n\n---\n\n### Checklist finale\n\n- [ ] Projet KiCad sauvegardé\n- [ ] ERC passé sans erreurs\n- [ ] DRC passé sans erreurs\n- [ ] Gerbers générés et vérifiés\n- [ ] BOM exportée\n- [ ] Captures d'écran prises\n- [ ] Commit et push vers GitHub\n\n---\n\nVérifie que tu as tous les livrables et fais ton commit final. Dis-moi quand tout est prêt!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 120
+      }
+    },
+    {
+      "id": 1101,
+      "slug": "widget-section14-done",
+      "kind": "widget",
+      "display_name": "Livrables complets?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 121,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Tous mes livrables sont prêts et j'ai fait mon commit!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 121
+      }
+    },
+    {
+      "id": 1102,
+      "slug": "condition-section14-done",
+      "kind": "condition",
+      "display_name": "Livrables OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 122,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 122
+      }
+    },
+    {
+      "id": 1103,
+      "slug": "end-section14-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 14",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 123,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand tes livrables seront prêts!"
+      },
+      "metadata": {
+        "order": 123
+      }
+    },
+    {
+      "id": 1200,
+      "slug": "assistant-message-fin",
+      "kind": "assistant_message",
+      "display_name": "Message de fin",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 130,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## Félicitations!\n\nTu as terminé le **Labo 3 — Workflow complet KiCad**!\n\n### Ce que tu as accompli:\n\n- Utiliser GitHub Desktop pour gérer tes fichiers sur ta branche\n- Créer un projet KiCad et naviguer dans l'interface\n- Réaliser une capture schématique complète (symboles, connexions, annotations)\n- Exécuter et corriger les erreurs ERC (Electrical Rules Check)\n- Associer les empreintes (footprints) aux symboles\n- Placer et router un PCB 2 couches avec plan de masse\n- Configurer et exécuter le DRC (Design Rules Check)\n- Générer les fichiers de fabrication (Gerbers, drill, BOM)\n\n### Workflow maîtrisé:\n\n```\n📋 Schématique → ERC → 🔗 Footprints → 🖥️ Layout PCB → DRC → 📦 Gerbers\n```\n\n### Concepts clés:\n\n- **ERC:** Vérification électrique sur le schéma\n- **DRC:** Vérification physique sur le PCB\n- **PWR_FLAG:** Indiquer les sources d'alimentation externes\n- **Gerber:** Format standard pour la fabrication de PCB\n- **Footprint:** Empreinte physique d'un composant (SMD vs THT)\n\n---\n\n**Prochain labo:** Projet de mi-session — Tu appliqueras ces compétences pour concevoir ton shield LilyGO A7670G avec 2 DELs, 2 boutons, 2 potentiomètres et un accéléromètre.\n\nBon travail!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 130
+      }
+    },
+    {
+      "id": 9999,
+      "slug": "end-success",
+      "kind": "end",
+      "display_name": "Fin - Succès",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 999,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Laboratoire complété avec succès"
+        },
+        "message": "Laboratoire 3 terminé avec succès! Bravo!"
+      },
+      "metadata": {
+        "order": 999
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": 1001,
+      "source": "start",
+      "target": "assistant-message-intro",
+      "condition": null,
+      "metadata": { "label": "", "order": 1 }
+    },
+    {
+      "id": 1002,
+      "source": "assistant-message-intro",
+      "target": "widget-pret-logiciels",
+      "condition": null,
+      "metadata": { "label": "", "order": 2 }
+    },
+    {
+      "id": 1003,
+      "source": "widget-pret-logiciels",
+      "target": "condition-pret-logiciels",
+      "condition": null,
+      "metadata": { "label": "", "order": 3 }
+    },
+    {
+      "id": 1004,
+      "source": "condition-pret-logiciels",
+      "target": "assistant-message-section0",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 4 }
+    },
+    {
+      "id": 1005,
+      "source": "condition-pret-logiciels",
+      "target": "end-abandon-logiciels",
+      "condition": null,
+      "metadata": { "label": "", "order": 5 }
+    },
+    {
+      "id": 2001,
+      "source": "assistant-message-section0",
+      "target": "widget-section0-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 10 }
+    },
+    {
+      "id": 2002,
+      "source": "widget-section0-done",
+      "target": "condition-section0-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 11 }
+    },
+    {
+      "id": 2003,
+      "source": "condition-section0-done",
+      "target": "assistant-message-section1",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 12 }
+    },
+    {
+      "id": 2004,
+      "source": "condition-section0-done",
+      "target": "end-section0-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 13 }
+    },
+    {
+      "id": 3001,
+      "source": "assistant-message-section1",
+      "target": "widget-section1-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 20 }
+    },
+    {
+      "id": 3002,
+      "source": "widget-section1-done",
+      "target": "condition-section1-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 21 }
+    },
+    {
+      "id": 3003,
+      "source": "condition-section1-done",
+      "target": "assistant-message-section3",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 22 }
+    },
+    {
+      "id": 3004,
+      "source": "condition-section1-done",
+      "target": "end-section1-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 23 }
+    },
+    {
+      "id": 4001,
+      "source": "assistant-message-section3",
+      "target": "widget-section3-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 30 }
+    },
+    {
+      "id": 4002,
+      "source": "widget-section3-done",
+      "target": "condition-section3-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 31 }
+    },
+    {
+      "id": 4003,
+      "source": "condition-section3-done",
+      "target": "assistant-message-section4",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 32 }
+    },
+    {
+      "id": 4004,
+      "source": "condition-section3-done",
+      "target": "end-section3-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 33 }
+    },
+    {
+      "id": 5001,
+      "source": "assistant-message-section4",
+      "target": "assistant-message-question-erc",
+      "condition": null,
+      "metadata": { "label": "", "order": 40 }
+    },
+    {
+      "id": 5002,
+      "source": "assistant-message-question-erc",
+      "target": "state-init-compteur-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 41 }
+    },
+    {
+      "id": 5003,
+      "source": "state-init-compteur-q1",
+      "target": "wait-reponse-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 42 }
+    },
+    {
+      "id": 5004,
+      "source": "wait-reponse-q1",
+      "target": "agent-eval-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 43 }
+    },
+    {
+      "id": 5005,
+      "source": "agent-eval-q1",
+      "target": "condition-eval-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 44 }
+    },
+    {
+      "id": 5006,
+      "source": "condition-eval-q1",
+      "target": "assistant-message-q1-ok",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 45 }
+    },
+    {
+      "id": 5007,
+      "source": "condition-eval-q1",
+      "target": "state-incr-compteur-q1",
+      "condition": "false",
+      "metadata": { "label": "false", "order": 46 }
+    },
+    {
+      "id": 5008,
+      "source": "state-incr-compteur-q1",
+      "target": "condition-max-tentatives-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 47 }
+    },
+    {
+      "id": 5009,
+      "source": "condition-max-tentatives-q1",
+      "target": "assistant-message-appel-prof-q1",
+      "condition": "3",
+      "metadata": { "label": "3", "order": 48 }
+    },
+    {
+      "id": 5010,
+      "source": "condition-max-tentatives-q1",
+      "target": "agent-retroaction-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 49 }
+    },
+    {
+      "id": 5011,
+      "source": "agent-retroaction-q1",
+      "target": "wait-reponse-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 50 }
+    },
+    {
+      "id": 5012,
+      "source": "assistant-message-appel-prof-q1",
+      "target": "wait-code-prof-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 51 }
+    },
+    {
+      "id": 5013,
+      "source": "wait-code-prof-q1",
+      "target": "condition-code-prof-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 52 }
+    },
+    {
+      "id": 5014,
+      "source": "condition-code-prof-q1",
+      "target": "assistant-message-q1-ok",
+      "condition": "1234",
+      "metadata": { "label": "1234", "order": 53 }
+    },
+    {
+      "id": 5015,
+      "source": "condition-code-prof-q1",
+      "target": "wait-code-prof-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 54 }
+    },
+    {
+      "id": 5016,
+      "source": "assistant-message-q1-ok",
+      "target": "assistant-message-section5",
+      "condition": null,
+      "metadata": { "label": "", "order": 55 }
+    },
+    {
+      "id": 6001,
+      "source": "assistant-message-section5",
+      "target": "widget-section5-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 60 }
+    },
+    {
+      "id": 6002,
+      "source": "widget-section5-done",
+      "target": "condition-section5-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 61 }
+    },
+    {
+      "id": 6003,
+      "source": "condition-section5-done",
+      "target": "assistant-message-section6",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 62 }
+    },
+    {
+      "id": 6004,
+      "source": "condition-section5-done",
+      "target": "end-section5-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 63 }
+    },
+    {
+      "id": 7001,
+      "source": "assistant-message-section6",
+      "target": "widget-section6-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 70 }
+    },
+    {
+      "id": 7002,
+      "source": "widget-section6-done",
+      "target": "condition-section6-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 71 }
+    },
+    {
+      "id": 7003,
+      "source": "condition-section6-done",
+      "target": "assistant-message-section7-8",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 72 }
+    },
+    {
+      "id": 7004,
+      "source": "condition-section6-done",
+      "target": "end-section6-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 73 }
+    },
+    {
+      "id": 8001,
+      "source": "assistant-message-section7-8",
+      "target": "widget-section7-8-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 80 }
+    },
+    {
+      "id": 8002,
+      "source": "widget-section7-8-done",
+      "target": "condition-section7-8-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 81 }
+    },
+    {
+      "id": 8003,
+      "source": "condition-section7-8-done",
+      "target": "assistant-message-section9",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 82 }
+    },
+    {
+      "id": 8004,
+      "source": "condition-section7-8-done",
+      "target": "end-section7-8-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 83 }
+    },
+    {
+      "id": 9001,
+      "source": "assistant-message-section9",
+      "target": "assistant-message-question-drc",
+      "condition": null,
+      "metadata": { "label": "", "order": 90 }
+    },
+    {
+      "id": 9002,
+      "source": "assistant-message-question-drc",
+      "target": "state-init-compteur-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 91 }
+    },
+    {
+      "id": 9003,
+      "source": "state-init-compteur-q2",
+      "target": "wait-reponse-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 92 }
+    },
+    {
+      "id": 9004,
+      "source": "wait-reponse-q2",
+      "target": "agent-eval-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 93 }
+    },
+    {
+      "id": 9005,
+      "source": "agent-eval-q2",
+      "target": "condition-eval-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 94 }
+    },
+    {
+      "id": 9006,
+      "source": "condition-eval-q2",
+      "target": "assistant-message-q2-ok",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 95 }
+    },
+    {
+      "id": 9007,
+      "source": "condition-eval-q2",
+      "target": "state-incr-compteur-q2",
+      "condition": "false",
+      "metadata": { "label": "false", "order": 96 }
+    },
+    {
+      "id": 9008,
+      "source": "state-incr-compteur-q2",
+      "target": "condition-max-tentatives-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 97 }
+    },
+    {
+      "id": 9009,
+      "source": "condition-max-tentatives-q2",
+      "target": "assistant-message-appel-prof-q2",
+      "condition": "3",
+      "metadata": { "label": "3", "order": 98 }
+    },
+    {
+      "id": 9010,
+      "source": "condition-max-tentatives-q2",
+      "target": "agent-retroaction-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 99 }
+    },
+    {
+      "id": 9011,
+      "source": "agent-retroaction-q2",
+      "target": "wait-reponse-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 100 }
+    },
+    {
+      "id": 9012,
+      "source": "assistant-message-appel-prof-q2",
+      "target": "wait-code-prof-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 101 }
+    },
+    {
+      "id": 9013,
+      "source": "wait-code-prof-q2",
+      "target": "condition-code-prof-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 102 }
+    },
+    {
+      "id": 9014,
+      "source": "condition-code-prof-q2",
+      "target": "assistant-message-q2-ok",
+      "condition": "1234",
+      "metadata": { "label": "1234", "order": 103 }
+    },
+    {
+      "id": 9015,
+      "source": "condition-code-prof-q2",
+      "target": "wait-code-prof-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 104 }
+    },
+    {
+      "id": 9016,
+      "source": "assistant-message-q2-ok",
+      "target": "assistant-message-section12",
+      "condition": null,
+      "metadata": { "label": "", "order": 105 }
+    },
+    {
+      "id": 10001,
+      "source": "assistant-message-section12",
+      "target": "widget-section12-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 110 }
+    },
+    {
+      "id": 10002,
+      "source": "widget-section12-done",
+      "target": "condition-section12-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 111 }
+    },
+    {
+      "id": 10003,
+      "source": "condition-section12-done",
+      "target": "assistant-message-section14",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 112 }
+    },
+    {
+      "id": 10004,
+      "source": "condition-section12-done",
+      "target": "end-section12-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 113 }
+    },
+    {
+      "id": 11001,
+      "source": "assistant-message-section14",
+      "target": "widget-section14-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 120 }
+    },
+    {
+      "id": 11002,
+      "source": "widget-section14-done",
+      "target": "condition-section14-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 121 }
+    },
+    {
+      "id": 11003,
+      "source": "condition-section14-done",
+      "target": "assistant-message-fin",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 122 }
+    },
+    {
+      "id": 11004,
+      "source": "condition-section14-done",
+      "target": "end-section14-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 123 }
+    },
+    {
+      "id": 12001,
+      "source": "assistant-message-fin",
+      "target": "end-success",
+      "condition": null,
+      "metadata": { "label": "", "order": 130 }
+    }
+  ]
+}
