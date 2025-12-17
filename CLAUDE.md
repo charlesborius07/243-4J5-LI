@@ -326,3 +326,149 @@ $\text{Points} = \text{Note sur 5} \times \frac{\text{Pondération}}{5}$
 - **Niveau 5 (optimal)** : Correspond aux critères de la cible (niveau optimal) du plan de cours
 - Chaque critère doit référencer explicitement un savoir-faire du plan de cours
 - Les descripteurs doivent être observables et mesurables
+
+## Workflows test-chatkit
+
+Les workflows de laboratoire utilisent le format JSON de test-chatkit (edxo). Les fichiers sont stockés dans le dossier `workflows/`.
+
+### Structure d'un workflow
+
+Un workflow est composé de deux tableaux principaux : `nodes` (nœuds) et `edges` (connexions).
+
+```json
+{
+  "nodes": [ ... ],
+  "edges": [ ... ]
+}
+```
+
+### Types de nœuds (kind)
+
+| Kind | Description | Paramètres clés |
+|------|-------------|-----------------|
+| `start` | Point de départ du workflow | `auto_start` |
+| `end` | Point de fin du workflow | `message`, `status.type`, `status.reason` |
+| `assistant_message` | Message affiché à l'étudiant | `message`, `simulate_stream_delay_ms` |
+| `widget` | Widget interactif (boutons, formulaires) | `widget.slug`, `widget.source`, `widget.variables` |
+| `condition` | Branchement conditionnel | `mode`, `path` |
+| `wait_for_user_input` | Attente d'une réponse utilisateur | - |
+| `agent` | Appel à un agent IA | `model`, `instructions`, `model_provider`, `response_format` |
+| `state` | Manipulation de variables d'état | `state[].target`, `state[].expression` |
+
+### Structure d'un nœud
+
+```json
+{
+  "id": 140,
+  "slug": "assistant-message-1764990850626",
+  "kind": "assistant_message",
+  "display_name": "Message d'introduction",
+  "agent_key": null,
+  "parent_slug": null,
+  "position": 2,
+  "is_enabled": true,
+  "parameters": {
+    "message": "Contenu du message...",
+    "simulate_stream_delay_ms": 5
+  },
+  "metadata": {
+    "order": 2
+  }
+}
+```
+
+### Structure d'une connexion (edge)
+
+```json
+{
+  "id": 150,
+  "source": "condition-1764990982539",
+  "target": "assistant-message-1764990850626",
+  "condition": "true",
+  "metadata": {
+    "label": "true",
+    "order": 2
+  }
+}
+```
+
+### Champs des nœuds
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Identifiant unique |
+| `slug` | string | Identifiant textuel unique (référencé par les edges) |
+| `kind` | string | Type du nœud (voir tableau ci-dessus) |
+| `display_name` | string | Nom affiché dans l'éditeur |
+| `position` | integer | Ordre d'affichage |
+| `is_enabled` | boolean | Nœud actif ou désactivé |
+| `parameters` | object | Configuration spécifique au type |
+| `metadata` | object | Métadonnées (ordre, position visuelle) |
+
+### Champs des edges
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Identifiant unique |
+| `source` | string | Slug du nœud source |
+| `target` | string | Slug du nœud cible |
+| `condition` | string/null | Valeur pour les branchements (`"true"`, `"false"`, valeur spécifique) |
+| `metadata.label` | string | Label affiché sur la connexion |
+
+### Patterns courants
+
+#### Boucle de validation avec compteur
+```
+state (init compteur=0) → wait_for_user_input → agent (évaluation)
+    → condition (ok?)
+        → true: assistant_message (succès)
+        → false: state (compteur++) → condition (compteur >= 3?)
+            → oui: assistant_message (appeler enseignant)
+            → non: agent (rétroaction) → wait_for_user_input (boucle)
+```
+
+#### Widget de confirmation
+```
+widget (bouton "Prêt?") → condition (value)
+    → true: continuer
+    → autre: end (abandonné)
+```
+
+#### Agent avec réponse structurée
+```json
+{
+  "kind": "agent",
+  "parameters": {
+    "model": "gpt-5-nano",
+    "instructions": "Instructions pour l'agent...",
+    "model_provider": "openai",
+    "response_format": {
+      "type": "json_schema",
+      "schema": {
+        "type": "object",
+        "required": ["ok"],
+        "properties": {
+          "ok": { "type": "boolean" }
+        }
+      },
+      "strict": true
+    }
+  }
+}
+```
+
+### Accès aux données dans les conditions
+
+| Path | Description |
+|------|-------------|
+| `input.action.raw_payload.value.` | Valeur d'un widget |
+| `input.user_message` | Message texte de l'utilisateur |
+| `input.output_structured.ok` | Réponse structurée d'un agent |
+| `state.compteur` | Variable d'état personnalisée |
+
+### Expressions d'état
+
+Les expressions `state[].expression` utilisent la syntaxe Python :
+```python
+"0"                                    # Valeur littérale
+"(state.get('compteur', 0) or 0) + 1" # Incrémentation

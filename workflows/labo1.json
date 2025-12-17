@@ -15,35 +15,31 @@
       },
       "metadata": {
         "order": 1
-      },
-      "created_at": "2025-12-13T02:49:49.208839Z",
-      "updated_at": "2025-12-13T02:49:49.208844Z"
+      }
     },
     {
       "id": 140,
-      "slug": "assistant-message-1764990850626",
+      "slug": "assistant-message-intro",
       "kind": "assistant_message",
-      "display_name": "Assistant Message 1764990850626",
+      "display_name": "Introduction du laboratoire",
       "agent_key": null,
       "parent_slug": null,
       "position": 2,
       "is_enabled": true,
       "parameters": {
         "tools": null,
-        "message": "Aujourd'hui, nous allons préparé notre environnement de programmation.\n\nVoici l'architecture du système:\n\n```mermaid\ngraph TD\n    %% ==== STYLES ====\n    classDef zoneClient fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#052e16;\n    classDef zoneAccess fill:#eff6ff,stroke:#2563eb,stroke-width:2px,color:#0f172a;\n    classDef zoneLab fill:#f9fafb,stroke:#4b5563,stroke-width:2px,color:#020617;\n    classDef zoneCloud fill:#fefce8,stroke:#d97706,stroke-width:2px,color:#451a03;\n    classDef componentCore fill:#e5e7eb,stroke:#4b5563,stroke-width:1.5px;\n    classDef componentService fill:#eef2ff,stroke:#6366f1,stroke-width:1.5px;\n    classDef componentDevice fill:#ecfeff,stroke:#06b6d4,stroke-width:1.5px;\n    classDef securityEdge fill:#fef2f2,stroke:#b91c1c,stroke-width:1.5px,stroke-dasharray:4 3;\n\n    %% ==== ZONE CLIENT ====\n    subgraph Zone_Client [\"💻 Poste de développement\"]\n        Dev_PC[\"Terminal SSH + Navigateur\"]:::zoneClient\n    end\n\n    %% ==== ZONE D'ACCÈS / EDGE ====\n    subgraph Zone_Access [\"🔒 Accès sécurisé\"]\n        CF_ZT[\"Cloudflare Zero Trust\"]:::securityEdge\n        CF_Tunnel[\"cloudflared\"]:::componentService\n    end\n\n    %% ==== ZONE LAB / ON-PREM ====\n    subgraph Zone_Lab [\"🏠 Lab On-Prem\"]\n        subgraph RPi5_Core [\"🍓 Raspberry Pi 5\"]\n            SSHD[\"SSH Server\"]:::componentCore\n\n            subgraph Dev_Stack [\"🛠️ Outils Dev\"]\n                Git_CLI[\"Git CLI\"]:::componentService\n                Node_Gemini[\"Node + Gemini\"]:::componentService\n                Python_Env[\"Python + evdev\"]:::componentService\n                Arduino_CLI[\"Arduino CLI\"]:::componentService\n            end\n        end\n\n        subgraph Lab_Devices [\"📱 Périphériques\"]\n            Touchscreen[\"Écran tactile\"]:::componentDevice\n            LilyGO_A7670G[\"LilyGO A7670G\"]:::componentDevice\n        end\n    end\n\n    %% ==== ZONE CLOUD / SAAS ====\n    subgraph Zone_Cloud [\"☁️ Services Cloud\"]\n        GitHub_SaaS[\"GitHub\"]:::zoneCloud\n        Gemini_API[\"Gemini API\"]:::zoneCloud\n    end\n\n    %% ==== FLUX PRINCIPAUX ====\n\n    %% 1. ACCÈS DISTANT (vertical)\n    Dev_PC -->|\"HTTPS / SSH\"| CF_ZT\n    CF_ZT -->|\"Tunnel Cloudflare<br/>(mTLS + Auth)\"| CF_Tunnel\n    CF_Tunnel -->|\"TCP SSH :22\"| SSHD\n    SSHD --> Dev_Stack\n\n    %% 2. DEV & GESTION DE CODE\n    Git_CLI -.->|\"git clone/pull/push\"| GitHub_SaaS\n\n    %% 3. APPELS IA\n    Node_Gemini -.->|\"API REST\"| Gemini_API\n\n    %% 4. INTERACTIONS MATÉRIELLES\n    Python_Env -->|\"UI tactile<br/>/dev/input\"| Touchscreen\n    Arduino_CLI -->|\"Flash USB<br/>/dev/ttyUSB0\"| LilyGO_A7670G\n\n    %% ==== CLASS ZONES ====\n    class Dev_PC zoneClient;\n    class CF_ZT,CF_Tunnel zoneAccess;\n    class SSHD,Dev_Stack componentCore;\n    class Touchscreen,LilyGO_A7670G componentDevice;\n    class GitHub_SaaS,Gemini_API zoneCloud;\n```\n\nCe diagramme illustre l'architecture complète du laboratoire:\n- **Zone Client (vert):** Votre poste de développement\n- **Zone d'accès sécurisé (bleu):** Cloudflare Zero Trust et tunnel\n- **Zone Lab (gris):** Raspberry Pi 5 avec tous les outils et périphériques IoT\n- **Zone Cloud (jaune):** Services externes (GitHub, Gemini API)\n\n---\n\n## 🎒 Matériel requis\n<div style=\"background:#ecfeff; border:1px solid #06b6d4; padding:12px 14px; border-radius:10px;\">\n<ul style=\"margin:0;\">\n  <li>Clavier Raspberry Pi</li>\n  <li>Raspberry Pi 5</li>\n  <li>Écran tactile pour Raspberry Pi 5</li>\n  <li>Alimentation USB-C pour Raspberry Pi 5</li>\n  <li>Câble micro-USB pour clavier</li>\n  <li>Carte micro SD 64 GB</li>\n  <li>LilyGO A7670G avec antenne GPS et LTE</li>\n  <li>Plaquette de prototypage (breadboard)</li>\n  <li>LED rouge et LED verte</li>\n  <li>Résistances appropriées (220Ω - 330Ω)</li>\n  <li>Fils de connexion (jumper wires)</li>\n  <li>Carte SIM</li>\n  <li>Câble USB-A à USB-C</li>\n</ul>\n</div>\n\nVa chercher ton matériel, et dis-moi le quand tu es prêt à passer à la prochaine étape!",
+        "message": "# Labo 1 — Environnement de programmation distant pour objets connectés\n\nAujourd'hui, nous allons préparer notre environnement de programmation.\n\nVoici l'architecture du système:\n\n```mermaid\ngraph TD\n    subgraph Zone_Client [\"💻 Poste de développement\"]\n        Dev_PC[\"Terminal SSH + Navigateur\"]\n    end\n    subgraph Zone_Access [\"🔒 Accès sécurisé\"]\n        CF_ZT[\"Cloudflare Zero Trust\"]\n        CF_Tunnel[\"cloudflared\"]\n    end\n    subgraph Zone_Lab [\"🏠 Lab On-Prem\"]\n        subgraph RPi5_Core [\"🍓 Raspberry Pi 5\"]\n            SSHD[\"SSH Server\"]\n            subgraph Dev_Stack [\"🛠️ Outils Dev\"]\n                Git_CLI[\"Git CLI\"]\n                Node_Gemini[\"Node + Gemini\"]\n                Python_Env[\"Python + evdev\"]\n                Arduino_CLI[\"Arduino CLI\"]\n            end\n        end\n        subgraph Lab_Devices [\"📱 Périphériques\"]\n            Touchscreen[\"Écran tactile\"]\n            LilyGO_A7670G[\"LilyGO A7670G\"]\n        end\n    end\n    subgraph Zone_Cloud [\"☁️ Services Cloud\"]\n        GitHub_SaaS[\"GitHub\"]\n        Gemini_API[\"Gemini API\"]\n    end\n    Dev_PC -->|\"HTTPS / SSH\"| CF_ZT\n    CF_ZT -->|\"Tunnel Cloudflare\"| CF_Tunnel\n    CF_Tunnel -->|\"TCP SSH :22\"| SSHD\n    SSHD --> Dev_Stack\n    Git_CLI -.->|\"git clone/pull/push\"| GitHub_SaaS\n    Node_Gemini -.->|\"API REST\"| Gemini_API\n    Python_Env -->|\"UI tactile\"| Touchscreen\n    Arduino_CLI -->|\"Flash USB\"| LilyGO_A7670G\n```\n\nCe diagramme illustre l'architecture complète du laboratoire:\n- **Zone Client (vert):** Votre poste de développement\n- **Zone d'accès sécurisé (bleu):** Cloudflare Zero Trust et tunnel\n- **Zone Lab (gris):** Raspberry Pi 5 avec tous les outils et périphériques IoT\n- **Zone Cloud (jaune):** Services externes (GitHub, Gemini API)\n\n---\n\n## 🎒 Matériel requis\n\n- Clavier Raspberry Pi\n- Raspberry Pi 5\n- Écran tactile pour Raspberry Pi 5\n- Alimentation USB-C pour Raspberry Pi 5\n- Câble micro-USB pour clavier\n- Carte micro SD 64 GB\n- LilyGO A7670G avec antenne GPS et LTE\n- Plaquette de prototypage (breadboard)\n- LED rouge et LED verte\n- Résistances appropriées (220Ω - 330Ω)\n- Fils de connexion (jumper wires)\n- Carte SIM\n- Câble USB-A à USB-C\n\nVa chercher ton matériel, et dis-moi quand tu es prêt à passer à la prochaine étape!",
         "simulate_stream_delay_ms": 5
       },
       "metadata": {
         "order": 2
-      },
-      "created_at": "2025-12-13T02:49:49.208845Z",
-      "updated_at": "2025-12-13T02:49:49.208845Z"
+      }
     },
     {
       "id": 141,
-      "slug": "widget-1764990904841",
+      "slug": "widget-pret-materiel",
       "kind": "widget",
-      "display_name": "Prêt à commencer?",
+      "display_name": "Prêt avec le matériel?",
       "agent_key": null,
       "parent_slug": null,
       "position": 3,
@@ -54,21 +50,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Prêt à commencer?"
+            "text": "J'ai tout le matériel, je suis prêt!"
           }
         }
       },
       "metadata": {
         "order": 3
-      },
-      "created_at": "2025-12-13T02:49:49.208846Z",
-      "updated_at": "2025-12-13T02:49:49.208846Z"
+      }
     },
     {
       "id": 142,
-      "slug": "condition-1764990982539",
+      "slug": "condition-pret-materiel",
       "kind": "condition",
-      "display_name": "Condition 1764990982539",
+      "display_name": "Vérification matériel prêt",
       "agent_key": null,
       "parent_slug": null,
       "position": 4,
@@ -80,15 +74,13 @@
       },
       "metadata": {
         "order": 4
-      },
-      "created_at": "2025-12-13T02:49:49.208847Z",
-      "updated_at": "2025-12-13T02:49:49.208847Z"
+      }
     },
     {
       "id": 143,
-      "slug": "end-1764991255370",
+      "slug": "end-abandon-materiel",
       "kind": "end",
-      "display_name": "End 1764991255370",
+      "display_name": "Fin - Abandon matériel",
       "agent_key": null,
       "parent_slug": null,
       "position": 5,
@@ -97,112 +89,82 @@
         "tools": null,
         "status": {
           "type": "closed",
-          "reason": "Workflow terminé"
+          "reason": "Étudiant pas prêt"
         },
-        "message": "Workflow terminé"
+        "message": "Reviens quand tu auras tout le matériel!"
       },
       "metadata": {
         "order": 5
-      },
-      "created_at": "2025-12-13T02:49:49.208848Z",
-      "updated_at": "2025-12-13T02:49:49.208848Z"
+      }
     },
     {
       "id": 144,
-      "slug": "widget-1764990904841-1",
-      "kind": "widget",
-      "display_name": "Widget 1764990904841",
+      "slug": "assistant-message-question-rpi",
+      "kind": "assistant_message",
+      "display_name": "Question sur le Raspberry Pi",
       "agent_key": null,
       "parent_slug": null,
       "position": 6,
       "is_enabled": true,
       "parameters": {
         "tools": null,
-        "widget": {
-          "slug": "pret-a-debuter",
-          "source": "library",
-          "variables": {
-            "text": "On continue?"
-          }
-        }
+        "message": "Avant de commencer, répondons à cette question:\n\n### 📝 Pourquoi utiliser un Raspberry Pi 5 comme poste de développement IoT plutôt que votre PC portable?",
+        "simulate_stream_delay_ms": 5
       },
       "metadata": {
         "order": 6
-      },
-      "created_at": "2025-12-13T02:49:49.208849Z",
-      "updated_at": "2025-12-13T02:49:49.208849Z"
+      }
     },
     {
       "id": 145,
-      "slug": "condition-1764990982539-1",
-      "kind": "condition",
-      "display_name": "Vérification de \"prêt à commencer\"",
+      "slug": "state-init-compteur-q1",
+      "kind": "state",
+      "display_name": "Initialisation compteur Q1",
       "agent_key": null,
       "parent_slug": null,
       "position": 7,
       "is_enabled": true,
       "parameters": {
-        "mode": "value",
-        "path": "input.action.raw_payload.value.",
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "0"
+          }
+        ],
         "tools": null
       },
       "metadata": {
         "order": 7
-      },
-      "created_at": "2025-12-13T02:49:49.208850Z",
-      "updated_at": "2025-12-13T02:49:49.208850Z"
+      }
     },
     {
       "id": 146,
-      "slug": "assistant-message-1764990850626-1",
-      "kind": "assistant_message",
-      "display_name": "Question",
+      "slug": "wait-reponse-q1",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente réponse Q1",
       "agent_key": null,
       "parent_slug": null,
       "position": 8,
       "is_enabled": true,
       "parameters": {
-        "tools": null,
-        "message": "Avant de continuer, répondre à cette questions:\n\n### 📝 Pourquoi utiliser un Raspberry Pi 5 comme poste de développement IoT plutôt que votre PC portable ?",
-        "simulate_stream": true,
-        "simulate_stream_delay_ms": 5
+        "tools": null
       },
       "metadata": {
         "order": 8
-      },
-      "created_at": "2025-12-13T02:49:49.208850Z",
-      "updated_at": "2025-12-13T02:49:49.208851Z"
+      }
     },
     {
       "id": 147,
-      "slug": "wait-1765216242493",
-      "kind": "wait_for_user_input",
-      "display_name": "Attente d'un message utilisateur",
+      "slug": "agent-eval-q1",
+      "kind": "agent",
+      "display_name": "Évaluation réponse Q1",
       "agent_key": null,
       "parent_slug": null,
       "position": 9,
       "is_enabled": true,
       "parameters": {
-        "tools": null
-      },
-      "metadata": {
-        "order": 9
-      },
-      "created_at": "2025-12-13T02:49:49.208851Z",
-      "updated_at": "2025-12-13T02:49:49.208852Z"
-    },
-    {
-      "id": 148,
-      "slug": "agent-1765216283387-1",
-      "kind": "agent",
-      "display_name": "Évaluation de la réponse",
-      "agent_key": null,
-      "parent_slug": null,
-      "position": 10,
-      "is_enabled": true,
-      "parameters": {
         "model": "gpt-5-nano",
-        "instructions": "# Rôle de l’agent\nTu es un évaluateur. Tu ne réponds pas à la question, tu n’expliques rien et tu ne raisonnes pas à voix haute.  \nTu dois uniquement analyser **le dernier message de l’utilisateur** et produire un JSON strict :\n\n```json\n{ \"ok\": true }\n```\n\nou\n\n```json\n{ \"ok\": false }\n```\n\n# Question posée à l’utilisateur\n« Pourquoi utiliser un Raspberry Pi 5 comme poste de développement IoT plutôt que votre PC portable ? »\n\n# Contexte attendu\n- Le Raspberry Pi est physiquement connecté au microcontrôleur LilyGO.\n- Le code est déployé **à distance** sur ce device.\n- Le Raspberry Pi simule un **site IoT distant**, contrairement au PC portable.\n\n# Critères pour une bonne réponse\nLa réponse doit mentionner, en ses propres mots :\n- l’importance de **programmer ou déboguer un objet connecté à distance** ;\n- le fait qu’un device IoT peut être situé **n’importe où** ;\n- et que le Raspberry Pi permet de **simuler un site distant réel**.\n\n# Règles d’évaluation\n- Si la réponse respecte les critères → `\"ok\": true`\n- Sinon → `\"ok\": false`\n\n# Important\n- **N’évalue que le dernier message utilisateur.**\n- **Ne réponds jamais à la place de l’utilisateur.**\n- **Ne fournis aucune explication ni analyse externe.**\n",
+        "instructions": "# Rôle de l'agent\nTu es un évaluateur. Tu ne réponds pas à la question, tu n'expliques rien et tu ne raisonnes pas à voix haute.\nTu dois uniquement analyser **le dernier message de l'utilisateur** et produire un JSON strict.\n\n# Question posée à l'utilisateur\n« Pourquoi utiliser un Raspberry Pi 5 comme poste de développement IoT plutôt que votre PC portable ? »\n\n# Contexte attendu\n- Le Raspberry Pi est physiquement connecté au microcontrôleur LilyGO.\n- Le code est déployé **à distance** sur ce device.\n- Le Raspberry Pi simule un **site IoT distant**, contrairement au PC portable.\n\n# Critères pour une bonne réponse\nLa réponse doit mentionner, en ses propres mots :\n- l'importance de **programmer ou déboguer un objet connecté à distance** ;\n- le fait qu'un device IoT peut être situé **n'importe où** ;\n- et que le Raspberry Pi permet de **simuler un site distant réel**.\n\n# Règles d'évaluation\n- Si la réponse respecte les critères → `\"ok\": true`\n- Sinon → `\"ok\": false`\n\n# Important\n- **N'évalue que le dernier message utilisateur.**\n- **Ne réponds jamais à la place de l'utilisateur.**\n- **Ne fournis aucune explication ni analyse externe.**",
         "model_provider": "openai",
         "model_settings": {
           "text": {
@@ -218,13 +180,11 @@
           "type": "json_schema",
           "schema": {
             "type": "object",
-            "required": [
-              "ok"
-            ],
+            "required": ["ok"],
             "properties": {
               "ok": {
                 "type": "boolean",
-                "description": "ok pas ok"
+                "description": "Réponse acceptable"
               }
             }
           },
@@ -233,19 +193,17 @@
         "model_provider_slug": "openai"
       },
       "metadata": {
-        "order": 10
-      },
-      "created_at": "2025-12-13T02:49:49.208852Z",
-      "updated_at": "2025-12-13T02:49:49.208853Z"
+        "order": 9
+      }
     },
     {
-      "id": 149,
-      "slug": "condition-1764990982539-1-1",
+      "id": 148,
+      "slug": "condition-eval-q1",
       "kind": "condition",
-      "display_name": "Bonne réponse?",
+      "display_name": "Bonne réponse Q1?",
       "agent_key": null,
       "parent_slug": null,
-      "position": 11,
+      "position": 10,
       "is_enabled": true,
       "parameters": {
         "mode": "value",
@@ -253,124 +211,17 @@
         "tools": null
       },
       "metadata": {
-        "order": 11
-      },
-      "created_at": "2025-12-13T02:49:49.208853Z",
-      "updated_at": "2025-12-13T02:49:49.208854Z"
+        "order": 10
+      }
     },
     {
-      "id": 150,
-      "slug": "end-1764991255370-1",
-      "kind": "end",
-      "display_name": "Fin",
-      "agent_key": null,
-      "parent_slug": null,
-      "position": 12,
-      "is_enabled": true,
-      "parameters": {
-        "tools": null,
-        "status": {
-          "type": "closed",
-          "reason": "Workflow terminé"
-        },
-        "message": "Workflow terminé"
-      },
-      "metadata": {
-        "order": 12
-      },
-      "created_at": "2025-12-13T02:49:49.208854Z",
-      "updated_at": "2025-12-13T02:49:49.208854Z"
-    },
-    {
-      "id": 151,
-      "slug": "assistant-message-1765222533429",
-      "kind": "assistant_message",
-      "display_name": "Assistant Message 1765222533429",
-      "agent_key": null,
-      "parent_slug": null,
-      "position": 13,
-      "is_enabled": true,
-      "parameters": {
-        "tools": null,
-        "message": "C'est bon! On continue!"
-      },
-      "metadata": {
-        "order": 13
-      },
-      "created_at": "2025-12-13T02:49:49.208855Z",
-      "updated_at": "2025-12-13T02:49:49.208856Z"
-    },
-    {
-      "id": 152,
-      "slug": "condition-1764990982539-1-1-1",
-      "kind": "condition",
-      "display_name": "Fin de la boucle?",
-      "agent_key": null,
-      "parent_slug": null,
-      "position": 14,
-      "is_enabled": true,
-      "parameters": {
-        "mode": "value",
-        "path": "state.compteur",
-        "tools": null
-      },
-      "metadata": {
-        "order": 14
-      },
-      "created_at": "2025-12-13T02:49:49.208856Z",
-      "updated_at": "2025-12-13T02:49:49.208856Z"
-    },
-    {
-      "id": 153,
-      "slug": "assistant-message-1765222533429-1",
-      "kind": "assistant_message",
-      "display_name": "Assistant Message 1765222533429",
-      "agent_key": null,
-      "parent_slug": null,
-      "position": 15,
-      "is_enabled": true,
-      "parameters": {
-        "tools": null,
-        "message": "Ton enseignant va venir te voir."
-      },
-      "metadata": {
-        "order": 15
-      },
-      "created_at": "2025-12-13T02:49:49.208857Z",
-      "updated_at": "2025-12-13T02:49:49.208857Z"
-    },
-    {
-      "id": 154,
-      "slug": "state-1765422171157",
+      "id": 149,
+      "slug": "state-incr-compteur-q1",
       "kind": "state",
-      "display_name": "State 1765422171157",
+      "display_name": "Incrémentation compteur Q1",
       "agent_key": null,
       "parent_slug": null,
-      "position": 16,
-      "is_enabled": true,
-      "parameters": {
-        "state": [
-          {
-            "target": "state.compteur",
-            "expression": "0"
-          }
-        ],
-        "tools": null
-      },
-      "metadata": {
-        "order": 16
-      },
-      "created_at": "2025-12-13T02:49:49.208858Z",
-      "updated_at": "2025-12-13T02:49:49.208858Z"
-    },
-    {
-      "id": 155,
-      "slug": "state-1765422437507",
-      "kind": "state",
-      "display_name": "Incrémentation du compteur",
-      "agent_key": null,
-      "parent_slug": null,
-      "position": 17,
+      "position": 11,
       "is_enabled": true,
       "parameters": {
         "state": [
@@ -382,48 +233,69 @@
         "tools": null
       },
       "metadata": {
-        "order": 17
-      },
-      "created_at": "2025-12-13T02:49:49.208859Z",
-      "updated_at": "2025-12-13T02:49:49.208859Z"
+        "order": 11
+      }
     },
     {
-      "id": 156,
-      "slug": "agent-1765216283387-1-1-1",
-      "kind": "agent",
-      "display_name": "Rédaction de la rétraoction",
+      "id": 150,
+      "slug": "condition-max-tentatives-q1",
+      "kind": "condition",
+      "display_name": "Maximum tentatives Q1?",
       "agent_key": null,
       "parent_slug": null,
-      "position": 18,
+      "position": 12,
       "is_enabled": true,
       "parameters": {
-        "model": "gpt-5-nano",
-        "instructions": "Aide l'utilisateur à préciser sa réponse. Ne donne pas beaucoup d'information. Demande lui de réessayer en détaillant le côté de sites distants.",
-        "model_provider": "openai",
-        "model_settings": {
-          "text": {
-            "verbosity": "low"
-          },
-          "reasoning": {
-            "effort": "low"
-          }
-        },
-        "model_provider_slug": "openai"
+        "mode": "value",
+        "path": "state.compteur",
+        "tools": null
       },
       "metadata": {
-        "order": 18
-      },
-      "created_at": "2025-12-13T02:49:49.208860Z",
-      "updated_at": "2025-12-13T02:49:49.208860Z"
+        "order": 12
+      }
     },
     {
-      "id": 157,
-      "slug": "condition-1764990982539-1-1-1-1",
-      "kind": "condition",
-      "display_name": "Mot de passe de l'enseignant",
+      "id": 151,
+      "slug": "assistant-message-appel-prof-q1",
+      "kind": "assistant_message",
+      "display_name": "Appel enseignant Q1",
       "agent_key": null,
       "parent_slug": null,
-      "position": 19,
+      "position": 13,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Tu sembles avoir de la difficulté avec cette question. Ton enseignant va venir t'aider.\n\nEntre le code de l'enseignant pour continuer:",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 13
+      }
+    },
+    {
+      "id": 152,
+      "slug": "wait-code-prof-q1",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente code enseignant Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 14,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 14
+      }
+    },
+    {
+      "id": 153,
+      "slug": "condition-code-prof-q1",
+      "kind": "condition",
+      "display_name": "Code enseignant correct Q1?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 15,
       "is_enabled": true,
       "parameters": {
         "mode": "value",
@@ -431,313 +303,1891 @@
         "tools": null
       },
       "metadata": {
-        "order": 19
-      },
-      "created_at": "2025-12-13T02:49:49.208861Z",
-      "updated_at": "2025-12-13T02:49:49.208861Z"
+        "order": 15
+      }
     },
     {
-      "id": 158,
-      "slug": "wait-1765216242493-1",
-      "kind": "wait_for_user_input",
-      "display_name": "Attente d'un message utilisateur",
+      "id": 154,
+      "slug": "agent-retroaction-q1",
+      "kind": "agent",
+      "display_name": "Rétroaction Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 16,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "Aide l'utilisateur à préciser sa réponse concernant l'utilisation du Raspberry Pi comme poste de développement IoT. Ne donne pas trop d'informations. Demande-lui de réessayer en détaillant le côté des sites distants et de la programmation à distance.",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": {
+            "verbosity": "low"
+          },
+          "reasoning": {
+            "effort": "low"
+          },
+          "include_chat_history": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 16
+      }
+    },
+    {
+      "id": 155,
+      "slug": "assistant-message-q1-ok",
+      "kind": "assistant_message",
+      "display_name": "Réponse Q1 correcte",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 17,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Excellent! Tu as bien compris le concept.\n\nLe Raspberry Pi sert de **passerelle de développement accessible à distance**. Il simule un environnement professionnel où les appareils IoT sont souvent déployés dans des lieux difficiles d'accès. Tu peux y accéder via SSH depuis n'importe où grâce à Cloudflare Tunnel.\n\nPassons maintenant à la première étape technique!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 17
+      }
+    },
+    {
+      "id": 200,
+      "slug": "assistant-message-section1",
+      "kind": "assistant_message",
+      "display_name": "Section 1: Installation Ubuntu Server",
       "agent_key": null,
       "parent_slug": null,
       "position": 20,
       "is_enabled": true,
       "parameters": {
-        "tools": null
+        "tools": null,
+        "message": "## 1. Installation Ubuntu Server\n\n### 💡 Concepts clés\n\n**Pourquoi Ubuntu Server et non Desktop?**\nUbuntu Server est une version allégée de Linux sans interface graphique. Pour un appareil IoT:\n- **Moins de ressources:** Plus de RAM et CPU disponibles pour vos applications\n- **Plus stable:** Moins de services en arrière-plan\n- **Accès à distance naturel:** Conçu pour être administré via SSH\n\n**Importance de SSH dès le départ:**\nSSH (Secure Shell) est le protocole qui vous permettra de contrôler le Raspberry Pi à distance via la ligne de commande.\n\n---\n\n### Préparation de la carte SD\n\n1. Installer Ubuntu Server (dernière version LTS) sur le Raspberry Pi 5\n   - Utilisez **Raspberry Pi Imager** disponible sur [raspberrypi.com](https://www.raspberrypi.com/software/)\n   - Sélectionnez: `Other general-purpose OS → Ubuntu → Ubuntu Server 24.04 LTS (64-bit)`\n\n2. Lors de la préparation de la carte micro-SD:\n   - **Activer SSH** ✓ (crucial pour l'accès à distance)\n   - **Configurer username, password et hostname**\n\n3. Installer l'écran sur le Raspberry Pi 5 (suivre les instructions du fabricant)\n\n4. Brancher le clavier sur le Raspberry Pi 5 (port USB)\n\n**Premier démarrage:**\n- Au premier boot, Ubuntu va finaliser l'installation (2-3 minutes)\n- Attendez l'invite de connexion: `ubuntu login:`\n- Connectez-vous avec le username/password configurés\n\n---\n\nInstalle Ubuntu Server sur ta carte SD et démarre ton Raspberry Pi. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
       },
       "metadata": {
         "order": 20
-      },
-      "created_at": "2025-12-13T02:49:49.208861Z",
-      "updated_at": "2025-12-13T02:49:49.208862Z"
+      }
     },
     {
-      "id": 159,
-      "slug": "assistant-message-1765222533429-1-1",
-      "kind": "assistant_message",
-      "display_name": "Assistant Message 1765222533429",
+      "id": 201,
+      "slug": "widget-section1-done",
+      "kind": "widget",
+      "display_name": "Ubuntu installé?",
       "agent_key": null,
       "parent_slug": null,
       "position": 21,
       "is_enabled": true,
       "parameters": {
         "tools": null,
-        "message": "lablalbla, suite du labo"
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Ubuntu Server est installé et je suis connecté!"
+          }
+        }
       },
       "metadata": {
         "order": 21
+      }
+    },
+    {
+      "id": 202,
+      "slug": "condition-section1-done",
+      "kind": "condition",
+      "display_name": "Ubuntu installé?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 22,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
       },
-      "created_at": "2025-12-13T02:49:49.208862Z",
-      "updated_at": "2025-12-13T02:49:49.208863Z"
+      "metadata": {
+        "order": 22
+      }
+    },
+    {
+      "id": 203,
+      "slug": "end-section1-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 23,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand Ubuntu sera installé!"
+      },
+      "metadata": {
+        "order": 23
+      }
+    },
+    {
+      "id": 210,
+      "slug": "assistant-message-section2",
+      "kind": "assistant_message",
+      "display_name": "Section 2: Configuration réseau",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 30,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 2. Configuration réseau\n\n### 💡 Concepts clés\n\n**Netplan : le gestionnaire réseau d'Ubuntu**\nUbuntu utilise **Netplan**, un outil de configuration réseau basé sur des fichiers YAML.\n\n**IP statique vs DHCP:**\n- **DHCP:** Le routeur attribue automatiquement une adresse IP qui peut changer\n- **IP statique:** Vous choisissez une adresse IP fixe qui ne change jamais\n\nPour un appareil IoT, une **IP statique** est préférable car vous savez toujours comment le joindre.\n\n---\n\n### 2.1 Adresse IP statique (Ethernet)\n\n```bash\nsudo nano /etc/netplan/01-ethernet.yaml\n```\n\nContenu:\n```yaml\nnetwork:\n  version: 2\n  renderer: networkd\n  ethernets:\n    eth0:\n      dhcp4: false\n      addresses:\n        - 192.168.1.9/24\n      gateway4: 192.168.1.1\n      nameservers:\n        addresses:\n          - 1.1.1.1\n          - 8.8.8.8\n```\n\n**Configuration en connexion directe PC ↔ RPi:**\n- **Raspberry Pi:** 192.168.1.9/24\n- **Votre PC:** 192.168.1.10/24 (à configurer sur votre PC)\n\nAppliquer:\n```bash\nsudo netplan apply\n```\n\nVérification:\n```bash\nip a\nping 1.1.1.1\n```\n\n---\n\n### 2.2 Configuration WiFi WPA-EAP (Réseau Cégep)\n\n```bash\nsudo nano /etc/netplan/01-wifi.yaml\n```\n\n```yaml\nnetwork:\n  version: 2\n  renderer: networkd\n  wifis:\n    wlan0:\n      dhcp4: true\n      access-points:\n        \"MonSSID\":\n          mode: infrastructure\n          auth:\n            key-management: wpa-eap\n            eap-method: peap\n            identity: \"mon_user\"\n            password: \"mon_password\"\n            phase2-auth: mschapv2\n```\n\n**Sécurité:** Protégez le fichier:\n```bash\nsudo chmod 600 /etc/netplan/01-wifi.yaml\n```\n\nConfigure ton réseau et dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 30
+      }
+    },
+    {
+      "id": 211,
+      "slug": "widget-section2-done",
+      "kind": "widget",
+      "display_name": "Réseau configuré?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 31,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Le réseau est configuré!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 31
+      }
+    },
+    {
+      "id": 212,
+      "slug": "condition-section2-done",
+      "kind": "condition",
+      "display_name": "Réseau configuré?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 32,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 32
+      }
+    },
+    {
+      "id": 213,
+      "slug": "end-section2-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 33,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand le réseau sera configuré!"
+      },
+      "metadata": {
+        "order": 33
+      }
+    },
+    {
+      "id": 214,
+      "slug": "assistant-message-question-reseau",
+      "kind": "assistant_message",
+      "display_name": "Question sur le réseau",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 34,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "### 📝 Question de compréhension\n\nQuelle est la différence entre une IP statique et DHCP, et pourquoi utiliser une IP statique pour un appareil IoT?",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 34
+      }
+    },
+    {
+      "id": 215,
+      "slug": "state-init-compteur-q2",
+      "kind": "state",
+      "display_name": "Init compteur Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 35,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "0"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 35
+      }
+    },
+    {
+      "id": 216,
+      "slug": "wait-reponse-q2",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente réponse Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 36,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 36
+      }
+    },
+    {
+      "id": 217,
+      "slug": "agent-eval-q2",
+      "kind": "agent",
+      "display_name": "Évaluation Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 37,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "# Rôle\nTu es un évaluateur. Produis uniquement un JSON strict.\n\n# Question\n« Quelle est la différence entre une IP statique et DHCP, et pourquoi utiliser une IP statique pour un appareil IoT? »\n\n# Critères\nLa réponse doit mentionner:\n- DHCP attribue une IP automatiquement qui peut changer\n- IP statique est une adresse fixe qui ne change pas\n- Pour IoT: on sait toujours comment joindre l'appareil / facilite SSH / configuration prévisible\n\n# Règles\n- Si correct → `\"ok\": true`\n- Sinon → `\"ok\": false`",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "response_format": {
+          "name": "workflow_output",
+          "type": "json_schema",
+          "schema": {
+            "type": "object",
+            "required": ["ok"],
+            "properties": {
+              "ok": { "type": "boolean" }
+            }
+          },
+          "strict": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 37
+      }
+    },
+    {
+      "id": 218,
+      "slug": "condition-eval-q2",
+      "kind": "condition",
+      "display_name": "Bonne réponse Q2?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 38,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.output_structured.ok",
+        "tools": null
+      },
+      "metadata": {
+        "order": 38
+      }
+    },
+    {
+      "id": 219,
+      "slug": "state-incr-compteur-q2",
+      "kind": "state",
+      "display_name": "Incrémentation compteur Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 39,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "(state.get('compteur', 0) or 0) + 1"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 39
+      }
+    },
+    {
+      "id": 220,
+      "slug": "condition-max-tentatives-q2",
+      "kind": "condition",
+      "display_name": "Max tentatives Q2?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 40,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "state.compteur",
+        "tools": null
+      },
+      "metadata": {
+        "order": 40
+      }
+    },
+    {
+      "id": 221,
+      "slug": "assistant-message-appel-prof-q2",
+      "kind": "assistant_message",
+      "display_name": "Appel enseignant Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 41,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Tu sembles avoir de la difficulté. Ton enseignant va venir t'aider.\n\nEntre le code de l'enseignant pour continuer:",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 41
+      }
+    },
+    {
+      "id": 222,
+      "slug": "wait-code-prof-q2",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente code Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 42,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 42
+      }
+    },
+    {
+      "id": 223,
+      "slug": "condition-code-prof-q2",
+      "kind": "condition",
+      "display_name": "Code correct Q2?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 43,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.user_message",
+        "tools": null
+      },
+      "metadata": {
+        "order": 43
+      }
+    },
+    {
+      "id": 224,
+      "slug": "agent-retroaction-q2",
+      "kind": "agent",
+      "display_name": "Rétroaction Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 44,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "Aide l'utilisateur à préciser sa réponse sur la différence entre IP statique et DHCP. Donne un indice sans donner la réponse complète.",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 44
+      }
+    },
+    {
+      "id": 225,
+      "slug": "assistant-message-q2-ok",
+      "kind": "assistant_message",
+      "display_name": "Réponse Q2 correcte",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 45,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Parfait! Tu as bien compris la différence entre IP statique et DHCP.\n\nPassons maintenant à la configuration de l'accès distant sécurisé!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 45
+      }
+    },
+    {
+      "id": 300,
+      "slug": "assistant-message-section3",
+      "kind": "assistant_message",
+      "display_name": "Section 3: Cloudflare Tunnel",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 50,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 3. Connexion à distance via Cloudflare Tunnel\n\n### 💡 Concepts clés\n\n**Pourquoi un tunnel Cloudflare au lieu de l'exposition de ports?**\n\nDans une configuration classique, pour accéder à votre Raspberry Pi depuis l'extérieur:\n1. Ouvrir le port 22 (SSH) sur votre routeur\n2. Connaître votre IP publique (qui change souvent)\n3. Exposer directement votre appareil à Internet\n\n**Problèmes:**\n- Exposition directe aux attaques\n- IP dynamique qui change\n- Impossible derrière un réseau d'entreprise/Cégep\n\n**Solution: Cloudflare Tunnel**\n\nCloudflare Tunnel crée une **connexion sortante sécurisée** de votre Raspberry Pi vers Cloudflare. **Aucun port à ouvrir!**\n\n```\nVotre PC → Cloudflare Edge → Tunnel chiffré → Raspberry Pi\n```\n\n**Avantages:**\n- ✅ Aucun port ouvert\n- ✅ Fonctionne derrière NAT strict\n- ✅ Authentification robuste via Zero Trust\n- ✅ Logs d'accès détaillés\n\n---\n\n### Configuration\n\n**1. Prérequis:**\n- Compte Cloudflare gratuit\n- Nom de domaine public\n\n**2. Sur le Raspberry Pi:**\n```bash\ncloudflared login\ncloudflared tunnel create rpi-ssh\n```\n\n**3. Créer config.yml:**\n```yaml\ntunnel: <TON-UUID-ICI>\ncredentials-file: /home/fpoisson/.cloudflared/<TON-UUID-ICI>.json\n\ningress:\n  - hostname: rpi.edxo.ca\n    service: ssh://localhost:22\n  - service: http_status:404\n```\n\n**4. Lier au DNS:**\n```bash\ncloudflared tunnel route dns rpi-ssh rpi.edxo.ca\n```\n\n**5. Tester et installer le service:**\n```bash\ncloudflared tunnel run rpi-ssh\nsudo cloudflared service install\n```\n\n**6. Configuration SSH locale (sur votre PC):**\n```\nHost rpi\n  HostName rpi.edxo.ca\n  User fpoisson\n  ProxyCommand cloudflared access ssh --hostname %h\n```\n\n**7. Se connecter:**\n```bash\nssh rpi\n```\n\nConfigure Cloudflare Tunnel et dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 50
+      }
+    },
+    {
+      "id": 301,
+      "slug": "widget-section3-done",
+      "kind": "widget",
+      "display_name": "Tunnel configuré?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 51,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Le tunnel Cloudflare est configuré et je peux me connecter en SSH!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 51
+      }
+    },
+    {
+      "id": 302,
+      "slug": "condition-section3-done",
+      "kind": "condition",
+      "display_name": "Tunnel configuré?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 52,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 52
+      }
+    },
+    {
+      "id": 303,
+      "slug": "end-section3-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 53,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand le tunnel sera configuré!"
+      },
+      "metadata": {
+        "order": 53
+      }
+    },
+    {
+      "id": 304,
+      "slug": "assistant-message-question-zerotrust",
+      "kind": "assistant_message",
+      "display_name": "Question Zero Trust",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 54,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "### 📝 Question de compréhension\n\nQu'est-ce que le modèle \"Zero Trust\" et pourquoi est-il plus sécuritaire que l'exposition directe des ports?",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 54
+      }
+    },
+    {
+      "id": 305,
+      "slug": "state-init-compteur-q3",
+      "kind": "state",
+      "display_name": "Init compteur Q3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 55,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "0"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 55
+      }
+    },
+    {
+      "id": 306,
+      "slug": "wait-reponse-q3",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente réponse Q3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 56,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 56
+      }
+    },
+    {
+      "id": 307,
+      "slug": "agent-eval-q3",
+      "kind": "agent",
+      "display_name": "Évaluation Q3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 57,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "# Rôle\nÉvaluateur. Produis uniquement un JSON strict.\n\n# Question\n« Qu'est-ce que le modèle Zero Trust et pourquoi est-il plus sécuritaire? »\n\n# Critères\nLa réponse doit mentionner:\n- Zero Trust = ne jamais faire confiance, toujours vérifier\n- Authentification requise même si on connaît l'URL\n- Pas de ports ouverts = moins de surface d'attaque\n- Connexion sortante au lieu d'entrante\n\n# Règles\n- Si correct → `\"ok\": true`\n- Sinon → `\"ok\": false`",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "response_format": {
+          "name": "workflow_output",
+          "type": "json_schema",
+          "schema": {
+            "type": "object",
+            "required": ["ok"],
+            "properties": {
+              "ok": { "type": "boolean" }
+            }
+          },
+          "strict": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 57
+      }
+    },
+    {
+      "id": 308,
+      "slug": "condition-eval-q3",
+      "kind": "condition",
+      "display_name": "Bonne réponse Q3?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 58,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.output_structured.ok",
+        "tools": null
+      },
+      "metadata": {
+        "order": 58
+      }
+    },
+    {
+      "id": 309,
+      "slug": "state-incr-compteur-q3",
+      "kind": "state",
+      "display_name": "Incrémentation compteur Q3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 59,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "(state.get('compteur', 0) or 0) + 1"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 59
+      }
+    },
+    {
+      "id": 310,
+      "slug": "condition-max-tentatives-q3",
+      "kind": "condition",
+      "display_name": "Max tentatives Q3?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 60,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "state.compteur",
+        "tools": null
+      },
+      "metadata": {
+        "order": 60
+      }
+    },
+    {
+      "id": 311,
+      "slug": "assistant-message-appel-prof-q3",
+      "kind": "assistant_message",
+      "display_name": "Appel enseignant Q3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 61,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Tu sembles avoir de la difficulté. Ton enseignant va venir t'aider.\n\nEntre le code de l'enseignant pour continuer:",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 61
+      }
+    },
+    {
+      "id": 312,
+      "slug": "wait-code-prof-q3",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente code Q3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 62,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 62
+      }
+    },
+    {
+      "id": 313,
+      "slug": "condition-code-prof-q3",
+      "kind": "condition",
+      "display_name": "Code correct Q3?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 63,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.user_message",
+        "tools": null
+      },
+      "metadata": {
+        "order": 63
+      }
+    },
+    {
+      "id": 314,
+      "slug": "agent-retroaction-q3",
+      "kind": "agent",
+      "display_name": "Rétroaction Q3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 64,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "Aide l'utilisateur à comprendre le modèle Zero Trust. Donne un indice sur le principe de 'ne jamais faire confiance' sans donner la réponse complète.",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 64
+      }
+    },
+    {
+      "id": 315,
+      "slug": "assistant-message-q3-ok",
+      "kind": "assistant_message",
+      "display_name": "Réponse Q3 correcte",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 65,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Excellent! Tu as bien compris le modèle Zero Trust.\n\nPassons maintenant à la configuration de Git!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 65
+      }
+    },
+    {
+      "id": 400,
+      "slug": "assistant-message-section4",
+      "kind": "assistant_message",
+      "display_name": "Section 4: Configuration Git",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 70,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 4. Configuration Git\n\n### 💡 Concepts clés\n\nGit est un système de **contrôle de version** qui sauvegarde l'historique complet de votre code. Pour des projets IoT sur Raspberry Pi, c'est essentiel pour synchroniser votre code entre GitHub et votre appareil distant.\n\n---\n\n### 4.1 Création du compte GitHub et token d'accès\n\n1. Créez un compte sur [github.com](https://github.com)\n2. Allez dans **Settings → Developer settings → Personal access tokens → Tokens (classic)**\n3. Cliquez sur **Generate new token (classic)**\n4. Configurez:\n   - **Note:** `Raspberry Pi - 243-4J5-LI`\n   - **Expiration:** 90 days\n   - **Scopes:** Cochez `repo`\n5. **⚠️ Copiez le token immédiatement!**\n\n---\n\n### 4.2 Configuration Git sur le Raspberry Pi\n\n```bash\ngit config --global user.name \"Votre Nom\"\ngit config --global user.email \"votre.email@example.com\"\ngit config --global credential.helper store\n```\n\n### 4.3 Cloner le dépôt du cours\n\n```bash\ncd ~\ngit clone https://github.com/fpoisson2/243-4J5-LI.git\ncd 243-4J5-LI\n```\n\nLors du premier clone:\n- **Username:** Votre nom d'utilisateur GitHub\n- **Password:** Collez votre **token** (pas votre mot de passe!)\n\n### 4.4 Créer votre branche personnelle\n\n```bash\ngit checkout -b prenom-nom/labo1\n```\n\n### 4.5 Workflow Git de base\n\n```bash\ngit status                        # Voir les changements\ngit add .                         # Ajouter les modifications\ngit commit -m \"Description\"       # Créer un commit\ngit push origin prenom-nom/labo1  # Pousser vers GitHub\n```\n\nConfigure Git et clone le dépôt du cours. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 70
+      }
+    },
+    {
+      "id": 401,
+      "slug": "widget-section4-done",
+      "kind": "widget",
+      "display_name": "Git configuré?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 71,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Git est configuré et j'ai cloné le dépôt!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 71
+      }
+    },
+    {
+      "id": 402,
+      "slug": "condition-section4-done",
+      "kind": "condition",
+      "display_name": "Git configuré?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 72,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 72
+      }
+    },
+    {
+      "id": 403,
+      "slug": "end-section4-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 4",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 73,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand Git sera configuré!"
+      },
+      "metadata": {
+        "order": 73
+      }
+    },
+    {
+      "id": 500,
+      "slug": "assistant-message-section5",
+      "kind": "assistant_message",
+      "display_name": "Section 5: Interface tactile",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 80,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 5. Interface tactile distante en mode console\n\n### 💡 Concepts clés\n\n**Interface tactile SANS serveur X (mode texte uniquement):**\n\nCe projet montre comment créer une interface **interactive et tactile** directement dans la console, sans installer de serveur graphique. Parfait pour:\n- Des appareils embarqués avec ressources limitées\n- Des tableaux de bord minimalistes sur écrans tactiles\n- Des interfaces de contrôle rapides\n\n**Bibliothèques utilisées:**\n- **`curses`:** Positionner du texte, ajouter des couleurs, créer des \"fenêtres\" en mode texte\n- **`evdev`:** Lire directement les événements du périphérique tactile\n\n---\n\n### 5.1 Code prêt à l'emploi\n\nLe script se trouve dans `~/243-4J5-LI/labo1/code/touch_ui.py`.\n- Affiche trois boutons (STATUS, LOGS, QUIT)\n- Réagit aux taps du panneau tactile\n- `q` ou le bouton **QUIT** ferment l'application\n\n### 5.2 Dépendances\n\n```bash\nsudo apt update\nsudo apt install -y python3 python3-evdev\n```\n\n### 5.3 Lancer l'UI sur l'écran distant\n\nDepuis une session SSH:\n```bash\nsudo chvt 1\nsudo setsid sh -c 'exec </dev/tty1 >/dev/tty1 2>&1 python3 /home/fpoisson/243-4J5-LI/labo1/code/touch_ui.py'\n```\n\nPour tuer le processus si nécessaire:\n```bash\nsudo pkill python3\n```\n\n---\n\nInstalle les dépendances et teste l'interface tactile. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 80
+      }
+    },
+    {
+      "id": 501,
+      "slug": "widget-section5-done",
+      "kind": "widget",
+      "display_name": "Interface tactile testée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 81,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "L'interface tactile fonctionne!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 81
+      }
+    },
+    {
+      "id": 502,
+      "slug": "condition-section5-done",
+      "kind": "condition",
+      "display_name": "Interface tactile OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 82,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 82
+      }
+    },
+    {
+      "id": 503,
+      "slug": "end-section5-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 5",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 83,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand l'interface tactile sera testée!"
+      },
+      "metadata": {
+        "order": 83
+      }
+    },
+    {
+      "id": 600,
+      "slug": "assistant-message-section6",
+      "kind": "assistant_message",
+      "display_name": "Section 6: Node.js et Gemini CLI",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 90,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 6. Installation Node.js et outils CLI\n\n### 💡 Concepts clés\n\n**Pourquoi Node.js dans un projet IoT?**\n- npm: accès à des milliers de bibliothèques\n- Asynchrone par nature: parfait pour plusieurs connexions\n- Léger: peut tourner sur Raspberry Pi\n\n**NVM (Node Version Manager):**\n- Installez N'IMPORTE quelle version de Node\n- Basculez entre versions facilement\n- Pas besoin de `sudo`\n\n**Gemini CLI:**\nAssistant IA pour le développement. Peut **exécuter des commandes système** pour vous: compiler Arduino, accéder au port série, lancer Git, etc.\n\n---\n\n### 6.1 Installation de base\n\n```bash\nsudo apt install npm\n```\n\n### 6.2 Configuration NVM\n\n```bash\nexport NVM_DIR=\"$HOME/.nvm\"\n[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"\n\nnvm install 22\nnvm use 22\n\nnode -v    # Devrait afficher v22.x.x\nnpm -v\n```\n\n### 6.3 Installation Gemini CLI\n\n```bash\nnpm install -g @google/gemini-cli\ngemini --help\n```\n\n### 6.4 Exercice pratique avec Gemini CLI\n\n1. Naviguez vers votre code:\n```bash\ncd ~/243-4J5-LI/labo1/code\ngemini\n```\n\n2. Demandez à Gemini d'ajouter une fonctionnalité:\n   - \"Ajoute un quatrième bouton 'REBOOT' qui affiche un message de confirmation\"\n   - \"Ajoute des couleurs différentes pour chaque bouton\"\n\n3. Testez le code modifié et sauvegardez avec Git:\n```bash\ngit add .\ngit commit -m \"Ajout de fonctionnalité via Gemini\"\ngit push origin prenom-nom/labo1\n```\n\n---\n\nInstalle Node.js et Gemini CLI, puis utilise Gemini pour améliorer l'interface tactile. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 90
+      }
+    },
+    {
+      "id": 601,
+      "slug": "widget-section6-done",
+      "kind": "widget",
+      "display_name": "Node.js et Gemini installés?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 91,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Node.js et Gemini sont installés et j'ai amélioré l'interface!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 91
+      }
+    },
+    {
+      "id": 602,
+      "slug": "condition-section6-done",
+      "kind": "condition",
+      "display_name": "Section 6 OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 92,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 92
+      }
+    },
+    {
+      "id": 603,
+      "slug": "end-section6-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 6",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 93,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand Node.js et Gemini seront installés!"
+      },
+      "metadata": {
+        "order": 93
+      }
+    },
+    {
+      "id": 700,
+      "slug": "assistant-message-section7",
+      "kind": "assistant_message",
+      "display_name": "Section 7: Programmation LilyGO",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 100,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 7. Programmation du LilyGO A7670G\n\n### 💡 Concepts clés\n\n**Qu'est-ce que le LilyGO A7670G?**\n- **ESP32:** Microcontrôleur WiFi/Bluetooth\n- **A7670G:** Modem cellulaire 4G LTE Cat-1\n- **GPS:** Récepteur GNSS pour la géolocalisation\n\n**Pourquoi Arduino CLI?**\nL'IDE Arduino est graphique. Sur Raspberry Pi en mode serveur (sans interface graphique), vous utilisez Arduino CLI pour:\n- Compiler des sketches depuis SSH\n- Téléverser du code vers l'ESP32 via USB\n- Installer des bibliothèques\n\n**Flux de programmation:**\n```\nVotre PC → (SSH) → Raspberry Pi → (USB) → ESP32\n```\n\n---\n\n### 7.1 Installation Arduino CLI\n\n```bash\ncd ~\ncurl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh\necho 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc\nsource ~/.bashrc\narduino-cli version\narduino-cli config init\narduino-cli core update-index\n```\n\n### 7.2 Configuration pour ESP32\n\n```bash\narduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json\narduino-cli core update-index\narduino-cli core install esp32:esp32\n```\n\n### 7.3 Bibliothèques requises\n\n```bash\narduino-cli lib install \"TinyGSM\"\narduino-cli lib install \"ArduinoJson\"\narduino-cli lib install \"PubSubClient\"\nsudo apt install -y python3-serial\n```\n\n### 7.4 Premier programme\n\n```bash\nmkdir -p ~/243-4J5-LI/labo1/lilygo-test\ncd ~/243-4J5-LI/labo1/lilygo-test\nnano lilygo-test.ino\n```\n\nCode:\n```cpp\n#define LED_PIN 12\n\nvoid setup() {\n  Serial.begin(115200);\n  pinMode(LED_PIN, OUTPUT);\n  Serial.println(\"LilyGO A7670G - Test\");\n}\n\nvoid loop() {\n  digitalWrite(LED_PIN, HIGH);\n  Serial.println(\"LED ON\");\n  delay(1000);\n  digitalWrite(LED_PIN, LOW);\n  Serial.println(\"LED OFF\");\n  delay(1000);\n}\n```\n\n### 7.5 Compilation et téléversement\n\n```bash\narduino-cli board list\narduino-cli compile --fqbn esp32:esp32:esp32 lilygo-test.ino\narduino-cli upload -p /dev/ttyUSB0 --fqbn esp32:esp32:esp32 lilygo-test.ino\narduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200\n```\n\n---\n\nInstalle Arduino CLI et teste le programme de base. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 100
+      }
+    },
+    {
+      "id": 701,
+      "slug": "widget-section7-base-done",
+      "kind": "widget",
+      "display_name": "Arduino CLI installé?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 101,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Arduino CLI est installé et le test de base fonctionne!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 101
+      }
+    },
+    {
+      "id": 702,
+      "slug": "condition-section7-base-done",
+      "kind": "condition",
+      "display_name": "Arduino CLI OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 102,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 102
+      }
+    },
+    {
+      "id": 703,
+      "slug": "end-section7-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 7",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 103,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand Arduino CLI sera installé!"
+      },
+      "metadata": {
+        "order": 103
+      }
+    },
+    {
+      "id": 710,
+      "slug": "assistant-message-exercice-led",
+      "kind": "assistant_message",
+      "display_name": "Exercice LED",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 110,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 🎯 Exercice pratique : Contrôle de LEDs via port série\n\n### Ce que tu dois réaliser\n\n**1. Circuit électronique:**\n- Branchez une LED rouge et une LED verte sur votre breadboard\n- Connectez-les aux GPIO appropriés de votre LilyGO\n- N'oubliez pas les résistances de limitation de courant (220Ω - 330Ω)\n\n**2. Interface tactile (touch_ui.py):**\n- Modifiez le programme Python\n- Ajoutez deux gros boutons: \"ROUGE\" et \"VERT\"\n- Chaque bouton doit envoyer la couleur sur le port série (`/dev/ttyUSB0`)\n\n**3. Programme Arduino:**\n- Modifiez le sketch pour écouter les commandes sur le port série\n- Implémentez la logique pour allumer la LED correspondante\n- Les deux commandes doivent éteindre l'autre LED\n\n**4. Test complet:**\n- Lancez l'interface tactile\n- Appuyez sur les boutons ROUGE et VERT\n- Vérifiez que les LEDs s'allument correctement\n\n---\n\n### 💡 Indices\n\n**Python (interface tactile):**\nLa bibliothèque `serial` (PySerial) permet d'écrire sur le port série\n\n**Arduino:**\nUtilisez `Serial.available()` et `Serial.readStringUntil()` pour lire les commandes\n\n---\n\n### Commit de votre travail\n\n```bash\ncd ~/243-4J5-LI\ngit add .\ngit commit -m \"Ajout du contrôle de LEDs via interface tactile et port série\"\ngit push origin prenom-nom/labo1\n```\n\n---\n\n### ✅ À remettre:\n- Photo du circuit sur la breadboard\n- Photo de l'interface tactile avec les boutons ROUGE et VERT\n- Votre code Python modifié (touch_ui.py)\n- Votre code Arduino (lilygo-test.ino)\n- Photo montrant les LEDs allumées lors d'un test\n\nRéalise l'exercice et dis-moi quand c'est terminé!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 110
+      }
+    },
+    {
+      "id": 711,
+      "slug": "widget-exercice-led-done",
+      "kind": "widget",
+      "display_name": "Exercice LED terminé?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 111,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "L'exercice LED est terminé et j'ai fait mon commit!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 111
+      }
+    },
+    {
+      "id": 712,
+      "slug": "condition-exercice-led-done",
+      "kind": "condition",
+      "display_name": "Exercice LED OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 112,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 112
+      }
+    },
+    {
+      "id": 713,
+      "slug": "end-exercice-led-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Exercice LED",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 113,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand l'exercice LED sera terminé!"
+      },
+      "metadata": {
+        "order": 113
+      }
+    },
+    {
+      "id": 800,
+      "slug": "assistant-message-devoir",
+      "kind": "assistant_message",
+      "display_name": "Devoir de préparation",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 120,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 🔮 Au prochain laboratoire\n\nMaintenant que tu maîtrises la programmation distante et la communication série, tu vas faire évoluer ton système vers une architecture IoT moderne et sans fil.\n\n### 📡 Évolution prévue\n\n**Phase 1:** Protocole MQTT (broker, publisher, subscriber)\n**Phase 2:** Communication WiFi (LilyGO autonome sans câble USB)\n**Phase 3:** Communication cellulaire 4G LTE\n\n---\n\n## 📚 Devoir de préparation (à faire avant le prochain laboratoire)\n\n### 1. Installation du broker MQTT\n\n```bash\nsudo apt update\nsudo apt install -y mosquitto mosquitto-clients\nsudo systemctl enable mosquitto\nsudo systemctl start mosquitto\nsudo systemctl status mosquitto\n```\n\n### 2. Tests MQTT\n\nDans un terminal:\n```bash\nmosquitto_sub -h localhost -t \"test/topic\"\n```\n\nDans un autre terminal:\n```bash\nmosquitto_pub -h localhost -t \"test/topic\" -m \"Hello MQTT!\"\n```\n\n### 3. Test de connexion WiFi ESP32\n\n```bash\nmkdir -p ~/243-4J5-LI/labo1/wifi-test\ncd ~/243-4J5-LI/labo1/wifi-test\nnano wifi-test.ino\n```\n\nCode:\n```cpp\n#include <WiFi.h>\n\nconst char* ssid = \"VOTRE_SSID\";\nconst char* password = \"VOTRE_PASSWORD\";\n\nvoid setup() {\n  Serial.begin(115200);\n  WiFi.begin(ssid, password);\n  \n  int attempts = 0;\n  while (WiFi.status() != WL_CONNECTED && attempts < 20) {\n    delay(500);\n    Serial.print(\".\");\n    attempts++;\n  }\n  \n  if (WiFi.status() == WL_CONNECTED) {\n    Serial.println(\"\\nConnecté au WiFi!\");\n    Serial.print(\"IP: \");\n    Serial.println(WiFi.localIP());\n  }\n}\n\nvoid loop() { delay(1000); }\n```\n\n### 4. Recherche\n\n- Lire sur le protocole MQTT: topic, QoS, retained message\n- Comprendre publish/subscribe vs requête/réponse (HTTP)\n- Explorer la bibliothèque PubSubClient\n\n### 5. Commit\n\n```bash\ncd ~/243-4J5-LI\ngit add .\ngit commit -m \"Préparation Labo 2: installation Mosquitto et test WiFi ESP32\"\ngit push origin prenom-nom/labo1\n```\n\n---\n\n**⚠️ Important:**\n- Ces tâches sont **obligatoires** pour le prochain labo\n- Ne partagez pas vos identifiants WiFi sur GitHub\n- Testez votre configuration avant le prochain cours",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 120
+      }
+    },
+    {
+      "id": 801,
+      "slug": "widget-devoir-done",
+      "kind": "widget",
+      "display_name": "Devoir noté?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 121,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "J'ai noté le devoir de préparation!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 121
+      }
+    },
+    {
+      "id": 802,
+      "slug": "condition-devoir-done",
+      "kind": "condition",
+      "display_name": "Devoir noté?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 122,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 122
+      }
+    },
+    {
+      "id": 900,
+      "slug": "assistant-message-fin",
+      "kind": "assistant_message",
+      "display_name": "Message de fin",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 130,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 🎉 Félicitations!\n\nTu as terminé le **Labo 1 - Environnement de programmation distant pour objets connectés**!\n\n### Ce que tu as accompli:\n\n✅ Installation d'Ubuntu Server sur Raspberry Pi\n✅ Configuration réseau (IP statique + WiFi WPA-EAP)\n✅ Mise en place de Cloudflare Tunnel pour l'accès distant sécurisé\n✅ Configuration de Git et GitHub\n✅ Création d'une interface tactile en mode console\n✅ Installation de Node.js et Gemini CLI\n✅ Programmation du LilyGO A7670G avec Arduino CLI\n✅ Exercice de contrôle de LEDs via port série\n\n### Prochaines étapes:\n\nN'oublie pas de faire le **devoir de préparation** avant le prochain cours:\n- Installation du broker MQTT (Mosquitto)\n- Test de communication MQTT\n- Test de connexion WiFi avec l'ESP32\n\nÀ bientôt pour le **Labo 2** où nous passerons à la communication sans fil avec MQTT, WiFi, et éventuellement LTE! 🚀",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 130
+      }
+    },
+    {
+      "id": 999,
+      "slug": "end-success",
+      "kind": "end",
+      "display_name": "Fin - Succès",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 999,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Laboratoire complété avec succès"
+        },
+        "message": "Laboratoire 1 terminé avec succès! À bientôt pour le Labo 2!"
+      },
+      "metadata": {
+        "order": 999
+      }
     }
   ],
   "edges": [
     {
-      "id": 149,
+      "id": 1001,
       "source": "start",
-      "target": "widget-1764990904841",
+      "target": "assistant-message-intro",
       "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 1
-      },
-      "created_at": "2025-12-13T02:49:49.212831Z",
-      "updated_at": "2025-12-13T02:49:49.212834Z"
+      "metadata": { "label": "", "order": 1 }
     },
     {
-      "id": 150,
-      "source": "condition-1764990982539",
-      "target": "assistant-message-1764990850626",
+      "id": 1002,
+      "source": "assistant-message-intro",
+      "target": "widget-pret-materiel",
+      "condition": null,
+      "metadata": { "label": "", "order": 2 }
+    },
+    {
+      "id": 1003,
+      "source": "widget-pret-materiel",
+      "target": "condition-pret-materiel",
+      "condition": null,
+      "metadata": { "label": "", "order": 3 }
+    },
+    {
+      "id": 1004,
+      "source": "condition-pret-materiel",
+      "target": "assistant-message-question-rpi",
       "condition": "true",
-      "metadata": {
-        "label": "true",
-        "order": 2
-      },
-      "created_at": "2025-12-13T02:49:49.212835Z",
-      "updated_at": "2025-12-13T02:49:49.212836Z"
+      "metadata": { "label": "true", "order": 4 }
     },
     {
-      "id": 151,
-      "source": "condition-1764990982539",
-      "target": "end-1764991255370",
+      "id": 1005,
+      "source": "condition-pret-materiel",
+      "target": "end-abandon-materiel",
       "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 3
-      },
-      "created_at": "2025-12-13T02:49:49.212836Z",
-      "updated_at": "2025-12-13T02:49:49.212837Z"
+      "metadata": { "label": "", "order": 5 }
     },
     {
-      "id": 152,
-      "source": "widget-1764990904841",
-      "target": "condition-1764990982539",
+      "id": 1006,
+      "source": "assistant-message-question-rpi",
+      "target": "state-init-compteur-q1",
       "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 4
-      },
-      "created_at": "2025-12-13T02:49:49.212837Z",
-      "updated_at": "2025-12-13T02:49:49.212838Z"
+      "metadata": { "label": "", "order": 6 }
     },
     {
-      "id": 153,
-      "source": "assistant-message-1764990850626",
-      "target": "widget-1764990904841-1",
+      "id": 1007,
+      "source": "state-init-compteur-q1",
+      "target": "wait-reponse-q1",
       "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 5
-      },
-      "created_at": "2025-12-13T02:49:49.212838Z",
-      "updated_at": "2025-12-13T02:49:49.212838Z"
+      "metadata": { "label": "", "order": 7 }
     },
     {
-      "id": 154,
-      "source": "widget-1764990904841-1",
-      "target": "condition-1764990982539-1",
+      "id": 1008,
+      "source": "wait-reponse-q1",
+      "target": "agent-eval-q1",
       "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 6
-      },
-      "created_at": "2025-12-13T02:49:49.212839Z",
-      "updated_at": "2025-12-13T02:49:49.212839Z"
+      "metadata": { "label": "", "order": 8 }
     },
     {
-      "id": 155,
-      "source": "condition-1764990982539-1",
-      "target": "assistant-message-1764990850626-1",
+      "id": 1009,
+      "source": "agent-eval-q1",
+      "target": "condition-eval-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 9 }
+    },
+    {
+      "id": 1010,
+      "source": "condition-eval-q1",
+      "target": "assistant-message-q1-ok",
       "condition": "true",
-      "metadata": {
-        "label": "true",
-        "order": 7
-      },
-      "created_at": "2025-12-13T02:49:49.212840Z",
-      "updated_at": "2025-12-13T02:49:49.212840Z"
+      "metadata": { "label": "true", "order": 10 }
     },
     {
-      "id": 156,
-      "source": "wait-1765216242493",
-      "target": "agent-1765216283387-1",
-      "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 8
-      },
-      "created_at": "2025-12-13T02:49:49.212841Z",
-      "updated_at": "2025-12-13T02:49:49.212841Z"
-    },
-    {
-      "id": 157,
-      "source": "condition-1764990982539-1",
-      "target": "end-1764991255370-1",
-      "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 9
-      },
-      "created_at": "2025-12-13T02:49:49.212841Z",
-      "updated_at": "2025-12-13T02:49:49.212842Z"
-    },
-    {
-      "id": 158,
-      "source": "agent-1765216283387-1",
-      "target": "condition-1764990982539-1-1",
-      "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 10
-      },
-      "created_at": "2025-12-13T02:49:49.212842Z",
-      "updated_at": "2025-12-13T02:49:49.212843Z"
-    },
-    {
-      "id": 159,
-      "source": "condition-1764990982539-1-1-1",
-      "target": "assistant-message-1765222533429-1",
-      "condition": "3",
-      "metadata": {
-        "label": "3",
-        "order": 11
-      },
-      "created_at": "2025-12-13T02:49:49.212843Z",
-      "updated_at": "2025-12-13T02:49:49.212843Z"
-    },
-    {
-      "id": 160,
-      "source": "condition-1764990982539-1-1",
-      "target": "assistant-message-1765222533429",
-      "condition": "true",
-      "metadata": {
-        "label": "true",
-        "order": 12
-      },
-      "created_at": "2025-12-13T02:49:49.212844Z",
-      "updated_at": "2025-12-13T02:49:49.212844Z"
-    },
-    {
-      "id": 161,
-      "source": "assistant-message-1764990850626-1",
-      "target": "state-1765422171157",
-      "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 13
-      },
-      "created_at": "2025-12-13T02:49:49.212845Z",
-      "updated_at": "2025-12-13T02:49:49.212845Z"
-    },
-    {
-      "id": 162,
-      "source": "state-1765422171157",
-      "target": "wait-1765216242493",
-      "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 14
-      },
-      "created_at": "2025-12-13T02:49:49.212846Z",
-      "updated_at": "2025-12-13T02:49:49.212846Z"
-    },
-    {
-      "id": 163,
-      "source": "state-1765422437507",
-      "target": "condition-1764990982539-1-1-1",
-      "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 15
-      },
-      "created_at": "2025-12-13T02:49:49.212847Z",
-      "updated_at": "2025-12-13T02:49:49.212847Z"
-    },
-    {
-      "id": 164,
-      "source": "condition-1764990982539-1-1",
-      "target": "state-1765422437507",
+      "id": 1011,
+      "source": "condition-eval-q1",
+      "target": "state-incr-compteur-q1",
       "condition": "false",
-      "metadata": {
-        "label": "false",
-        "order": 16
-      },
-      "created_at": "2025-12-13T02:49:49.212847Z",
-      "updated_at": "2025-12-13T02:49:49.212848Z"
+      "metadata": { "label": "false", "order": 11 }
     },
     {
-      "id": 165,
-      "source": "condition-1764990982539-1-1-1",
-      "target": "agent-1765216283387-1-1-1",
+      "id": 1012,
+      "source": "state-incr-compteur-q1",
+      "target": "condition-max-tentatives-q1",
       "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 17
-      },
-      "created_at": "2025-12-13T02:49:49.212848Z",
-      "updated_at": "2025-12-13T02:49:49.212849Z"
+      "metadata": { "label": "", "order": 12 }
     },
     {
-      "id": 166,
-      "source": "assistant-message-1765222533429-1",
-      "target": "wait-1765216242493-1",
+      "id": 1013,
+      "source": "condition-max-tentatives-q1",
+      "target": "assistant-message-appel-prof-q1",
+      "condition": "3",
+      "metadata": { "label": "3", "order": 13 }
+    },
+    {
+      "id": 1014,
+      "source": "condition-max-tentatives-q1",
+      "target": "agent-retroaction-q1",
       "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 18
-      },
-      "created_at": "2025-12-13T02:49:49.212849Z",
-      "updated_at": "2025-12-13T02:49:49.212849Z"
+      "metadata": { "label": "", "order": 14 }
     },
     {
-      "id": 167,
-      "source": "wait-1765216242493-1",
-      "target": "condition-1764990982539-1-1-1-1",
+      "id": 1015,
+      "source": "agent-retroaction-q1",
+      "target": "wait-reponse-q1",
       "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 19
-      },
-      "created_at": "2025-12-13T02:49:49.212850Z",
-      "updated_at": "2025-12-13T02:49:49.212850Z"
+      "metadata": { "label": "", "order": 15 }
     },
     {
-      "id": 168,
-      "source": "condition-1764990982539-1-1-1-1",
-      "target": "assistant-message-1765222533429-1-1",
+      "id": 1016,
+      "source": "assistant-message-appel-prof-q1",
+      "target": "wait-code-prof-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 16 }
+    },
+    {
+      "id": 1017,
+      "source": "wait-code-prof-q1",
+      "target": "condition-code-prof-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 17 }
+    },
+    {
+      "id": 1018,
+      "source": "condition-code-prof-q1",
+      "target": "assistant-message-q1-ok",
       "condition": "1234",
-      "metadata": {
-        "label": "1234",
-        "order": 20
-      },
-      "created_at": "2025-12-13T02:49:49.212851Z",
-      "updated_at": "2025-12-13T02:49:49.212851Z"
+      "metadata": { "label": "1234", "order": 18 }
     },
     {
-      "id": 169,
-      "source": "condition-1764990982539-1-1-1-1",
-      "target": "wait-1765216242493-1",
+      "id": 1019,
+      "source": "condition-code-prof-q1",
+      "target": "wait-code-prof-q1",
       "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 21
-      },
-      "created_at": "2025-12-13T02:49:49.212851Z",
-      "updated_at": "2025-12-13T02:49:49.212852Z"
+      "metadata": { "label": "", "order": 19 }
     },
     {
-      "id": 170,
-      "source": "agent-1765216283387-1-1-1",
-      "target": "wait-1765216242493",
+      "id": 1020,
+      "source": "assistant-message-q1-ok",
+      "target": "assistant-message-section1",
       "condition": null,
-      "metadata": {
-        "label": "",
-        "order": 22
-      },
-      "created_at": "2025-12-13T02:49:49.212852Z",
-      "updated_at": "2025-12-13T02:49:49.212853Z"
+      "metadata": { "label": "", "order": 20 }
+    },
+    {
+      "id": 2001,
+      "source": "assistant-message-section1",
+      "target": "widget-section1-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 21 }
+    },
+    {
+      "id": 2002,
+      "source": "widget-section1-done",
+      "target": "condition-section1-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 22 }
+    },
+    {
+      "id": 2003,
+      "source": "condition-section1-done",
+      "target": "assistant-message-section2",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 23 }
+    },
+    {
+      "id": 2004,
+      "source": "condition-section1-done",
+      "target": "end-section1-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 24 }
+    },
+    {
+      "id": 2101,
+      "source": "assistant-message-section2",
+      "target": "widget-section2-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 25 }
+    },
+    {
+      "id": 2102,
+      "source": "widget-section2-done",
+      "target": "condition-section2-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 26 }
+    },
+    {
+      "id": 2103,
+      "source": "condition-section2-done",
+      "target": "assistant-message-question-reseau",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 27 }
+    },
+    {
+      "id": 2104,
+      "source": "condition-section2-done",
+      "target": "end-section2-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 28 }
+    },
+    {
+      "id": 2105,
+      "source": "assistant-message-question-reseau",
+      "target": "state-init-compteur-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 29 }
+    },
+    {
+      "id": 2106,
+      "source": "state-init-compteur-q2",
+      "target": "wait-reponse-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 30 }
+    },
+    {
+      "id": 2107,
+      "source": "wait-reponse-q2",
+      "target": "agent-eval-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 31 }
+    },
+    {
+      "id": 2108,
+      "source": "agent-eval-q2",
+      "target": "condition-eval-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 32 }
+    },
+    {
+      "id": 2109,
+      "source": "condition-eval-q2",
+      "target": "assistant-message-q2-ok",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 33 }
+    },
+    {
+      "id": 2110,
+      "source": "condition-eval-q2",
+      "target": "state-incr-compteur-q2",
+      "condition": "false",
+      "metadata": { "label": "false", "order": 34 }
+    },
+    {
+      "id": 2111,
+      "source": "state-incr-compteur-q2",
+      "target": "condition-max-tentatives-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 35 }
+    },
+    {
+      "id": 2112,
+      "source": "condition-max-tentatives-q2",
+      "target": "assistant-message-appel-prof-q2",
+      "condition": "3",
+      "metadata": { "label": "3", "order": 36 }
+    },
+    {
+      "id": 2113,
+      "source": "condition-max-tentatives-q2",
+      "target": "agent-retroaction-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 37 }
+    },
+    {
+      "id": 2114,
+      "source": "agent-retroaction-q2",
+      "target": "wait-reponse-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 38 }
+    },
+    {
+      "id": 2115,
+      "source": "assistant-message-appel-prof-q2",
+      "target": "wait-code-prof-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 39 }
+    },
+    {
+      "id": 2116,
+      "source": "wait-code-prof-q2",
+      "target": "condition-code-prof-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 40 }
+    },
+    {
+      "id": 2117,
+      "source": "condition-code-prof-q2",
+      "target": "assistant-message-q2-ok",
+      "condition": "1234",
+      "metadata": { "label": "1234", "order": 41 }
+    },
+    {
+      "id": 2118,
+      "source": "condition-code-prof-q2",
+      "target": "wait-code-prof-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 42 }
+    },
+    {
+      "id": 2119,
+      "source": "assistant-message-q2-ok",
+      "target": "assistant-message-section3",
+      "condition": null,
+      "metadata": { "label": "", "order": 43 }
+    },
+    {
+      "id": 3001,
+      "source": "assistant-message-section3",
+      "target": "widget-section3-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 44 }
+    },
+    {
+      "id": 3002,
+      "source": "widget-section3-done",
+      "target": "condition-section3-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 45 }
+    },
+    {
+      "id": 3003,
+      "source": "condition-section3-done",
+      "target": "assistant-message-question-zerotrust",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 46 }
+    },
+    {
+      "id": 3004,
+      "source": "condition-section3-done",
+      "target": "end-section3-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 47 }
+    },
+    {
+      "id": 3005,
+      "source": "assistant-message-question-zerotrust",
+      "target": "state-init-compteur-q3",
+      "condition": null,
+      "metadata": { "label": "", "order": 48 }
+    },
+    {
+      "id": 3006,
+      "source": "state-init-compteur-q3",
+      "target": "wait-reponse-q3",
+      "condition": null,
+      "metadata": { "label": "", "order": 49 }
+    },
+    {
+      "id": 3007,
+      "source": "wait-reponse-q3",
+      "target": "agent-eval-q3",
+      "condition": null,
+      "metadata": { "label": "", "order": 50 }
+    },
+    {
+      "id": 3008,
+      "source": "agent-eval-q3",
+      "target": "condition-eval-q3",
+      "condition": null,
+      "metadata": { "label": "", "order": 51 }
+    },
+    {
+      "id": 3009,
+      "source": "condition-eval-q3",
+      "target": "assistant-message-q3-ok",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 52 }
+    },
+    {
+      "id": 3010,
+      "source": "condition-eval-q3",
+      "target": "state-incr-compteur-q3",
+      "condition": "false",
+      "metadata": { "label": "false", "order": 53 }
+    },
+    {
+      "id": 3011,
+      "source": "state-incr-compteur-q3",
+      "target": "condition-max-tentatives-q3",
+      "condition": null,
+      "metadata": { "label": "", "order": 54 }
+    },
+    {
+      "id": 3012,
+      "source": "condition-max-tentatives-q3",
+      "target": "assistant-message-appel-prof-q3",
+      "condition": "3",
+      "metadata": { "label": "3", "order": 55 }
+    },
+    {
+      "id": 3013,
+      "source": "condition-max-tentatives-q3",
+      "target": "agent-retroaction-q3",
+      "condition": null,
+      "metadata": { "label": "", "order": 56 }
+    },
+    {
+      "id": 3014,
+      "source": "agent-retroaction-q3",
+      "target": "wait-reponse-q3",
+      "condition": null,
+      "metadata": { "label": "", "order": 57 }
+    },
+    {
+      "id": 3015,
+      "source": "assistant-message-appel-prof-q3",
+      "target": "wait-code-prof-q3",
+      "condition": null,
+      "metadata": { "label": "", "order": 58 }
+    },
+    {
+      "id": 3016,
+      "source": "wait-code-prof-q3",
+      "target": "condition-code-prof-q3",
+      "condition": null,
+      "metadata": { "label": "", "order": 59 }
+    },
+    {
+      "id": 3017,
+      "source": "condition-code-prof-q3",
+      "target": "assistant-message-q3-ok",
+      "condition": "1234",
+      "metadata": { "label": "1234", "order": 60 }
+    },
+    {
+      "id": 3018,
+      "source": "condition-code-prof-q3",
+      "target": "wait-code-prof-q3",
+      "condition": null,
+      "metadata": { "label": "", "order": 61 }
+    },
+    {
+      "id": 3019,
+      "source": "assistant-message-q3-ok",
+      "target": "assistant-message-section4",
+      "condition": null,
+      "metadata": { "label": "", "order": 62 }
+    },
+    {
+      "id": 4001,
+      "source": "assistant-message-section4",
+      "target": "widget-section4-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 63 }
+    },
+    {
+      "id": 4002,
+      "source": "widget-section4-done",
+      "target": "condition-section4-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 64 }
+    },
+    {
+      "id": 4003,
+      "source": "condition-section4-done",
+      "target": "assistant-message-section5",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 65 }
+    },
+    {
+      "id": 4004,
+      "source": "condition-section4-done",
+      "target": "end-section4-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 66 }
+    },
+    {
+      "id": 5001,
+      "source": "assistant-message-section5",
+      "target": "widget-section5-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 67 }
+    },
+    {
+      "id": 5002,
+      "source": "widget-section5-done",
+      "target": "condition-section5-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 68 }
+    },
+    {
+      "id": 5003,
+      "source": "condition-section5-done",
+      "target": "assistant-message-section6",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 69 }
+    },
+    {
+      "id": 5004,
+      "source": "condition-section5-done",
+      "target": "end-section5-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 70 }
+    },
+    {
+      "id": 6001,
+      "source": "assistant-message-section6",
+      "target": "widget-section6-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 71 }
+    },
+    {
+      "id": 6002,
+      "source": "widget-section6-done",
+      "target": "condition-section6-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 72 }
+    },
+    {
+      "id": 6003,
+      "source": "condition-section6-done",
+      "target": "assistant-message-section7",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 73 }
+    },
+    {
+      "id": 6004,
+      "source": "condition-section6-done",
+      "target": "end-section6-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 74 }
+    },
+    {
+      "id": 7001,
+      "source": "assistant-message-section7",
+      "target": "widget-section7-base-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 75 }
+    },
+    {
+      "id": 7002,
+      "source": "widget-section7-base-done",
+      "target": "condition-section7-base-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 76 }
+    },
+    {
+      "id": 7003,
+      "source": "condition-section7-base-done",
+      "target": "assistant-message-exercice-led",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 77 }
+    },
+    {
+      "id": 7004,
+      "source": "condition-section7-base-done",
+      "target": "end-section7-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 78 }
+    },
+    {
+      "id": 7101,
+      "source": "assistant-message-exercice-led",
+      "target": "widget-exercice-led-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 79 }
+    },
+    {
+      "id": 7102,
+      "source": "widget-exercice-led-done",
+      "target": "condition-exercice-led-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 80 }
+    },
+    {
+      "id": 7103,
+      "source": "condition-exercice-led-done",
+      "target": "assistant-message-devoir",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 81 }
+    },
+    {
+      "id": 7104,
+      "source": "condition-exercice-led-done",
+      "target": "end-exercice-led-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 82 }
+    },
+    {
+      "id": 8001,
+      "source": "assistant-message-devoir",
+      "target": "widget-devoir-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 83 }
+    },
+    {
+      "id": 8002,
+      "source": "widget-devoir-done",
+      "target": "condition-devoir-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 84 }
+    },
+    {
+      "id": 8003,
+      "source": "condition-devoir-done",
+      "target": "assistant-message-fin",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 85 }
+    },
+    {
+      "id": 8004,
+      "source": "condition-devoir-done",
+      "target": "assistant-message-fin",
+      "condition": null,
+      "metadata": { "label": "", "order": 86 }
+    },
+    {
+      "id": 9001,
+      "source": "assistant-message-fin",
+      "target": "end-success",
+      "condition": null,
+      "metadata": { "label": "", "order": 87 }
     }
   ]
 }
