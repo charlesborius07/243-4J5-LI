@@ -1,0 +1,743 @@
+{
+  "nodes": [
+    {
+      "id": 139,
+      "slug": "start",
+      "kind": "start",
+      "display_name": "Début",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 1,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "auto_start": true
+      },
+      "metadata": {
+        "order": 1
+      },
+      "created_at": "2025-12-13T02:49:49.208839Z",
+      "updated_at": "2025-12-13T02:49:49.208844Z"
+    },
+    {
+      "id": 140,
+      "slug": "assistant-message-1764990850626",
+      "kind": "assistant_message",
+      "display_name": "Assistant Message 1764990850626",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 2,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Aujourd'hui, nous allons préparé notre environnement de programmation.\n\nVoici l'architecture du système:\n\n```mermaid\ngraph TD\n    %% ==== STYLES ====\n    classDef zoneClient fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#052e16;\n    classDef zoneAccess fill:#eff6ff,stroke:#2563eb,stroke-width:2px,color:#0f172a;\n    classDef zoneLab fill:#f9fafb,stroke:#4b5563,stroke-width:2px,color:#020617;\n    classDef zoneCloud fill:#fefce8,stroke:#d97706,stroke-width:2px,color:#451a03;\n    classDef componentCore fill:#e5e7eb,stroke:#4b5563,stroke-width:1.5px;\n    classDef componentService fill:#eef2ff,stroke:#6366f1,stroke-width:1.5px;\n    classDef componentDevice fill:#ecfeff,stroke:#06b6d4,stroke-width:1.5px;\n    classDef securityEdge fill:#fef2f2,stroke:#b91c1c,stroke-width:1.5px,stroke-dasharray:4 3;\n\n    %% ==== ZONE CLIENT ====\n    subgraph Zone_Client [\"💻 Poste de développement\"]\n        Dev_PC[\"Terminal SSH + Navigateur\"]:::zoneClient\n    end\n\n    %% ==== ZONE D'ACCÈS / EDGE ====\n    subgraph Zone_Access [\"🔒 Accès sécurisé\"]\n        CF_ZT[\"Cloudflare Zero Trust\"]:::securityEdge\n        CF_Tunnel[\"cloudflared\"]:::componentService\n    end\n\n    %% ==== ZONE LAB / ON-PREM ====\n    subgraph Zone_Lab [\"🏠 Lab On-Prem\"]\n        subgraph RPi5_Core [\"🍓 Raspberry Pi 5\"]\n            SSHD[\"SSH Server\"]:::componentCore\n\n            subgraph Dev_Stack [\"🛠️ Outils Dev\"]\n                Git_CLI[\"Git CLI\"]:::componentService\n                Node_Gemini[\"Node + Gemini\"]:::componentService\n                Python_Env[\"Python + evdev\"]:::componentService\n                Arduino_CLI[\"Arduino CLI\"]:::componentService\n            end\n        end\n\n        subgraph Lab_Devices [\"📱 Périphériques\"]\n            Touchscreen[\"Écran tactile\"]:::componentDevice\n            LilyGO_A7670G[\"LilyGO A7670G\"]:::componentDevice\n        end\n    end\n\n    %% ==== ZONE CLOUD / SAAS ====\n    subgraph Zone_Cloud [\"☁️ Services Cloud\"]\n        GitHub_SaaS[\"GitHub\"]:::zoneCloud\n        Gemini_API[\"Gemini API\"]:::zoneCloud\n    end\n\n    %% ==== FLUX PRINCIPAUX ====\n\n    %% 1. ACCÈS DISTANT (vertical)\n    Dev_PC -->|\"HTTPS / SSH\"| CF_ZT\n    CF_ZT -->|\"Tunnel Cloudflare<br/>(mTLS + Auth)\"| CF_Tunnel\n    CF_Tunnel -->|\"TCP SSH :22\"| SSHD\n    SSHD --> Dev_Stack\n\n    %% 2. DEV & GESTION DE CODE\n    Git_CLI -.->|\"git clone/pull/push\"| GitHub_SaaS\n\n    %% 3. APPELS IA\n    Node_Gemini -.->|\"API REST\"| Gemini_API\n\n    %% 4. INTERACTIONS MATÉRIELLES\n    Python_Env -->|\"UI tactile<br/>/dev/input\"| Touchscreen\n    Arduino_CLI -->|\"Flash USB<br/>/dev/ttyUSB0\"| LilyGO_A7670G\n\n    %% ==== CLASS ZONES ====\n    class Dev_PC zoneClient;\n    class CF_ZT,CF_Tunnel zoneAccess;\n    class SSHD,Dev_Stack componentCore;\n    class Touchscreen,LilyGO_A7670G componentDevice;\n    class GitHub_SaaS,Gemini_API zoneCloud;\n```\n\nCe diagramme illustre l'architecture complète du laboratoire:\n- **Zone Client (vert):** Votre poste de développement\n- **Zone d'accès sécurisé (bleu):** Cloudflare Zero Trust et tunnel\n- **Zone Lab (gris):** Raspberry Pi 5 avec tous les outils et périphériques IoT\n- **Zone Cloud (jaune):** Services externes (GitHub, Gemini API)\n\n---\n\n## 🎒 Matériel requis\n<div style=\"background:#ecfeff; border:1px solid #06b6d4; padding:12px 14px; border-radius:10px;\">\n<ul style=\"margin:0;\">\n  <li>Clavier Raspberry Pi</li>\n  <li>Raspberry Pi 5</li>\n  <li>Écran tactile pour Raspberry Pi 5</li>\n  <li>Alimentation USB-C pour Raspberry Pi 5</li>\n  <li>Câble micro-USB pour clavier</li>\n  <li>Carte micro SD 64 GB</li>\n  <li>LilyGO A7670G avec antenne GPS et LTE</li>\n  <li>Plaquette de prototypage (breadboard)</li>\n  <li>LED rouge et LED verte</li>\n  <li>Résistances appropriées (220Ω - 330Ω)</li>\n  <li>Fils de connexion (jumper wires)</li>\n  <li>Carte SIM</li>\n  <li>Câble USB-A à USB-C</li>\n</ul>\n</div>\n\nVa chercher ton matériel, et dis-moi le quand tu es prêt à passer à la prochaine étape!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 2
+      },
+      "created_at": "2025-12-13T02:49:49.208845Z",
+      "updated_at": "2025-12-13T02:49:49.208845Z"
+    },
+    {
+      "id": 141,
+      "slug": "widget-1764990904841",
+      "kind": "widget",
+      "display_name": "Prêt à commencer?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 3,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Prêt à commencer?"
+          }
+        }
+      },
+      "metadata": {
+        "order": 3
+      },
+      "created_at": "2025-12-13T02:49:49.208846Z",
+      "updated_at": "2025-12-13T02:49:49.208846Z"
+    },
+    {
+      "id": 142,
+      "slug": "condition-1764990982539",
+      "kind": "condition",
+      "display_name": "Condition 1764990982539",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 4,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 4
+      },
+      "created_at": "2025-12-13T02:49:49.208847Z",
+      "updated_at": "2025-12-13T02:49:49.208847Z"
+    },
+    {
+      "id": 143,
+      "slug": "end-1764991255370",
+      "kind": "end",
+      "display_name": "End 1764991255370",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 5,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Workflow terminé"
+        },
+        "message": "Workflow terminé"
+      },
+      "metadata": {
+        "order": 5
+      },
+      "created_at": "2025-12-13T02:49:49.208848Z",
+      "updated_at": "2025-12-13T02:49:49.208848Z"
+    },
+    {
+      "id": 144,
+      "slug": "widget-1764990904841-1",
+      "kind": "widget",
+      "display_name": "Widget 1764990904841",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 6,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "On continue?"
+          }
+        }
+      },
+      "metadata": {
+        "order": 6
+      },
+      "created_at": "2025-12-13T02:49:49.208849Z",
+      "updated_at": "2025-12-13T02:49:49.208849Z"
+    },
+    {
+      "id": 145,
+      "slug": "condition-1764990982539-1",
+      "kind": "condition",
+      "display_name": "Vérification de \"prêt à commencer\"",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 7,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 7
+      },
+      "created_at": "2025-12-13T02:49:49.208850Z",
+      "updated_at": "2025-12-13T02:49:49.208850Z"
+    },
+    {
+      "id": 146,
+      "slug": "assistant-message-1764990850626-1",
+      "kind": "assistant_message",
+      "display_name": "Question",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 8,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Avant de continuer, répondre à cette questions:\n\n### 📝 Pourquoi utiliser un Raspberry Pi 5 comme poste de développement IoT plutôt que votre PC portable ?",
+        "simulate_stream": true,
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 8
+      },
+      "created_at": "2025-12-13T02:49:49.208850Z",
+      "updated_at": "2025-12-13T02:49:49.208851Z"
+    },
+    {
+      "id": 147,
+      "slug": "wait-1765216242493",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente d'un message utilisateur",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 9,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 9
+      },
+      "created_at": "2025-12-13T02:49:49.208851Z",
+      "updated_at": "2025-12-13T02:49:49.208852Z"
+    },
+    {
+      "id": 148,
+      "slug": "agent-1765216283387-1",
+      "kind": "agent",
+      "display_name": "Évaluation de la réponse",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 10,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "# Rôle de l’agent\nTu es un évaluateur. Tu ne réponds pas à la question, tu n’expliques rien et tu ne raisonnes pas à voix haute.  \nTu dois uniquement analyser **le dernier message de l’utilisateur** et produire un JSON strict :\n\n```json\n{ \"ok\": true }\n```\n\nou\n\n```json\n{ \"ok\": false }\n```\n\n# Question posée à l’utilisateur\n« Pourquoi utiliser un Raspberry Pi 5 comme poste de développement IoT plutôt que votre PC portable ? »\n\n# Contexte attendu\n- Le Raspberry Pi est physiquement connecté au microcontrôleur LilyGO.\n- Le code est déployé **à distance** sur ce device.\n- Le Raspberry Pi simule un **site IoT distant**, contrairement au PC portable.\n\n# Critères pour une bonne réponse\nLa réponse doit mentionner, en ses propres mots :\n- l’importance de **programmer ou déboguer un objet connecté à distance** ;\n- le fait qu’un device IoT peut être situé **n’importe où** ;\n- et que le Raspberry Pi permet de **simuler un site distant réel**.\n\n# Règles d’évaluation\n- Si la réponse respecte les critères → `\"ok\": true`\n- Sinon → `\"ok\": false`\n\n# Important\n- **N’évalue que le dernier message utilisateur.**\n- **Ne réponds jamais à la place de l’utilisateur.**\n- **Ne fournis aucune explication ni analyse externe.**\n",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": {
+            "verbosity": "low"
+          },
+          "reasoning": {
+            "effort": "low"
+          },
+          "include_chat_history": true
+        },
+        "response_format": {
+          "name": "workflow_output",
+          "type": "json_schema",
+          "schema": {
+            "type": "object",
+            "required": [
+              "ok"
+            ],
+            "properties": {
+              "ok": {
+                "type": "boolean",
+                "description": "ok pas ok"
+              }
+            }
+          },
+          "strict": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 10
+      },
+      "created_at": "2025-12-13T02:49:49.208852Z",
+      "updated_at": "2025-12-13T02:49:49.208853Z"
+    },
+    {
+      "id": 149,
+      "slug": "condition-1764990982539-1-1",
+      "kind": "condition",
+      "display_name": "Bonne réponse?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 11,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.output_structured.ok",
+        "tools": null
+      },
+      "metadata": {
+        "order": 11
+      },
+      "created_at": "2025-12-13T02:49:49.208853Z",
+      "updated_at": "2025-12-13T02:49:49.208854Z"
+    },
+    {
+      "id": 150,
+      "slug": "end-1764991255370-1",
+      "kind": "end",
+      "display_name": "Fin",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 12,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Workflow terminé"
+        },
+        "message": "Workflow terminé"
+      },
+      "metadata": {
+        "order": 12
+      },
+      "created_at": "2025-12-13T02:49:49.208854Z",
+      "updated_at": "2025-12-13T02:49:49.208854Z"
+    },
+    {
+      "id": 151,
+      "slug": "assistant-message-1765222533429",
+      "kind": "assistant_message",
+      "display_name": "Assistant Message 1765222533429",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 13,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "C'est bon! On continue!"
+      },
+      "metadata": {
+        "order": 13
+      },
+      "created_at": "2025-12-13T02:49:49.208855Z",
+      "updated_at": "2025-12-13T02:49:49.208856Z"
+    },
+    {
+      "id": 152,
+      "slug": "condition-1764990982539-1-1-1",
+      "kind": "condition",
+      "display_name": "Fin de la boucle?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 14,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "state.compteur",
+        "tools": null
+      },
+      "metadata": {
+        "order": 14
+      },
+      "created_at": "2025-12-13T02:49:49.208856Z",
+      "updated_at": "2025-12-13T02:49:49.208856Z"
+    },
+    {
+      "id": 153,
+      "slug": "assistant-message-1765222533429-1",
+      "kind": "assistant_message",
+      "display_name": "Assistant Message 1765222533429",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 15,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Ton enseignant va venir te voir."
+      },
+      "metadata": {
+        "order": 15
+      },
+      "created_at": "2025-12-13T02:49:49.208857Z",
+      "updated_at": "2025-12-13T02:49:49.208857Z"
+    },
+    {
+      "id": 154,
+      "slug": "state-1765422171157",
+      "kind": "state",
+      "display_name": "State 1765422171157",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 16,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "0"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 16
+      },
+      "created_at": "2025-12-13T02:49:49.208858Z",
+      "updated_at": "2025-12-13T02:49:49.208858Z"
+    },
+    {
+      "id": 155,
+      "slug": "state-1765422437507",
+      "kind": "state",
+      "display_name": "Incrémentation du compteur",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 17,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "(state.get('compteur', 0) or 0) + 1"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 17
+      },
+      "created_at": "2025-12-13T02:49:49.208859Z",
+      "updated_at": "2025-12-13T02:49:49.208859Z"
+    },
+    {
+      "id": 156,
+      "slug": "agent-1765216283387-1-1-1",
+      "kind": "agent",
+      "display_name": "Rédaction de la rétraoction",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 18,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "Aide l'utilisateur à préciser sa réponse. Ne donne pas beaucoup d'information. Demande lui de réessayer en détaillant le côté de sites distants.",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": {
+            "verbosity": "low"
+          },
+          "reasoning": {
+            "effort": "low"
+          }
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 18
+      },
+      "created_at": "2025-12-13T02:49:49.208860Z",
+      "updated_at": "2025-12-13T02:49:49.208860Z"
+    },
+    {
+      "id": 157,
+      "slug": "condition-1764990982539-1-1-1-1",
+      "kind": "condition",
+      "display_name": "Mot de passe de l'enseignant",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 19,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.user_message",
+        "tools": null
+      },
+      "metadata": {
+        "order": 19
+      },
+      "created_at": "2025-12-13T02:49:49.208861Z",
+      "updated_at": "2025-12-13T02:49:49.208861Z"
+    },
+    {
+      "id": 158,
+      "slug": "wait-1765216242493-1",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente d'un message utilisateur",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 20,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 20
+      },
+      "created_at": "2025-12-13T02:49:49.208861Z",
+      "updated_at": "2025-12-13T02:49:49.208862Z"
+    },
+    {
+      "id": 159,
+      "slug": "assistant-message-1765222533429-1-1",
+      "kind": "assistant_message",
+      "display_name": "Assistant Message 1765222533429",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 21,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "lablalbla, suite du labo"
+      },
+      "metadata": {
+        "order": 21
+      },
+      "created_at": "2025-12-13T02:49:49.208862Z",
+      "updated_at": "2025-12-13T02:49:49.208863Z"
+    }
+  ],
+  "edges": [
+    {
+      "id": 149,
+      "source": "start",
+      "target": "widget-1764990904841",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 1
+      },
+      "created_at": "2025-12-13T02:49:49.212831Z",
+      "updated_at": "2025-12-13T02:49:49.212834Z"
+    },
+    {
+      "id": 150,
+      "source": "condition-1764990982539",
+      "target": "assistant-message-1764990850626",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 2
+      },
+      "created_at": "2025-12-13T02:49:49.212835Z",
+      "updated_at": "2025-12-13T02:49:49.212836Z"
+    },
+    {
+      "id": 151,
+      "source": "condition-1764990982539",
+      "target": "end-1764991255370",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 3
+      },
+      "created_at": "2025-12-13T02:49:49.212836Z",
+      "updated_at": "2025-12-13T02:49:49.212837Z"
+    },
+    {
+      "id": 152,
+      "source": "widget-1764990904841",
+      "target": "condition-1764990982539",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 4
+      },
+      "created_at": "2025-12-13T02:49:49.212837Z",
+      "updated_at": "2025-12-13T02:49:49.212838Z"
+    },
+    {
+      "id": 153,
+      "source": "assistant-message-1764990850626",
+      "target": "widget-1764990904841-1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 5
+      },
+      "created_at": "2025-12-13T02:49:49.212838Z",
+      "updated_at": "2025-12-13T02:49:49.212838Z"
+    },
+    {
+      "id": 154,
+      "source": "widget-1764990904841-1",
+      "target": "condition-1764990982539-1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 6
+      },
+      "created_at": "2025-12-13T02:49:49.212839Z",
+      "updated_at": "2025-12-13T02:49:49.212839Z"
+    },
+    {
+      "id": 155,
+      "source": "condition-1764990982539-1",
+      "target": "assistant-message-1764990850626-1",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 7
+      },
+      "created_at": "2025-12-13T02:49:49.212840Z",
+      "updated_at": "2025-12-13T02:49:49.212840Z"
+    },
+    {
+      "id": 156,
+      "source": "wait-1765216242493",
+      "target": "agent-1765216283387-1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 8
+      },
+      "created_at": "2025-12-13T02:49:49.212841Z",
+      "updated_at": "2025-12-13T02:49:49.212841Z"
+    },
+    {
+      "id": 157,
+      "source": "condition-1764990982539-1",
+      "target": "end-1764991255370-1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 9
+      },
+      "created_at": "2025-12-13T02:49:49.212841Z",
+      "updated_at": "2025-12-13T02:49:49.212842Z"
+    },
+    {
+      "id": 158,
+      "source": "agent-1765216283387-1",
+      "target": "condition-1764990982539-1-1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 10
+      },
+      "created_at": "2025-12-13T02:49:49.212842Z",
+      "updated_at": "2025-12-13T02:49:49.212843Z"
+    },
+    {
+      "id": 159,
+      "source": "condition-1764990982539-1-1-1",
+      "target": "assistant-message-1765222533429-1",
+      "condition": "3",
+      "metadata": {
+        "label": "3",
+        "order": 11
+      },
+      "created_at": "2025-12-13T02:49:49.212843Z",
+      "updated_at": "2025-12-13T02:49:49.212843Z"
+    },
+    {
+      "id": 160,
+      "source": "condition-1764990982539-1-1",
+      "target": "assistant-message-1765222533429",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 12
+      },
+      "created_at": "2025-12-13T02:49:49.212844Z",
+      "updated_at": "2025-12-13T02:49:49.212844Z"
+    },
+    {
+      "id": 161,
+      "source": "assistant-message-1764990850626-1",
+      "target": "state-1765422171157",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 13
+      },
+      "created_at": "2025-12-13T02:49:49.212845Z",
+      "updated_at": "2025-12-13T02:49:49.212845Z"
+    },
+    {
+      "id": 162,
+      "source": "state-1765422171157",
+      "target": "wait-1765216242493",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 14
+      },
+      "created_at": "2025-12-13T02:49:49.212846Z",
+      "updated_at": "2025-12-13T02:49:49.212846Z"
+    },
+    {
+      "id": 163,
+      "source": "state-1765422437507",
+      "target": "condition-1764990982539-1-1-1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 15
+      },
+      "created_at": "2025-12-13T02:49:49.212847Z",
+      "updated_at": "2025-12-13T02:49:49.212847Z"
+    },
+    {
+      "id": 164,
+      "source": "condition-1764990982539-1-1",
+      "target": "state-1765422437507",
+      "condition": "false",
+      "metadata": {
+        "label": "false",
+        "order": 16
+      },
+      "created_at": "2025-12-13T02:49:49.212847Z",
+      "updated_at": "2025-12-13T02:49:49.212848Z"
+    },
+    {
+      "id": 165,
+      "source": "condition-1764990982539-1-1-1",
+      "target": "agent-1765216283387-1-1-1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 17
+      },
+      "created_at": "2025-12-13T02:49:49.212848Z",
+      "updated_at": "2025-12-13T02:49:49.212849Z"
+    },
+    {
+      "id": 166,
+      "source": "assistant-message-1765222533429-1",
+      "target": "wait-1765216242493-1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 18
+      },
+      "created_at": "2025-12-13T02:49:49.212849Z",
+      "updated_at": "2025-12-13T02:49:49.212849Z"
+    },
+    {
+      "id": 167,
+      "source": "wait-1765216242493-1",
+      "target": "condition-1764990982539-1-1-1-1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 19
+      },
+      "created_at": "2025-12-13T02:49:49.212850Z",
+      "updated_at": "2025-12-13T02:49:49.212850Z"
+    },
+    {
+      "id": 168,
+      "source": "condition-1764990982539-1-1-1-1",
+      "target": "assistant-message-1765222533429-1-1",
+      "condition": "1234",
+      "metadata": {
+        "label": "1234",
+        "order": 20
+      },
+      "created_at": "2025-12-13T02:49:49.212851Z",
+      "updated_at": "2025-12-13T02:49:49.212851Z"
+    },
+    {
+      "id": 169,
+      "source": "condition-1764990982539-1-1-1-1",
+      "target": "wait-1765216242493-1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 21
+      },
+      "created_at": "2025-12-13T02:49:49.212851Z",
+      "updated_at": "2025-12-13T02:49:49.212852Z"
+    },
+    {
+      "id": 170,
+      "source": "agent-1765216283387-1-1-1",
+      "target": "wait-1765216242493",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 22
+      },
+      "created_at": "2025-12-13T02:49:49.212852Z",
+      "updated_at": "2025-12-13T02:49:49.212853Z"
+    }
+  ]
+}
