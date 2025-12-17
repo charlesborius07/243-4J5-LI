@@ -1,0 +1,1663 @@
+{
+  "nodes": [
+    {
+      "id": 139,
+      "slug": "start",
+      "kind": "start",
+      "display_name": "Début",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 1,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "auto_start": true
+      },
+      "metadata": {
+        "order": 1
+      }
+    },
+    {
+      "id": 140,
+      "slug": "assistant-message-intro",
+      "kind": "assistant_message",
+      "display_name": "Introduction du laboratoire",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 2,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "# Labo 2 — Communication sans fil et télémétrie IoT\n\nDu câble série au réseau cellulaire : communication MQTT via WiFi et LTE avec contrôle de LEDs.\n\n## 📐 Architecture du système\n\n```mermaid\ngraph TD\n    subgraph Zone_Client [\"💻 Poste de développement\"]\n        Dev_PC[\"Terminal SSH + Navigateur\"]\n    end\n    subgraph Zone_Lab [\"🏠 Lab On-Prem\"]\n        subgraph RPi5_Core [\"🍓 Raspberry Pi 5\"]\n            SSHD[\"SSH Server\"]\n            MQTT_Local[\"Mosquitto Broker\"]\n            Python_UI[\"Interface tactile Python\"]\n        end\n        subgraph Lab_Devices [\"📱 Périphériques\"]\n            Touchscreen[\"Écran tactile\"]\n            LilyGO_A7670G[\"LilyGO A7670G<br/>(ESP32 + LTE + GPS)\"]\n        end\n    end\n    subgraph Zone_Cloud [\"☁️ Services Cloud\"]\n        Cloudflare[\"Cloudflare Tunnel<br/>(WSS Proxy)\"]\n        Cellular_Network[\"Réseau Cellulaire<br/>(LTE Cat-1)\"]\n    end\n    Dev_PC -->|\"SSH\"| SSHD\n    Python_UI -->|\"MQTT local\"| MQTT_Local\n    MQTT_Local -->|\"WSS via Tunnel\"| Cloudflare\n    LilyGO_A7670G -->|\"MQTT via WiFi WSS\"| Cloudflare\n    LilyGO_A7670G -->|\"MQTT via LTE WSS\"| Cellular_Network\n    Cellular_Network -->|\"Internet\"| Cloudflare\n    Cloudflare -->|\"Tunnel\"| MQTT_Local\n    Python_UI -->|\"/dev/input\"| Touchscreen\n```\n\n**Zones :**\n- **Zone Client (vert):** Votre poste de développement\n- **Zone Lab (gris):** Raspberry Pi 5 avec broker Mosquitto et interface tactile\n- **Zone Cloud (jaune):** Cloudflare Tunnel pour exposer le broker en WSS\n- **Communication sans fil (violet):** LilyGO communique via WiFi ou LTE\n\n---\n\n## 🎒 Matériel requis\n\n- LilyGO T-SIM A7670G avec antennes GPS et LTE\n- Carte SIM avec forfait de données actif\n- Raspberry Pi 5 avec écran tactile\n- 2 LEDs (rouge et verte)\n- 2 boutons poussoirs\n- Résistances (220Ω-330Ω pour LEDs)\n- Plaquette de prototypage et fils de connexion\n- Câble USB-A vers USB-C\n\n### Configuration des GPIO\n\n| Composant | GPIO | Description |\n|-----------|------|-------------|\n| LED 1 (Rouge) | GPIO 32 | Sortie - Avec résistance 220Ω |\n| LED 2 (Verte) | GPIO 33 | Sortie - Avec résistance 220Ω |\n| Bouton 1 | GPIO 34 | Entrée avec pull-up interne |\n| Bouton 2 | GPIO 35 | Entrée avec pull-up interne |\n\n⚠️ **Important :**\n- Carte SIM avec forfait de données actif et PIN désactivé\n- Antenne LTE vissée sur le connecteur LTE (pas GPS!)\n- Les boutons sont connectés entre GPIO et GND\n\nVa chercher ton matériel et fais le montage. Dis-moi quand tu es prêt!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 2
+      }
+    },
+    {
+      "id": 141,
+      "slug": "widget-pret-materiel",
+      "kind": "widget",
+      "display_name": "Prêt avec le matériel?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 3,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "J'ai tout le matériel et le montage est fait!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 3
+      }
+    },
+    {
+      "id": 142,
+      "slug": "condition-pret-materiel",
+      "kind": "condition",
+      "display_name": "Vérification matériel prêt",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 4,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 4
+      }
+    },
+    {
+      "id": 143,
+      "slug": "end-abandon-materiel",
+      "kind": "end",
+      "display_name": "Fin - Abandon matériel",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 5,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant pas prêt"
+        },
+        "message": "Reviens quand tu auras tout le matériel!"
+      },
+      "metadata": {
+        "order": 5
+      }
+    },
+    {
+      "id": 200,
+      "slug": "assistant-message-section1",
+      "kind": "assistant_message",
+      "display_name": "Section 1: Introduction MQTT",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 10,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 1. Introduction au protocole MQTT\n\n### 💡 Concepts clés\n\n**Qu'est-ce que MQTT?**\n\nMQTT (Message Queuing Telemetry Transport) est un protocole de messagerie léger conçu pour l'IoT. Il utilise une architecture **publish/subscribe** où les appareils communiquent via un **broker** central.\n\n**Architecture Publish/Subscribe :**\n\n```\n[Publisher] --publish--> [Broker] --deliver--> [Subscriber(s)]\n                           ↕\n                    [Topics/Routes]\n```\n\n**Topics (sujets) :**\n\nLes topics sont des chaînes hiérarchiques qui organisent les messages :\n\n```\nesp32-123456/\n├── led/\n│   ├── 1/set        # Commande LED rouge (ON/OFF)\n│   └── 2/set        # Commande LED verte (ON/OFF)\n└── button/\n    ├── 1/state      # État bouton 1 (PRESSED/RELEASED)\n    └── 2/state      # État bouton 2 (PRESSED/RELEASED)\n```\n\n**Device ID (identifiant de l'appareil) :**\n\nLe préfixe des topics (`esp32-123456`) est le **Device ID**. Cet identifiant unique permet de distinguer plusieurs appareils sur le même broker.\n\n**Avantages de MQTT pour l'IoT :**\n- ✅ **Léger :** Headers minimaux (~2 bytes)\n- ✅ **Bidirectionnel :** Publish et subscribe sur le même canal\n- ✅ **Découplé :** L'interface ne dépend pas directement du LilyGO\n- ✅ **Extensible :** Plusieurs clients peuvent contrôler le même appareil\n\n---\n\nPrends le temps de bien comprendre ces concepts. Ensuite, réponds à la question suivante!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 10
+      }
+    },
+    {
+      "id": 201,
+      "slug": "assistant-message-question-mqtt",
+      "kind": "assistant_message",
+      "display_name": "Question MQTT",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 11,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "### 📝 Question de compréhension\n\nQuelle est la différence entre l'architecture **publish/subscribe** (MQTT) et l'architecture **requête/réponse** (HTTP)? Pourquoi MQTT est-il préférable pour l'IoT?",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 11
+      }
+    },
+    {
+      "id": 202,
+      "slug": "state-init-compteur-q1",
+      "kind": "state",
+      "display_name": "Init compteur Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 12,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "0"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 12
+      }
+    },
+    {
+      "id": 203,
+      "slug": "wait-reponse-q1",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente réponse Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 13,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 13
+      }
+    },
+    {
+      "id": 204,
+      "slug": "agent-eval-q1",
+      "kind": "agent",
+      "display_name": "Évaluation Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 14,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "# Rôle\nÉvaluateur. Produis uniquement un JSON strict.\n\n# Question\n« Différence entre publish/subscribe (MQTT) et requête/réponse (HTTP)? Pourquoi MQTT pour l'IoT? »\n\n# Critères\nLa réponse doit mentionner:\n- HTTP: le client doit initier chaque requête, attendre la réponse (polling)\n- MQTT: le broker pousse les messages aux abonnés automatiquement\n- MQTT: découplage entre publisher et subscriber\n- Avantages IoT: léger, bidirectionnel, temps réel, économie de bande passante\n\n# Règles\n- Si correct → `\"ok\": true`\n- Sinon → `\"ok\": false`",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "response_format": {
+          "name": "workflow_output",
+          "type": "json_schema",
+          "schema": {
+            "type": "object",
+            "required": ["ok"],
+            "properties": {
+              "ok": { "type": "boolean" }
+            }
+          },
+          "strict": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 14
+      }
+    },
+    {
+      "id": 205,
+      "slug": "condition-eval-q1",
+      "kind": "condition",
+      "display_name": "Bonne réponse Q1?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 15,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.output_structured.ok",
+        "tools": null
+      },
+      "metadata": {
+        "order": 15
+      }
+    },
+    {
+      "id": 206,
+      "slug": "state-incr-compteur-q1",
+      "kind": "state",
+      "display_name": "Incrémentation compteur Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 16,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "(state.get('compteur', 0) or 0) + 1"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 16
+      }
+    },
+    {
+      "id": 207,
+      "slug": "condition-max-tentatives-q1",
+      "kind": "condition",
+      "display_name": "Max tentatives Q1?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 17,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "state.compteur",
+        "tools": null
+      },
+      "metadata": {
+        "order": 17
+      }
+    },
+    {
+      "id": 208,
+      "slug": "assistant-message-appel-prof-q1",
+      "kind": "assistant_message",
+      "display_name": "Appel enseignant Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 18,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Tu sembles avoir de la difficulté. Ton enseignant va venir t'aider.\n\nEntre le code de l'enseignant pour continuer:",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 18
+      }
+    },
+    {
+      "id": 209,
+      "slug": "wait-code-prof-q1",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente code Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 19,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 19
+      }
+    },
+    {
+      "id": 210,
+      "slug": "condition-code-prof-q1",
+      "kind": "condition",
+      "display_name": "Code correct Q1?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 20,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.user_message",
+        "tools": null
+      },
+      "metadata": {
+        "order": 20
+      }
+    },
+    {
+      "id": 211,
+      "slug": "agent-retroaction-q1",
+      "kind": "agent",
+      "display_name": "Rétroaction Q1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 21,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "Aide l'utilisateur à comprendre la différence entre MQTT et HTTP. Donne un indice sur le modèle push vs pull sans donner la réponse complète.",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 21
+      }
+    },
+    {
+      "id": 212,
+      "slug": "assistant-message-q1-ok",
+      "kind": "assistant_message",
+      "display_name": "Réponse Q1 correcte",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 22,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Excellent! Tu as bien compris la différence entre MQTT et HTTP.\n\nEn résumé:\n- **HTTP** : Le client doit constamment demander les mises à jour (polling)\n- **MQTT** : Le broker pousse automatiquement les messages aux abonnés (push)\n\nCela rend MQTT idéal pour l'IoT où on veut des mises à jour en temps réel sans gaspiller de bande passante.\n\nPassons à la configuration du broker MQTT!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 22
+      }
+    },
+    {
+      "id": 300,
+      "slug": "assistant-message-section2",
+      "kind": "assistant_message",
+      "display_name": "Section 2: Configuration broker MQTT",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 30,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 2. Configuration du broker MQTT avec WSS\n\n### 💡 Pourquoi WSS via Cloudflare?\n\nLes appareils IoT doivent pouvoir se connecter au broker depuis n'importe où. Cependant:\n- Le Raspberry Pi est derrière un NAT (pas d'IP publique)\n- MQTT standard (port 1883) n'est pas chiffré\n- Les connexions LTE passent par Internet public\n\n**Solution:** Cloudflare Tunnel expose Mosquitto en **WSS (WebSocket Secure)** sur le port 443.\n\n```\n[LilyGO] → [Internet/LTE] → [Cloudflare WSS :443] → [Tunnel] → [RPi Mosquitto :1883]\n```\n\n---\n\n### 2.1 Installation de Mosquitto\n\n```bash\nsudo apt update\nsudo apt install -y mosquitto mosquitto-clients\n```\n\n### 2.2 Configuration de Mosquitto\n\n```bash\nsudo nano /etc/mosquitto/conf.d/default.conf\n```\n\nContenu:\n```conf\n# Listener MQTT standard (local uniquement)\nlistener 1883 localhost\n\n# Listener WebSocket (pour Cloudflare Tunnel)\nlistener 9001\nprotocol websockets\n\n# Authentification\nallow_anonymous false\npassword_file /etc/mosquitto/passwd\n\n# Logging\nlog_dest file /var/log/mosquitto/mosquitto.log\nlog_type all\n```\n\n### 2.3 Création des utilisateurs MQTT\n\n```bash\nsudo mosquitto_passwd -c /etc/mosquitto/passwd esp_user\n```\n\n**Notez le mot de passe** - vous en aurez besoin pour les appareils.\n\n### 2.4 Redémarrer Mosquitto\n\n```bash\nsudo systemctl restart mosquitto\nsudo systemctl status mosquitto\n```\n\nVérifier les ports:\n```bash\nsudo ss -tlnp | grep mosquitto\n```\n\n### 2.5 Test local\n\n**Terminal 1:**\n```bash\nmosquitto_sub -h localhost -p 1883 -u esp_user -P VOTRE_MOT_DE_PASSE -t \"test/#\" -v\n```\n\n**Terminal 2:**\n```bash\nmosquitto_pub -h localhost -p 1883 -u esp_user -P VOTRE_MOT_DE_PASSE -t \"test/hello\" -m \"Hello MQTT!\"\n```\n\n---\n\nConfigure Mosquitto et teste la communication locale. Dis-moi quand c'est fait!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 30
+      }
+    },
+    {
+      "id": 301,
+      "slug": "widget-section2a-done",
+      "kind": "widget",
+      "display_name": "Mosquitto configuré?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 31,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Mosquitto est configuré et le test local fonctionne!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 31
+      }
+    },
+    {
+      "id": 302,
+      "slug": "condition-section2a-done",
+      "kind": "condition",
+      "display_name": "Mosquitto OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 32,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 32
+      }
+    },
+    {
+      "id": 303,
+      "slug": "end-section2a-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 2a",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 33,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand Mosquitto sera configuré!"
+      },
+      "metadata": {
+        "order": 33
+      }
+    },
+    {
+      "id": 310,
+      "slug": "assistant-message-section2b",
+      "kind": "assistant_message",
+      "display_name": "Section 2b: Cloudflare Tunnel WSS",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 40,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "### 2.6 Configuration Cloudflare Tunnel\n\nMaintenant, exposons le broker Mosquitto sur Internet via WSS.\n\n**Modifier la configuration du tunnel:**\n```bash\nnano ~/.cloudflared/config.yml\n```\n\n**Ajouter le service MQTT:**\n```yaml\ntunnel: <VOTRE-UUID-TUNNEL>\ncredentials-file: /home/<USER>/.cloudflared/<UUID>.json\n\ningress:\n  # SSH existant\n  - hostname: rpi.votredomaine.ca\n    service: ssh://localhost:22\n\n  # MQTT WebSocket\n  - hostname: mqtt.votredomaine.ca\n    service: http://localhost:9001\n\n  # Règle par défaut\n  - service: http_status:404\n```\n\n**Redémarrer le tunnel:**\n```bash\nsudo systemctl restart cloudflared\n```\n\n**Configurer le DNS (si nécessaire):**\n```bash\ncloudflared tunnel route dns <NOM-TUNNEL> mqtt.votredomaine.ca\n```\n\n---\n\n### 2.9 Test avec le client web HiveMQ\n\nTestez votre broker depuis un navigateur:\n1. Allez sur https://www.hivemq.com/demos/websocket-client/\n2. Configurez:\n   - **Host:** `mqtt.votredomaine.ca`\n   - **Port:** `443`\n   - **Username:** `esp_user`\n   - **Password:** Votre mot de passe\n   - **SSL:** ✅ Coché\n3. Cliquez **Connect**\n4. Abonnez-vous au topic `#`\n5. Publiez un message de test\n\n---\n\nConfigure le tunnel Cloudflare et teste avec HiveMQ. Dis-moi quand ça fonctionne!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 40
+      }
+    },
+    {
+      "id": 311,
+      "slug": "widget-section2b-done",
+      "kind": "widget",
+      "display_name": "Tunnel WSS configuré?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 41,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Le tunnel WSS fonctionne et je peux me connecter avec HiveMQ!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 41
+      }
+    },
+    {
+      "id": 312,
+      "slug": "condition-section2b-done",
+      "kind": "condition",
+      "display_name": "Tunnel OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 42,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 42
+      }
+    },
+    {
+      "id": 313,
+      "slug": "end-section2b-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 2b",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 43,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand le tunnel WSS sera configuré!"
+      },
+      "metadata": {
+        "order": 43
+      }
+    },
+    {
+      "id": 314,
+      "slug": "assistant-message-question-wss",
+      "kind": "assistant_message",
+      "display_name": "Question WSS",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 44,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "### 📝 Question de compréhension\n\nPourquoi utilisons-nous **WSS (WebSocket Secure) via Cloudflare** plutôt que d'exposer directement le port MQTT 1883 sur Internet?",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 44
+      }
+    },
+    {
+      "id": 315,
+      "slug": "state-init-compteur-q2",
+      "kind": "state",
+      "display_name": "Init compteur Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 45,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "0"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 45
+      }
+    },
+    {
+      "id": 316,
+      "slug": "wait-reponse-q2",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente réponse Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 46,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 46
+      }
+    },
+    {
+      "id": 317,
+      "slug": "agent-eval-q2",
+      "kind": "agent",
+      "display_name": "Évaluation Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 47,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "# Rôle\nÉvaluateur. Produis uniquement un JSON strict.\n\n# Question\n« Pourquoi WSS via Cloudflare plutôt que port MQTT 1883 direct? »\n\n# Critères\nLa réponse doit mentionner au moins 2 de ces points:\n- Le RPi est derrière NAT, pas d'IP publique directe\n- MQTT 1883 n'est pas chiffré, données en clair\n- Cloudflare fournit TLS/SSL (chiffrement)\n- Pas besoin d'ouvrir des ports sur le routeur\n- Protection contre les attaques DDoS\n- Connexions LTE passent par Internet public\n\n# Règles\n- Si correct → `\"ok\": true`\n- Sinon → `\"ok\": false`",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "response_format": {
+          "name": "workflow_output",
+          "type": "json_schema",
+          "schema": {
+            "type": "object",
+            "required": ["ok"],
+            "properties": {
+              "ok": { "type": "boolean" }
+            }
+          },
+          "strict": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 47
+      }
+    },
+    {
+      "id": 318,
+      "slug": "condition-eval-q2",
+      "kind": "condition",
+      "display_name": "Bonne réponse Q2?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 48,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.output_structured.ok",
+        "tools": null
+      },
+      "metadata": {
+        "order": 48
+      }
+    },
+    {
+      "id": 319,
+      "slug": "state-incr-compteur-q2",
+      "kind": "state",
+      "display_name": "Incrémentation compteur Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 49,
+      "is_enabled": true,
+      "parameters": {
+        "state": [
+          {
+            "target": "state.compteur",
+            "expression": "(state.get('compteur', 0) or 0) + 1"
+          }
+        ],
+        "tools": null
+      },
+      "metadata": {
+        "order": 49
+      }
+    },
+    {
+      "id": 320,
+      "slug": "condition-max-tentatives-q2",
+      "kind": "condition",
+      "display_name": "Max tentatives Q2?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 50,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "state.compteur",
+        "tools": null
+      },
+      "metadata": {
+        "order": 50
+      }
+    },
+    {
+      "id": 321,
+      "slug": "assistant-message-appel-prof-q2",
+      "kind": "assistant_message",
+      "display_name": "Appel enseignant Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 51,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Tu sembles avoir de la difficulté. Ton enseignant va venir t'aider.\n\nEntre le code de l'enseignant pour continuer:",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 51
+      }
+    },
+    {
+      "id": 322,
+      "slug": "wait-code-prof-q2",
+      "kind": "wait_for_user_input",
+      "display_name": "Attente code Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 52,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null
+      },
+      "metadata": {
+        "order": 52
+      }
+    },
+    {
+      "id": 323,
+      "slug": "condition-code-prof-q2",
+      "kind": "condition",
+      "display_name": "Code correct Q2?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 53,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.user_message",
+        "tools": null
+      },
+      "metadata": {
+        "order": 53
+      }
+    },
+    {
+      "id": 324,
+      "slug": "agent-retroaction-q2",
+      "kind": "agent",
+      "display_name": "Rétroaction Q2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 54,
+      "is_enabled": true,
+      "parameters": {
+        "model": "gpt-5-nano",
+        "instructions": "Aide l'utilisateur à comprendre pourquoi on utilise WSS via Cloudflare. Donne un indice sur la sécurité et le NAT sans donner la réponse complète.",
+        "model_provider": "openai",
+        "model_settings": {
+          "text": { "verbosity": "low" },
+          "reasoning": { "effort": "low" },
+          "include_chat_history": true
+        },
+        "model_provider_slug": "openai"
+      },
+      "metadata": {
+        "order": 54
+      }
+    },
+    {
+      "id": 325,
+      "slug": "assistant-message-q2-ok",
+      "kind": "assistant_message",
+      "display_name": "Réponse Q2 correcte",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 55,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "Parfait! Tu as bien compris les avantages de WSS via Cloudflare:\n- **Sécurité:** TLS/SSL chiffre toutes les communications\n- **NAT traversal:** Pas besoin d'IP publique ni d'ouvrir des ports\n- **Protection:** Cloudflare protège contre les attaques\n\nPassons maintenant à la communication WiFi!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 55
+      }
+    },
+    {
+      "id": 400,
+      "slug": "assistant-message-section3",
+      "kind": "assistant_message",
+      "display_name": "Section 3: Communication WiFi",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 60,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 3. Communication MQTT via WiFi\n\n### 3.1 Configuration (auth.h)\n\nLe code WiFi se trouve dans `labo2/code/lilygo_wifi_mschapv2/`.\n\n**Créer le fichier de configuration:**\n```bash\ncd ~/243-4J5-LI/labo2/code/lilygo_wifi_mschapv2\ncp auth.h.example auth.h\nnano auth.h\n```\n\n**Configuration pour WiFi WPA2-Personal (réseau domestique):**\n```cpp\n#define WIFI_SECURITY_WPA2_PERSONAL\n\nconst char* WIFI_SSID = \"VotreReseauWiFi\";\nconst char* WIFI_PASSWORD = \"VotreMotDePasse\";\n\n// Configuration MQTT\nconst char* MQTT_BROKER = \"mqtt.votredomaine.ca\";\nconst char* MQTT_USER = \"esp_user\";\nconst char* MQTT_PASS = \"VOTRE_MOT_DE_PASSE\";\n\n// Identifiant unique - À PERSONNALISER\nconst char* MQTT_CLIENT_ID = \"esp32-XXXXXX\";\n```\n\n**Configuration pour WiFi WPA2-Enterprise (Cégep):**\n```cpp\n#define WIFI_SECURITY_WPA2_ENTERPRISE\n\nconst char* WIFI_SSID = \"NomReseauCegep\";\nconst char* EAP_IDENTITY = \"votre_identifiant\";\nconst char* EAP_USERNAME = \"votre_identifiant\";\nconst char* EAP_PASSWORD = \"votre_mot_de_passe\";\n```\n\n### 3.2 Compilation et téléversement\n\n```bash\ncd ~/243-4J5-LI/labo2/code/lilygo_wifi_mschapv2\narduino-cli compile --fqbn esp32:esp32:esp32 lilygo_wifi_mschapv2.ino\narduino-cli upload -p /dev/ttyUSB0 --fqbn esp32:esp32:esp32 lilygo_wifi_mschapv2.ino\narduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200\n```\n\n### 3.3 Résultat attendu\n\n```\n=== LilyGo WiFi - MQTT via WebSocket SSL ===\n\nConnexion WiFi a VotreReseauWiFi\nWiFi connecte!\nAdresse IP: 192.168.1.xxx\n\n[MQTT] Device ID: esp32-XXXXXX\n[WSS] Handshake WebSocket reussi!\n[MQTT] Connecte!\n\n=== Systeme pret ===\n```\n\n**Note le Device ID** affiché - tu en auras besoin pour l'interface Python.\n\n### 3.4 Topics MQTT\n\n- `{device_id}/led/1/set` → Commande LED rouge (ON/OFF)\n- `{device_id}/led/2/set` → Commande LED verte (ON/OFF)\n- `{device_id}/button/1/state` → État bouton 1\n- `{device_id}/button/2/state` → État bouton 2\n\n---\n\nConfigure et téléverse le code WiFi. Note ton Device ID! Dis-moi quand c'est fait.",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 60
+      }
+    },
+    {
+      "id": 401,
+      "slug": "widget-section3-done",
+      "kind": "widget",
+      "display_name": "WiFi MQTT configuré?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 61,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Le LilyGO est connecté en WiFi et MQTT fonctionne!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 61
+      }
+    },
+    {
+      "id": 402,
+      "slug": "condition-section3-done",
+      "kind": "condition",
+      "display_name": "WiFi MQTT OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 62,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 62
+      }
+    },
+    {
+      "id": 403,
+      "slug": "end-section3-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 63,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand le WiFi MQTT sera configuré!"
+      },
+      "metadata": {
+        "order": 63
+      }
+    },
+    {
+      "id": 500,
+      "slug": "assistant-message-section4",
+      "kind": "assistant_message",
+      "display_name": "Section 4: Communication LTE",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 70,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 4. Communication MQTT via LTE\n\n### 4.1 Configuration (auth.h)\n\nLe code LTE se trouve dans `labo2/code/lilygo_lte_mqtt/`.\n\n**Créer le fichier de configuration:**\n```bash\ncd ~/243-4J5-LI/labo2/code/lilygo_lte_mqtt\ncp auth.h.example auth.h\nnano auth.h\n```\n\n**Configuration:**\n```cpp\n// Configuration APN (Access Point Name)\nconst char APN[] = \"internet.com\";  // Voir tableau\nconst char APN_USER[] = \"\";         // Généralement vide\nconst char APN_PASS[] = \"\";         // Généralement vide\n\n// Configuration MQTT\nconst char MQTT_BROKER[] = \"mqtt.votredomaine.ca\";\nconst char MQTT_USER[] = \"esp_user\";\nconst char MQTT_PASS[] = \"VOTRE_MOT_DE_PASSE\";\n\n// Identifiant unique\nconst char MQTT_CLIENT_ID[] = \"lte-XXXXXX\";\n```\n\n**APNs par opérateur au Canada:**\n\n| Opérateur | APN |\n|-----------|-----|\n| Rogers | `internet.com` |\n| Bell | `inet.bell.ca` |\n| Telus | `sp.telus.com` |\n| Fido | `internet.fido.ca` |\n| Koodo | `sp.koodo.com` |\n| Virgin | `media.bell.ca` |\n| Videotron | `media.videotron` |\n\n### 4.2 Compilation et téléversement\n\n```bash\ncd ~/243-4J5-LI/labo2/code/lilygo_lte_mqtt\narduino-cli compile --fqbn esp32:esp32:esp32 lilygo_lte_mqtt.ino\narduino-cli upload -p /dev/ttyUSB0 --fqbn esp32:esp32:esp32 lilygo_lte_mqtt.ino\narduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200\n```\n\n### 4.3 Séquence de démarrage\n\n```\n=== LilyGo T-SIM A7670G - MQTT via LTE + WebSocket SSL ===\n\n[MODEM] Initialisation...\n[MODEM] Info: SIMCOM_A7670G\n[MQTT] Device ID: lte-012345\n\n[NETWORK] Connexion au reseau cellulaire...\n[NETWORK] Operateur: Rogers\n[NETWORK] Signal: -67 dBm\n\n[GPRS] Connexion GPRS...\n[GPRS] IP: 10.123.45.67\n[GPRS] Connecte\n\n[WSS] Handshake WebSocket reussi!\n[MQTT] Connecte!\n\n=== Systeme pret ===\n```\n\n⏱️ **Note:** La connexion LTE prend 30-60 secondes (vs ~5s pour WiFi).\n\n### 4.4 Différences WiFi vs LTE\n\n| Caractéristique | WiFi | LTE |\n|----------------|------|-----|\n| Device ID | `esp32-` + MAC | `lte-` + IMEI |\n| Temps démarrage | ~5 secondes | ~30-60 secondes |\n| Mobilité | Limitée | Couverture cellulaire |\n| Coût | Gratuit | Forfait de données |\n\n---\n\nSi tu as une carte SIM, teste la communication LTE. Sinon, continue avec WiFi.",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 70
+      }
+    },
+    {
+      "id": 501,
+      "slug": "widget-section4-done",
+      "kind": "widget",
+      "display_name": "LTE ou WiFi testé?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 71,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "J'ai testé la communication (WiFi ou LTE)!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 71
+      }
+    },
+    {
+      "id": 502,
+      "slug": "condition-section4-done",
+      "kind": "condition",
+      "display_name": "Communication OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 72,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 72
+      }
+    },
+    {
+      "id": 503,
+      "slug": "end-section4-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 4",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 73,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la communication sera testée!"
+      },
+      "metadata": {
+        "order": 73
+      }
+    },
+    {
+      "id": 600,
+      "slug": "assistant-message-section5",
+      "kind": "assistant_message",
+      "display_name": "Section 5: Interface tactile Python",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 80,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 5. Interface tactile Python\n\n### 5.1 Installation des dépendances\n\n```bash\nsudo apt update\nsudo apt install -y python3-paho-mqtt python3-evdev\n```\n\n### 5.2 Configuration\n\nLe code Python se trouve dans `labo2/led-control/`.\n\n**Créer le fichier de configuration:**\n```bash\ncd ~/243-4J5-LI/labo2/led-control\ncp mqtt_config.py.example mqtt_config.py\nnano mqtt_config.py\n```\n\n**Configuration:**\n```python\nMQTT_CONFIG = {\n    # Broker MQTT\n    \"broker\": \"mqtt.votredomaine.ca\",\n    \"port\": 443,  # Port WSS\n\n    # Identifiants Mosquitto\n    \"username\": \"esp_user\",\n    \"password\": \"VOTRE_MOT_DE_PASSE\",\n\n    # Device ID de votre ESP32/LTE\n    # WiFi: \"esp32-XXXXXX\"\n    # LTE: \"lte-XXXXXX\"\n    \"device_id\": \"esp32-123456\",\n}\n```\n\n### 5.3 Lancement de l'interface\n\n**Depuis SSH (pour tests):**\n```bash\ncd ~/243-4J5-LI/labo2/led-control\nsudo python3 touch_ui_mqtt.py\n```\n\n**Sur l'écran tactile local:**\n```bash\ncd ~/243-4J5-LI/labo2/led-control\n./launch_on_screen.sh\n```\n\nOu manuellement:\n```bash\nsudo chvt 1\nsudo setsid sh -c 'exec </dev/tty1 >/dev/tty1 2>&1 python3 /home/$USER/243-4J5-LI/labo2/led-control/touch_ui_mqtt.py'\n```\n\n### 5.4 Utilisation\n\nL'interface affiche:\n- **LED ROUGE:** Toggle ON/OFF pour LED 1 (GPIO 32)\n- **LED VERTE:** Toggle ON/OFF pour LED 2 (GPIO 33)\n- **QUITTER:** Ferme l'application\n\n**Indicateurs:**\n- **MQTT CONNECTÉ** (vert): Connexion établie\n- **MQTT DÉCONNECTÉ** (rouge): Pas de connexion\n\n**Raccourci:** Appuyez sur `q` pour quitter.\n\n---\n\nConfigure l'interface Python avec ton Device ID et teste le contrôle des LEDs!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 80
+      }
+    },
+    {
+      "id": 601,
+      "slug": "widget-section5-done",
+      "kind": "widget",
+      "display_name": "Interface Python testée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 81,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "L'interface Python contrôle les LEDs via MQTT!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 81
+      }
+    },
+    {
+      "id": 602,
+      "slug": "condition-section5-done",
+      "kind": "condition",
+      "display_name": "Interface Python OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 82,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 82
+      }
+    },
+    {
+      "id": 603,
+      "slug": "end-section5-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 5",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 83,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand l'interface Python sera testée!"
+      },
+      "metadata": {
+        "order": 83
+      }
+    },
+    {
+      "id": 700,
+      "slug": "assistant-message-section6",
+      "kind": "assistant_message",
+      "display_name": "Section 6: Exercice Boutons physiques",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 90,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 6. Exercice : Boutons physiques\n\n### 🔘 Objectif\n\nAjouter deux boutons physiques qui toggle les LEDs localement ET envoient l'état par MQTT.\n\n### 6.1 Comportement attendu\n\n1. **Bouton 1 (GPIO 34):**\n   - Appui → Toggle la LED rouge (GPIO 32)\n   - Publie l'état sur `{device_id}/led/1/state` (\"ON\" ou \"OFF\")\n\n2. **Bouton 2 (GPIO 35):**\n   - Appui → Toggle la LED verte (GPIO 33)\n   - Publie l'état sur `{device_id}/led/2/state` (\"ON\" ou \"OFF\")\n\n### 6.2 Ce que vous devez faire\n\n1. **Brancher les boutons** sur GPIO 34 et 35 (entre GPIO et GND)\n2. **Modifier le code Arduino** (WiFi ou LTE) pour:\n   - Détecter l'appui sur les boutons (avec debounce)\n   - Toggle l'état de la LED correspondante\n   - Publier le nouvel état sur MQTT\n3. **Tester** que l'appui physique:\n   - Allume/éteint la LED localement\n   - Envoie un message MQTT visible dans l'interface Python\n\n### 6.3 Indices pour l'implémentation\n\n**Détection du bouton avec debounce:**\n```cpp\n// Variables globales\nbool led1State = false;\nunsigned long lastButton1Press = 0;\nconst unsigned long DEBOUNCE_DELAY = 200;  // 200ms\n\nvoid checkButtonsForToggle() {\n    unsigned long now = millis();\n\n    if (digitalRead(BUTTON1_PIN) == LOW) {  // Pull-up\n        if (now - lastButton1Press > DEBOUNCE_DELAY) {\n            lastButton1Press = now;\n            led1State = !led1State;  // Toggle\n            digitalWrite(LED1_PIN, led1State ? HIGH : LOW);\n\n            // Publier sur MQTT\n            const char* state = led1State ? \"ON\" : \"OFF\";\n            mqttClient.publish(LED1_STATE_TOPIC, state);\n        }\n    }\n    // Même logique pour Bouton 2...\n}\n```\n\n**Nouveaux topics:**\n```cpp\nchar LED1_STATE_TOPIC[50];  // {device_id}/led/1/state\nchar LED2_STATE_TOPIC[50];  // {device_id}/led/2/state\n```\n\n### 6.4 Validation\n\n✅ À vérifier:\n- Appuyer sur BTN1 → LED rouge toggle + message MQTT envoyé\n- Appuyer sur BTN2 → LED verte toggle + message MQTT envoyé\n- L'état est visible dans l'interface Python\n- Pas de \"rebond\" (un seul toggle par appui)\n\n---\n\nImplémente l'exercice des boutons physiques. Dis-moi quand c'est terminé!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 90
+      }
+    },
+    {
+      "id": 701,
+      "slug": "widget-section6-done",
+      "kind": "widget",
+      "display_name": "Exercice boutons terminé?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 91,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Les boutons physiques fonctionnent et envoient les états MQTT!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 91
+      }
+    },
+    {
+      "id": 702,
+      "slug": "condition-section6-done",
+      "kind": "condition",
+      "display_name": "Exercice boutons OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 92,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 92
+      }
+    },
+    {
+      "id": 703,
+      "slug": "end-section6-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 6",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 93,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand l'exercice des boutons sera terminé!"
+      },
+      "metadata": {
+        "order": 93
+      }
+    },
+    {
+      "id": 800,
+      "slug": "assistant-message-section7",
+      "kind": "assistant_message",
+      "display_name": "Section 7: Exercice Montage complet",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 100,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 7. Exercice : Montage complet\n\n### 🎯 Objectif\n\nAssembler et tester le système complet avec communication bidirectionnelle.\n\n### Étapes\n\n1. **Monter le circuit** sur la plaquette de prototypage:\n   - 2 LEDs avec résistances sur GPIO 32 et 33\n   - 2 boutons entre GPIO 34/35 et GND\n\n2. **Choisir le mode de communication:**\n   - **WiFi:** Si vous avez accès à un réseau WiFi\n   - **LTE:** Si vous avez une carte SIM avec données\n\n3. **Configurer et téléverser le code Arduino** avec les modifications de l'exercice 6\n\n4. **Noter le Device ID** affiché dans le moniteur série\n\n5. **Configurer l'interface Python** avec le bon Device ID\n\n6. **Tester la communication bidirectionnelle:**\n   - Interface tactile → LED: Boutons toggle → LEDs s'allument\n   - Boutons physiques → Interface: BTN1/BTN2 → État affiché\n\n### Validation finale\n\n✅ **Critères de réussite:**\n- Les LEDs répondent aux commandes de l'interface tactile\n- Les boutons physiques toggle les LEDs ET envoient l'état MQTT\n- L'interface Python affiche les messages reçus des boutons\n- La connexion MQTT est stable (indicateur vert)\n- Le système fonctionne via WiFi OU LTE\n\n### Dépannage\n\n⚡ **Problèmes courants:**\n- **LEDs ne s'allument pas:** Vérifier le sens et les résistances\n- **MQTT déconnecté:** Vérifier le Device ID et les identifiants\n- **Boutons ne répondent pas:** Vérifier GPIO 34/35 vers GND\n- **Rebond des boutons:** Augmenter DEBOUNCE_DELAY (300ms)\n- **LTE ne se connecte pas:** Vérifier l'APN et la carte SIM\n- **WSS ne fonctionne pas:** Vérifier Cloudflare et Mosquitto\n\n---\n\n### Commandes de vérification utiles\n\n```bash\n# Vérifier Mosquitto\nsudo ss -tlnp | grep mosquitto\n\n# Tester MQTT local\nmosquitto_sub -h localhost -p 1883 -u esp_user -P PASS -t \"#\" -v\n\n# Envoyer une commande\nmosquitto_pub -h localhost -p 1883 -u esp_user -P PASS \\\n  -t \"esp32-123456/led/1/set\" -m \"ON\"\n\n# Logs Mosquitto\nsudo tail -f /var/log/mosquitto/mosquitto.log\n\n# Moniteur série\narduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200\n```\n\n---\n\nTermine le montage complet et teste la communication bidirectionnelle!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 100
+      }
+    },
+    {
+      "id": 801,
+      "slug": "widget-section7-done",
+      "kind": "widget",
+      "display_name": "Montage complet terminé?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 101,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Le montage complet fonctionne avec communication bidirectionnelle!"
+          }
+        }
+      },
+      "metadata": {
+        "order": 101
+      }
+    },
+    {
+      "id": 802,
+      "slug": "condition-section7-done",
+      "kind": "condition",
+      "display_name": "Montage complet OK?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 102,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 102
+      }
+    },
+    {
+      "id": 803,
+      "slug": "end-section7-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 7",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 103,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand le montage complet sera terminé!"
+      },
+      "metadata": {
+        "order": 103
+      }
+    },
+    {
+      "id": 900,
+      "slug": "assistant-message-fin",
+      "kind": "assistant_message",
+      "display_name": "Message de fin",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 110,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 🎉 Félicitations!\n\nTu as terminé le **Labo 2 - Communication sans fil et télémétrie IoT**!\n\n### Ce que tu as accompli:\n\n✅ Comprendre l'architecture publish/subscribe de MQTT\n✅ Configurer Mosquitto avec authentification\n✅ Exposer le broker MQTT via Cloudflare Tunnel en WSS\n✅ Programmer le LilyGO pour communiquer via WiFi\n✅ Programmer le LilyGO pour communiquer via LTE (optionnel)\n✅ Créer une interface tactile Python avec contrôle MQTT\n✅ Implémenter des boutons physiques avec envoi d'état MQTT\n✅ Tester la communication bidirectionnelle complète\n\n### Tu es passé de:\n\n```\n[Interface tactile] → [Câble USB] → [LilyGO]\n```\n\n### À:\n\n```\n[Interface tactile] → [MQTT/WSS] → [Cloudflare] → [WiFi/LTE] → [LilyGO anywhere]\n```\n\n### Concepts maîtrisés:\n\n- **MQTT:** Protocole publish/subscribe pour l'IoT\n- **WSS:** WebSocket Secure via Cloudflare Tunnel\n- **WiFi/LTE:** Communication sans fil multi-mode\n- **Bidirectionnalité:** Contrôle et feedback en temps réel\n\n---\n\nTon système IoT peut maintenant communiquer depuis **n'importe où** avec une couverture cellulaire ou WiFi! 🚀\n\nÀ bientôt pour le prochain laboratoire!",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 110
+      }
+    },
+    {
+      "id": 999,
+      "slug": "end-success",
+      "kind": "end",
+      "display_name": "Fin - Succès",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 999,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Laboratoire complété avec succès"
+        },
+        "message": "Laboratoire 2 terminé avec succès! Bravo!"
+      },
+      "metadata": {
+        "order": 999
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": 1001,
+      "source": "start",
+      "target": "assistant-message-intro",
+      "condition": null,
+      "metadata": { "label": "", "order": 1 }
+    },
+    {
+      "id": 1002,
+      "source": "assistant-message-intro",
+      "target": "widget-pret-materiel",
+      "condition": null,
+      "metadata": { "label": "", "order": 2 }
+    },
+    {
+      "id": 1003,
+      "source": "widget-pret-materiel",
+      "target": "condition-pret-materiel",
+      "condition": null,
+      "metadata": { "label": "", "order": 3 }
+    },
+    {
+      "id": 1004,
+      "source": "condition-pret-materiel",
+      "target": "assistant-message-section1",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 4 }
+    },
+    {
+      "id": 1005,
+      "source": "condition-pret-materiel",
+      "target": "end-abandon-materiel",
+      "condition": null,
+      "metadata": { "label": "", "order": 5 }
+    },
+    {
+      "id": 2001,
+      "source": "assistant-message-section1",
+      "target": "assistant-message-question-mqtt",
+      "condition": null,
+      "metadata": { "label": "", "order": 10 }
+    },
+    {
+      "id": 2002,
+      "source": "assistant-message-question-mqtt",
+      "target": "state-init-compteur-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 11 }
+    },
+    {
+      "id": 2003,
+      "source": "state-init-compteur-q1",
+      "target": "wait-reponse-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 12 }
+    },
+    {
+      "id": 2004,
+      "source": "wait-reponse-q1",
+      "target": "agent-eval-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 13 }
+    },
+    {
+      "id": 2005,
+      "source": "agent-eval-q1",
+      "target": "condition-eval-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 14 }
+    },
+    {
+      "id": 2006,
+      "source": "condition-eval-q1",
+      "target": "assistant-message-q1-ok",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 15 }
+    },
+    {
+      "id": 2007,
+      "source": "condition-eval-q1",
+      "target": "state-incr-compteur-q1",
+      "condition": "false",
+      "metadata": { "label": "false", "order": 16 }
+    },
+    {
+      "id": 2008,
+      "source": "state-incr-compteur-q1",
+      "target": "condition-max-tentatives-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 17 }
+    },
+    {
+      "id": 2009,
+      "source": "condition-max-tentatives-q1",
+      "target": "assistant-message-appel-prof-q1",
+      "condition": "3",
+      "metadata": { "label": "3", "order": 18 }
+    },
+    {
+      "id": 2010,
+      "source": "condition-max-tentatives-q1",
+      "target": "agent-retroaction-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 19 }
+    },
+    {
+      "id": 2011,
+      "source": "agent-retroaction-q1",
+      "target": "wait-reponse-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 20 }
+    },
+    {
+      "id": 2012,
+      "source": "assistant-message-appel-prof-q1",
+      "target": "wait-code-prof-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 21 }
+    },
+    {
+      "id": 2013,
+      "source": "wait-code-prof-q1",
+      "target": "condition-code-prof-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 22 }
+    },
+    {
+      "id": 2014,
+      "source": "condition-code-prof-q1",
+      "target": "assistant-message-q1-ok",
+      "condition": "1234",
+      "metadata": { "label": "1234", "order": 23 }
+    },
+    {
+      "id": 2015,
+      "source": "condition-code-prof-q1",
+      "target": "wait-code-prof-q1",
+      "condition": null,
+      "metadata": { "label": "", "order": 24 }
+    },
+    {
+      "id": 2016,
+      "source": "assistant-message-q1-ok",
+      "target": "assistant-message-section2",
+      "condition": null,
+      "metadata": { "label": "", "order": 25 }
+    },
+    {
+      "id": 3001,
+      "source": "assistant-message-section2",
+      "target": "widget-section2a-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 30 }
+    },
+    {
+      "id": 3002,
+      "source": "widget-section2a-done",
+      "target": "condition-section2a-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 31 }
+    },
+    {
+      "id": 3003,
+      "source": "condition-section2a-done",
+      "target": "assistant-message-section2b",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 32 }
+    },
+    {
+      "id": 3004,
+      "source": "condition-section2a-done",
+      "target": "end-section2a-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 33 }
+    },
+    {
+      "id": 3101,
+      "source": "assistant-message-section2b",
+      "target": "widget-section2b-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 40 }
+    },
+    {
+      "id": 3102,
+      "source": "widget-section2b-done",
+      "target": "condition-section2b-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 41 }
+    },
+    {
+      "id": 3103,
+      "source": "condition-section2b-done",
+      "target": "assistant-message-question-wss",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 42 }
+    },
+    {
+      "id": 3104,
+      "source": "condition-section2b-done",
+      "target": "end-section2b-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 43 }
+    },
+    {
+      "id": 3105,
+      "source": "assistant-message-question-wss",
+      "target": "state-init-compteur-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 44 }
+    },
+    {
+      "id": 3106,
+      "source": "state-init-compteur-q2",
+      "target": "wait-reponse-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 45 }
+    },
+    {
+      "id": 3107,
+      "source": "wait-reponse-q2",
+      "target": "agent-eval-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 46 }
+    },
+    {
+      "id": 3108,
+      "source": "agent-eval-q2",
+      "target": "condition-eval-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 47 }
+    },
+    {
+      "id": 3109,
+      "source": "condition-eval-q2",
+      "target": "assistant-message-q2-ok",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 48 }
+    },
+    {
+      "id": 3110,
+      "source": "condition-eval-q2",
+      "target": "state-incr-compteur-q2",
+      "condition": "false",
+      "metadata": { "label": "false", "order": 49 }
+    },
+    {
+      "id": 3111,
+      "source": "state-incr-compteur-q2",
+      "target": "condition-max-tentatives-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 50 }
+    },
+    {
+      "id": 3112,
+      "source": "condition-max-tentatives-q2",
+      "target": "assistant-message-appel-prof-q2",
+      "condition": "3",
+      "metadata": { "label": "3", "order": 51 }
+    },
+    {
+      "id": 3113,
+      "source": "condition-max-tentatives-q2",
+      "target": "agent-retroaction-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 52 }
+    },
+    {
+      "id": 3114,
+      "source": "agent-retroaction-q2",
+      "target": "wait-reponse-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 53 }
+    },
+    {
+      "id": 3115,
+      "source": "assistant-message-appel-prof-q2",
+      "target": "wait-code-prof-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 54 }
+    },
+    {
+      "id": 3116,
+      "source": "wait-code-prof-q2",
+      "target": "condition-code-prof-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 55 }
+    },
+    {
+      "id": 3117,
+      "source": "condition-code-prof-q2",
+      "target": "assistant-message-q2-ok",
+      "condition": "1234",
+      "metadata": { "label": "1234", "order": 56 }
+    },
+    {
+      "id": 3118,
+      "source": "condition-code-prof-q2",
+      "target": "wait-code-prof-q2",
+      "condition": null,
+      "metadata": { "label": "", "order": 57 }
+    },
+    {
+      "id": 3119,
+      "source": "assistant-message-q2-ok",
+      "target": "assistant-message-section3",
+      "condition": null,
+      "metadata": { "label": "", "order": 58 }
+    },
+    {
+      "id": 4001,
+      "source": "assistant-message-section3",
+      "target": "widget-section3-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 60 }
+    },
+    {
+      "id": 4002,
+      "source": "widget-section3-done",
+      "target": "condition-section3-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 61 }
+    },
+    {
+      "id": 4003,
+      "source": "condition-section3-done",
+      "target": "assistant-message-section4",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 62 }
+    },
+    {
+      "id": 4004,
+      "source": "condition-section3-done",
+      "target": "end-section3-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 63 }
+    },
+    {
+      "id": 5001,
+      "source": "assistant-message-section4",
+      "target": "widget-section4-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 70 }
+    },
+    {
+      "id": 5002,
+      "source": "widget-section4-done",
+      "target": "condition-section4-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 71 }
+    },
+    {
+      "id": 5003,
+      "source": "condition-section4-done",
+      "target": "assistant-message-section5",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 72 }
+    },
+    {
+      "id": 5004,
+      "source": "condition-section4-done",
+      "target": "end-section4-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 73 }
+    },
+    {
+      "id": 6001,
+      "source": "assistant-message-section5",
+      "target": "widget-section5-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 80 }
+    },
+    {
+      "id": 6002,
+      "source": "widget-section5-done",
+      "target": "condition-section5-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 81 }
+    },
+    {
+      "id": 6003,
+      "source": "condition-section5-done",
+      "target": "assistant-message-section6",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 82 }
+    },
+    {
+      "id": 6004,
+      "source": "condition-section5-done",
+      "target": "end-section5-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 83 }
+    },
+    {
+      "id": 7001,
+      "source": "assistant-message-section6",
+      "target": "widget-section6-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 90 }
+    },
+    {
+      "id": 7002,
+      "source": "widget-section6-done",
+      "target": "condition-section6-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 91 }
+    },
+    {
+      "id": 7003,
+      "source": "condition-section6-done",
+      "target": "assistant-message-section7",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 92 }
+    },
+    {
+      "id": 7004,
+      "source": "condition-section6-done",
+      "target": "end-section6-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 93 }
+    },
+    {
+      "id": 8001,
+      "source": "assistant-message-section7",
+      "target": "widget-section7-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 100 }
+    },
+    {
+      "id": 8002,
+      "source": "widget-section7-done",
+      "target": "condition-section7-done",
+      "condition": null,
+      "metadata": { "label": "", "order": 101 }
+    },
+    {
+      "id": 8003,
+      "source": "condition-section7-done",
+      "target": "assistant-message-fin",
+      "condition": "true",
+      "metadata": { "label": "true", "order": 102 }
+    },
+    {
+      "id": 8004,
+      "source": "condition-section7-done",
+      "target": "end-section7-abandon",
+      "condition": null,
+      "metadata": { "label": "", "order": 103 }
+    },
+    {
+      "id": 9001,
+      "source": "assistant-message-fin",
+      "target": "end-success",
+      "condition": null,
+      "metadata": { "label": "", "order": 110 }
+    }
+  ]
+}
