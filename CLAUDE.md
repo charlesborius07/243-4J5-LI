@@ -331,6 +331,54 @@ $\text{Points} = \text{Note sur 5} \times \frac{\text{Pondération}}{5}$
 
 Les workflows de laboratoire utilisent le format JSON de test-chatkit (edxo). Les fichiers sont stockés dans le dossier `workflows/`.
 
+### Synchronisation labo/workflow
+
+**IMPORTANT** : Les documents de laboratoire (`labo/`) et leurs workflows associés (`workflows/`) doivent toujours être synchronisés.
+
+- Toute modification à un laboratoire doit être répercutée dans le workflow correspondant
+- Toute modification à un workflow doit être répercutée dans le laboratoire correspondant
+- Lors d'une demande de modification, toujours vérifier si l'autre document doit être mis à jour
+- Nommage cohérent : `Labo-XX/` correspond à `workflows/LaboXX.json`
+
+### Type de questions dans les workflows
+
+**Priorité aux checkpoints techniques (Option A)**
+
+Les questions dans les workflows doivent être axées sur le matériel devant l'étudiant, pas sur la compréhension conceptuelle. Privilégier la validation de l'exécution des tâches.
+
+#### Types de checkpoints techniques (prioritaires)
+
+| Type | Exemple | Validation par l'agent |
+|------|---------|------------------------|
+| **Sortie de commande** | "Tape `ip -br a` et colle le résultat" | Format, mots-clés, valeurs attendues |
+| **Mesure physique** | "Quelle tension mesures-tu aux bornes de R1?" | Valeur dans la plage attendue, unité correcte |
+| **Photo/capture** | "Envoie une photo de ton montage" | Présence des composants, connexions visibles |
+| **Valeur calculée** | "Quel est le gain mesuré en dB?" | Cohérence avec les mesures précédentes |
+
+#### Critères de validation pour l'agent
+
+L'agent doit vérifier des éléments observables :
+- Format de la sortie (colonnes, structure)
+- Présence de mots-clés attendus
+- Valeurs dans les plages attendues (tensions, courants, fréquences)
+- Unités correctes (V, mA, dB, Hz, etc.)
+- Cohérence avec le contexte du laboratoire
+- Pour les photos : présence des éléments requis du montage
+
+#### Hybride (Option B, si nécessaire)
+
+Si une question d'interprétation est requise, elle doit suivre un checkpoint et porter sur les données spécifiques de l'étudiant :
+
+```
+1. Checkpoint: "Quelle tension mesures-tu aux bornes de C1?"
+2. Question liée: "Cette valeur correspond-elle à ce que tu attendais? Pourquoi?"
+```
+
+**À éviter** : Questions conceptuelles déconnectées du travail en cours
+- "Qu'est-ce qu'une adresse IP?"
+- "Explique le modèle OSI"
+- "Pourquoi utilise-t-on un condensateur de découplage?"
+
 ### Structure d'un workflow
 
 Un workflow est composé de deux tableaux principaux : `nodes` (nœuds) et `edges` (connexions).
