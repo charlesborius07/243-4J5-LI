@@ -1,17 +1,16 @@
 # Plan de cours
 
-**Numéro du cours:** 243-4J5-LI  
-**Pondération:** 2-3-2  
-**Unités:** 2.33  
-**Session:** H26
-
-**Titre du cours:** Objets connectés  
-**Département:** Technologie du génie électrique
-
-**Programme:** Technologie du génie électrique : Réseaux et télécommunications  
-**Enseignant:** Francis Poisson
-
-**Cégep Limoilou**
+| | |
+|---|---|
+| **Numéro du cours** | 243-4J5-LI |
+| **Titre du cours** | Objets connectés |
+| **Pondération** | 2-3-2 |
+| **Unités** | 2.33 |
+| **Session** | H26 |
+| **Département** | Technologie du génie électrique |
+| **Programme** | Technologie du génie électrique : Réseaux et télécommunications |
+| **Enseignant** | Francis Poisson |
+| **Établissement** | Cégep Limoilou |
 
 ---
 
@@ -50,70 +49,21 @@ Ces connaissances préalables sont essentielles pour aborder les sujets avancés
 
 ### 2.1 Apprentissages clés (capacités, thèmes et contenu)
 
-#### Capacité 1 : Concevoir et programmer des objets connectés
+#### Capacité 1 : Concevoir et programmer des objets connectés (60%)
 
-**Savoirs nécessaires:**
-- Comprendre les concepts fondamentaux de l'IdO
-- Connaître les composants matériels des objets connectés
-- Appréhender les architectures des systèmes IdO
-- Maîtriser les bases de la programmation en Python
-- Identifier les différents types de capteurs et actionneurs
-- Comprendre le fonctionnement des interfaces GPIO
-- Connaître les formats de données tels que JSON et CSV
-- Appliquer les bonnes pratiques de programmation
-- Comprendre les principes de filtration et de traitement des données
-- Apprendre à créer des interfaces utilisateur pour la visualisation des données
+| Catégorie | Éléments |
+|-----------|----------|
+| **Savoirs nécessaires** | • Concepts fondamentaux de l'IdO et architectures des systèmes<br>• Composants matériels des objets connectés (capteurs, actionneurs, GPIO)<br>• Programmation Python et bonnes pratiques<br>• Formats de données (JSON, CSV)<br>• Principes de filtration et traitement des données<br>• Création d'interfaces utilisateur pour la visualisation |
+| **Savoir-faire** | • Concevoir le schéma fonctionnel d'un objet connecté<br>• Assembler les composants matériels<br>• Programmer en Python pour interagir avec des capteurs<br>• Lire, interpréter, traiter et filtrer les données<br>• Enregistrer les données dans des formats appropriés<br>• Créer une interface utilisateur en temps réel<br>• Dépanner les problèmes matériels et logiciels<br>• Documenter le processus de conception<br>• Concevoir un PCB pour l'interfaçage capteurs/actionneurs |
+| **Savoir-être** | • Agir de manière responsable dans la sphère numérique<br>• Développer sa curiosité intellectuelle et son sens de l'organisation<br>• S'investir dans son apprentissage |
 
-**Savoir-faire:**
-- Concevoir le schéma fonctionnel d'un objet connecté
-- Assembler les composants matériels d'un objet connecté
-- Programmer en Python pour interagir avec des capteurs
-- Lire et interpréter les données des capteurs
-- Traiter et filtrer les données collectées
-- Enregistrer les données dans des formats appropriés
-- Créer une interface utilisateur pour la visualisation en temps réel
-- Dépanner les problèmes matériels et logiciels de l'objet connecté
-- Documenter le processus de conception et de programmation
-- Collaborer avec l'équipe pour le développement du projet
-- Concevoir un PCB simple pour faciliter l'interfaçage des capteurs/actionneurs
+#### Capacité 2 : Maîtriser les protocoles de communication IdO (40%)
 
-**Savoir-être:**
-- Agir de manière responsable dans la sphère numérique
-- Développer sa curiosité intellectuelle
-- Développer son sens de l'organisation
-- S'investir dans son apprentissage
-
-#### Capacité 2 : Maîtriser les protocoles de communication IdO
-
-**Savoirs nécessaires:**
-- Comprendre les principes des protocoles HTTP, MQTT et CoAP
-- Connaître les avantages et les inconvénients de chaque protocole
-- Comprendre le fonctionnement d'un courtier (broker) MQTT
-- Comprendre les niveaux de Qualité de Service (QoS) dans MQTT
-- Comprendre les méthodes de sécurisation des communications
-- Connaître les méthodes d'authentification en réseau
-- Comprendre les API REST et leur rôle dans l'IdO
-- Utiliser des bibliothèques Python pour les communications réseau
-- Appliquer les bonnes pratiques pour la gestion des données transmises
-
-**Savoir-faire:**
-- Implémenter le protocole MQTT pour la communication entre appareils
-- Configurer un courtier MQTT tel que Mosquitto
-- Programmer des scripts Python pour publier et souscrire à des messages MQTT
-- Implémenter une communication sécurisée en utilisant TLS/SSL
-- Utiliser les API REST pour interagir avec des services web
-- Surveiller et optimiser la performance des communications réseau
-- Résoudre les problèmes liés aux protocoles de communication
-- Documenter les configurations et les processus de communication
-- Configurer les paramètres de QoS selon les besoins de l'application
-- Intégrer des communications sécurisées avec authentification
-- Utiliser des modèles de langage (LLM) pour automatiser des tâches de traitement de données
-
-**Savoir-être:**
-- Agir de manière responsable dans la sphère numérique
-- Développer sa curiosité intellectuelle
-- Développer son sens de l'organisation
-- S'investir dans son apprentissage
+| Catégorie | Éléments |
+|-----------|----------|
+| **Savoirs nécessaires** | • Principes des protocoles HTTP, MQTT et CoAP (avantages/inconvénients)<br>• Fonctionnement d'un courtier MQTT et niveaux de QoS<br>• Méthodes de sécurisation et d'authentification réseau<br>• API REST et leur rôle dans l'IdO<br>• Bibliothèques Python pour les communications réseau |
+| **Savoir-faire** | • Implémenter MQTT pour la communication entre appareils<br>• Configurer un courtier MQTT (Mosquitto)<br>• Programmer des scripts Python pour publier/souscrire via MQTT<br>• Implémenter une communication sécurisée (TLS/SSL)<br>• Utiliser les API REST pour interagir avec des services web<br>• Surveiller et optimiser les performances réseau<br>• Configurer les paramètres de QoS selon les besoins<br>• Utiliser des LLM pour automatiser le traitement de données |
+| **Savoir-être** | • Agir de manière responsable dans la sphère numérique<br>• Développer sa curiosité intellectuelle et son sens de l'organisation<br>• S'investir dans son apprentissage |
 
 ### 2.2 Organisation du cours et méthodes pédagogiques
 
@@ -321,7 +271,31 @@ Le réexamen d'un résultat attribué pour une tâche comprend les étapes suiva
 
 ## 7. MÉDIAGRAPHIE
 
-Aucune référence bibliographique
+Cloudflare. (s.d.). *Cloudflare Tunnel documentation*. Cloudflare Developers. https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
+
+Eclipse Foundation. (s.d.). *Eclipse Paho MQTT Python client library*. https://eclipse.dev/paho/files/paho.mqtt.python/html/
+
+Eclipse Foundation. (s.d.). *Eclipse Mosquitto: An open source MQTT broker*. https://mosquitto.org/documentation/
+
+Espressif Systems. (s.d.). *ESP-IDF programming guide*. https://docs.espressif.com/projects/esp-idf/en/latest/esp32/
+
+HiveMQ. (s.d.). *MQTT essentials*. https://www.hivemq.com/mqtt-essentials/
+
+KiCad. (s.d.). *KiCad documentation*. https://docs.kicad.org/
+
+LilyGO. (s.d.). *T-A7670X [Dépôt GitHub]*. https://github.com/Xinyuan-LilyGO/T-A7670X
+
+LilyGO. (s.d.). *LilyGo-LoRa-Series [Dépôt GitHub]*. https://github.com/Xinyuan-LilyGO/LilyGo-LoRa-Series
+
+LoRa Alliance. (s.d.). *About LoRaWAN*. https://lora-alliance.org/about-lorawan/
+
+Meshtastic. (s.d.). *Meshtastic documentation*. https://meshtastic.org/docs/
+
+OASIS Open. (s.d.). *MQTT specification*. https://mqtt.org/mqtt-specification/
+
+Python Software Foundation. (s.d.). *Python 3 documentation*. https://docs.python.org/3/
+
+Raspberry Pi Foundation. (s.d.). *Raspberry Pi documentation*. https://www.raspberrypi.com/documentation/
 
 ---
 

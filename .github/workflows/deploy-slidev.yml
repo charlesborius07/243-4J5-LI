@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'theorie/**'
+      - 'Plan de cours*.md'
       - '.github/workflows/deploy-slidev.yml'
   workflow_dispatch:
 
@@ -49,6 +50,18 @@ jobs:
               --base /243-4J5-LI/semaine-$i/ \
               --out ../../docs/semaine-$i
           done
+
+      - name: Convert plan de cours to HTML
+        run: |
+          sudo apt-get install -y pandoc
+          mkdir -p docs
+          pandoc "Plan de cours - 243-4J5-LI.md" \
+            --standalone \
+            --metadata title="Plan de cours - 243-4J5-LI" \
+            --css="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css" \
+            -o docs/plan-de-cours.html
+          # Add wrapper div for GitHub markdown styling
+          sed -i 's/<body>/<body class="markdown-body" style="max-width:900px;margin:40px auto;padding:20px;">/' docs/plan-de-cours.html
 
       - name: Create index page
         run: |
@@ -112,6 +125,7 @@ jobs:
           <body>
             <h1>243-4J5-LI - Objets connectés</h1>
             <p>Présentations théoriques du cours - Session H26</p>
+            <p><a href="./plan-de-cours.html" style="color:#2563eb;font-weight:500;">📄 Plan de cours</a></p>
             <div class="grid">
               <a href="./semaine-01/"><strong>Semaine 01</strong>Introduction et mise en contexte</a>
               <a href="./semaine-02/"><strong>Semaine 02</strong>Protocole MQTT</a>
