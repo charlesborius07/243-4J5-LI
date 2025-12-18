@@ -252,12 +252,19 @@ Un commit par fonctionnalité/correction logique
 Lors de la création d'un résumé de semaine pour Moodle, générer un texte HTML structuré respectant ces critères :
 
 - **Format** : Bloc `<div>` avec style de police, contenant paragraphes et listes
-- **Structure** : Introduction, liste de concepts clés, paragraphes thématiques, résumé du labo
+- **Structure** : Introduction, liste de concepts clés, paragraphes thématiques, résumé du labo, **section "À faire pour la semaine prochaine"**
 - **Style** : Police Segoe UI, line-height 1.6
 - **Contenu** : Résumer les concepts clés de la présentation Slidev de la semaine
 - **Mise en forme** : Utiliser `<strong>` pour les termes techniques, tirets cadratins (—) dans les listes
 - **Source** : Se baser sur le fichier `theorie/Semaine-XX/diaporama/slides.md`
 - **Destination** : Ajouter dans `moodle/resumes-hebdomadaires.md`
+
+#### Sections obligatoires
+
+1. **Introduction** : Paragraphe d'accroche avec les concepts principaux en gras
+2. **Concepts clés** : Listes à puces thématiques
+3. **Labo** : Résumé des activités pratiques
+4. **À faire pour la semaine prochaine** : Liste des préparations requises (sauf semaine 15)
 
 #### Exemple
 
@@ -270,8 +277,74 @@ Lors de la création d'un résumé de semaine pour Moodle, générer un texte HT
     <li><strong>QoS</strong> — trois niveaux de fiabilité (0, 1, 2)</li>
   </ul>
   <p><strong>Labo :</strong> configurer Mosquitto et établir une communication bidirectionnelle.</p>
+  <p><strong>À faire pour la semaine prochaine :</strong></p>
+  <ul style="margin: 10px 0;">
+    <li>Finaliser la communication MQTT bidirectionnelle</li>
+    <li>Préparer le montage breadboard (LEDs, boutons)</li>
+    <li>Se préparer pour l'évaluation sommative</li>
+  </ul>
 </div>
 ```
+
+## Plan de cours
+
+Le fichier `Plan de cours - 243-4J5-LI.md` suit une structure standardisée.
+
+### Structure de l'en-tête
+
+L'en-tête utilise plusieurs tableaux thématiques (pas de titre H1) :
+
+```markdown
+| Cours | |
+|-------|---|
+| **Numéro** | 243-4J5-LI |
+| **Titre** | Objets connectés |
+| **Session** | H26 |
+
+| Structure | |
+|-----------|---|
+| **Pondération** | 2-3-2 |
+| **Unités** | 2.33 |
+
+| Organisation | |
+|--------------|---|
+| **Département** | ... |
+| **Programme** | ... |
+| **Établissement** | ... |
+
+| Contact | |
+|---------|---|
+| **Enseignant** | ... |
+```
+
+### Section 2.1 — Apprentissages clés
+
+Les capacités utilisent un tableau à 3 colonnes avec les éléments alignés :
+
+```markdown
+#### Capacité X : Titre (XX%)
+
+| Savoirs | Savoir-faire | Savoir-être |
+|---------|--------------|-------------|
+| • Élément 1 | • Élément 1 | • Élément 1 |
+| • Élément 2 | • Élément 2 | • Élément 2 |
+| • Élément 3 | • Élément 3 | |
+```
+
+### Section 3.2 — Évaluation sommative
+
+Les tableaux d'évaluation utilisent 3 colonnes côte à côte :
+
+```markdown
+| Cible (Niveau optimal) | Seuil de réussite (Niveau minimal) | Méthodes d'évaluation |
+|------------------------|-----------------------------------|----------------------|
+| • Critère cible 1 | • Critère seuil 1 | • Méthode 1 |
+| • Critère cible 2 | • Critère seuil 2 | • Méthode 2 |
+```
+
+- Chaque critère sur sa propre ligne pour faciliter la comparaison
+- Les méthodes d'évaluation uniquement dans les premières lignes
+- Cellules vides permises pour l'alignement
 
 ### Grilles d'évaluation
 
