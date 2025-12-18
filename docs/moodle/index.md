@@ -1,3 +1,8 @@
+---
+layout: default
+title: Résumés hebdomadaires Moodle
+---
+
 # Résumés hebdomadaires Moodle
 
 Textes HTML prêts à copier-coller dans Moodle pour chaque semaine du cours 243-4J5-LI.
