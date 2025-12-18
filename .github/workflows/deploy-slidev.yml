@@ -47,7 +47,7 @@ jobs:
           for i in $(seq -w 1 15); do
             echo "Building Semaine-$i..."
             pnpm slidev build Semaine-$i/diaporama/slides.md \
-              --base /243-4J5-LI/semaine-$i/ \
+              --base /semaine-$i/ \
               --out ../../../docs/semaine-$i
           done
 
@@ -149,6 +149,9 @@ jobs:
           </body>
           </html>
           EOF
+
+      - name: Create CNAME file
+        run: echo "ve2fpd.com" > docs/CNAME
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
