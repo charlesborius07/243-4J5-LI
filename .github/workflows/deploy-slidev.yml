@@ -1,0 +1,156 @@
+name: Deploy Slidev Presentations
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'theorie/**'
+      - '.github/workflows/deploy-slidev.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        working-directory: ./theorie
+        run: pnpm install
+
+      - name: Build all presentations
+        working-directory: ./theorie
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+        run: |
+          for i in $(seq -w 1 15); do
+            echo "Building Semaine-$i..."
+            pnpm slidev build Semaine-$i/diaporama/slides.md \
+              --base /243-4J5-LI/semaine-$i/ \
+              --out ../docs/semaine-$i
+          done
+
+      - name: Create index page
+        run: |
+          cat > docs/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="fr">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>243-4J5-LI - Objets connectés</title>
+            <style>
+              * { box-sizing: border-box; }
+              body {
+                font-family: 'Segoe UI', system-ui, sans-serif;
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 40px 20px;
+                background: #f8fafc;
+                color: #1e293b;
+              }
+              h1 {
+                color: #2563eb;
+                border-bottom: 3px solid #2563eb;
+                padding-bottom: 15px;
+              }
+              .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+                margin-top: 30px;
+              }
+              a {
+                display: block;
+                padding: 20px;
+                background: white;
+                border-radius: 10px;
+                text-decoration: none;
+                color: #334155;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                transition: transform 0.2s, box-shadow 0.2s;
+              }
+              a:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+              }
+              a strong {
+                display: block;
+                color: #2563eb;
+                font-size: 1.1em;
+                margin-bottom: 5px;
+              }
+              .footer {
+                margin-top: 40px;
+                padding-top: 20px;
+                border-top: 1px solid #e2e8f0;
+                color: #64748b;
+                font-size: 0.9em;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>243-4J5-LI - Objets connectés</h1>
+            <p>Présentations théoriques du cours - Session H26</p>
+            <div class="grid">
+              <a href="./semaine-01/"><strong>Semaine 01</strong>Introduction et mise en contexte</a>
+              <a href="./semaine-02/"><strong>Semaine 02</strong>Protocole MQTT</a>
+              <a href="./semaine-03/"><strong>Semaine 03</strong>Communication cellulaire LTE</a>
+              <a href="./semaine-04/"><strong>Semaine 04</strong>Introduction aux PCB</a>
+              <a href="./semaine-05/"><strong>Semaine 05</strong>Conception PCB avec KiCad</a>
+              <a href="./semaine-06/"><strong>Semaine 06</strong>Routage et fabrication PCB</a>
+              <a href="./semaine-07/"><strong>Semaine 07</strong>LoRa et Meshtastic</a>
+              <a href="./semaine-08/"><strong>Semaine 08</strong>Réseaux maillés</a>
+              <a href="./semaine-09/"><strong>Semaine 09</strong>Gateway LoRa-MQTT</a>
+              <a href="./semaine-10/"><strong>Semaine 10</strong>Assemblage PCB</a>
+              <a href="./semaine-11/"><strong>Semaine 11</strong>Intégration LLM</a>
+              <a href="./semaine-12/"><strong>Semaine 12</strong>Automatisation IoT</a>
+              <a href="./semaine-13/"><strong>Semaine 13</strong>Projet final - Partie 1</a>
+              <a href="./semaine-14/"><strong>Semaine 14</strong>Projet final - Partie 2</a>
+              <a href="./semaine-15/"><strong>Semaine 15</strong>Présentation et bilan</a>
+            </div>
+            <div class="footer">
+              Francis Poisson - Cégep Limoilou
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './docs'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
