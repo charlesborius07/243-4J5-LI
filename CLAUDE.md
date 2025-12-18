@@ -20,6 +20,9 @@ Structure du projet
 │   └── Evaluation-XX/
 │       └── *.md
 │
+├── moodle/                  # Contenus pour Moodle
+│   └── resumes-hebdomadaires.md
+│
 ├── Plan de cours - *.md     # Plan de cours global
 └── CLAUDE.md
 Présentations Slidev (diaporama/)
@@ -241,6 +244,34 @@ Git
 Commits en français
 Messages descriptifs du contenu modifié
 Un commit par fonctionnalité/correction logique
+
+## Textes Moodle
+
+### Résumé hebdomadaire pour Moodle
+
+Lors de la création d'un résumé de semaine pour Moodle, générer un texte HTML structuré respectant ces critères :
+
+- **Format** : Bloc `<div>` avec style de police, contenant paragraphes et listes
+- **Structure** : Introduction, liste de concepts clés, paragraphes thématiques, résumé du labo
+- **Style** : Police Segoe UI, line-height 1.6
+- **Contenu** : Résumer les concepts clés de la présentation Slidev de la semaine
+- **Mise en forme** : Utiliser `<strong>` pour les termes techniques, tirets cadratins (—) dans les listes
+- **Source** : Se baser sur le fichier `theorie/Semaine-XX/diaporama/slides.md`
+- **Destination** : Ajouter dans `moodle/resumes-hebdomadaires.md`
+
+#### Exemple
+
+```html
+<div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
+  <p>Introduction au protocole <strong>MQTT</strong>, le standard de communication pour l'IoT. Architecture <strong>publish/subscribe</strong> avec découplage spatial et temporel.</p>
+  <p><strong>Concepts clés :</strong></p>
+  <ul style="margin: 10px 0;">
+    <li><strong>Topics hiérarchiques</strong> — structure avec séparateur /</li>
+    <li><strong>QoS</strong> — trois niveaux de fiabilité (0, 1, 2)</li>
+  </ul>
+  <p><strong>Labo :</strong> configurer Mosquitto et établir une communication bidirectionnelle.</p>
+</div>
+```
 
 ### Grilles d'évaluation
 
