@@ -41,7 +41,8 @@
 <script>
   function sendHeight() {
     const height = document.documentElement.scrollHeight;
-    window.parent.postMessage({ iframeHeight: height }, '*');
+    const filename = window.location.pathname.split('/').pop();
+    window.parent.postMessage({ iframeHeight: height, filename: filename }, '*');
   }
   window.addEventListener('load', sendHeight);
   window.addEventListener('resize', sendHeight);
