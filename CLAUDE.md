@@ -265,6 +265,7 @@ Lors de la création d'un résumé de semaine pour Moodle, générer un texte HT
 2. **Concepts clés** : Listes à puces thématiques
 3. **Labo** : Résumé des activités pratiques
 4. **À faire pour la semaine prochaine** : Liste des préparations requises (sauf semaine 15)
+5. **Prochaine évaluation** : Informations sur l'évaluation à venir (si applicable)
 
 #### Exemple
 
@@ -283,6 +284,11 @@ Lors de la création d'un résumé de semaine pour Moodle, générer un texte HT
     <li>Préparer le montage breadboard (LEDs, boutons)</li>
     <li>Se préparer pour l'évaluation sommative</li>
   </ul>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Évaluation sommative 2 — semaine 10<br>
+    <em>Matière couverte :</em> MQTT, topics, QoS, communication bidirectionnelle<br>
+    <em>Format :</em> Démonstration pratique (30 min)
+  </p>
 </div>
 ```
 
