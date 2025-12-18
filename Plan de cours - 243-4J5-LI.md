@@ -1,14 +1,23 @@
-| | |
-|---|---|
-| **Numéro du cours** | 243-4J5-LI |
-| **Titre du cours** | Objets connectés |
+| Cours | |
+|-------|---|
+| **Numéro** | 243-4J5-LI |
+| **Titre** | Objets connectés |
+| **Session** | H26 |
+
+| Structure | |
+|-----------|---|
 | **Pondération** | 2-3-2 |
 | **Unités** | 2.33 |
-| **Session** | H26 |
+
+| Organisation | |
+|--------------|---|
 | **Département** | Technologie du génie électrique |
 | **Programme** | Technologie du génie électrique : Réseaux et télécommunications |
-| **Enseignant** | Francis Poisson |
 | **Établissement** | Cégep Limoilou |
+
+| Contact | |
+|---------|---|
+| **Enseignant** | Francis Poisson |
 
 ---
 
@@ -152,17 +161,35 @@ L'évaluation formative se fait:
 
 **Capacité 1 : Concevoir et programmer des objets connectés (60%)**
 
-| Niveau | Critères | Méthodes d'évaluation |
-|--------|----------|----------------------|
-| **Cible (Niveau optimal)** | • Concevoir un schéma fonctionnel complet d'un objet connecté intégrant plusieurs capteurs<br>• Assembler correctement tous les composants matériels nécessaires à l'objet connecté<br>• Programmer des scripts Python avancés pour la gestion de multiples capteurs<br>• Lire et interpréter avec précision les données de différents capteurs<br>• Mettre en œuvre des algorithmes de traitement et de filtrage avancés<br>• Enregistrer les données dans des formats adaptés pour différentes applications<br>• Développer une interface utilisateur interactive pour la visualisation des données<br>• Identifier et résoudre efficacement les problèmes complexes<br>• Rédiger une documentation complète et détaillée du projet<br>• Travailler de manière efficace et proactive au sein de l'équipe<br>• PCB fonctionnel avec un routage optimisé, connecteurs adaptés aux capteurs/actionneurs, bonne disposition des composants | • Projet pratique de conception et programmation d'un objet connecté<br>• Évaluation en laboratoire sur l'interaction avec les capteurs via Python<br>• Présentation orale du projet réalisé<br>• Rapport de documentation technique du projet |
-| **Seuil de réussite (Niveau minimal)** | • Concevoir un schéma fonctionnel élémentaire d'un objet connecté avec un capteur<br>• Assembler les composants matériels de base de l'objet connecté<br>• Programmer des scripts Python simples pour lire les données d'un capteur<br>• Lire les données de base d'un capteur<br>• Appliquer des techniques de filtrage simples aux données<br>• Enregistrer les données dans un format standard tel que CSV<br>• Créer une interface de base pour afficher les données collectées<br>• Identifier et résoudre les problèmes simples courants<br>• Fournir une documentation de base couvrant les aspects essentiels<br>• Participer aux tâches en équipe de manière acceptable<br>• Concevoir un PCB presque fonctionnel avec un schéma correct et un routage partiellement opérationnel | |
+| Cible (Niveau optimal) | Seuil de réussite (Niveau minimal) | Méthodes d'évaluation |
+|------------------------|-----------------------------------|----------------------|
+| • Concevoir un schéma fonctionnel complet d'un objet connecté intégrant plusieurs capteurs | • Concevoir un schéma fonctionnel élémentaire d'un objet connecté avec un capteur | • Projet pratique de conception et programmation d'un objet connecté |
+| • Assembler correctement tous les composants matériels nécessaires à l'objet connecté | • Assembler les composants matériels de base de l'objet connecté | • Évaluation en laboratoire sur l'interaction avec les capteurs via Python |
+| • Programmer des scripts Python avancés pour la gestion de multiples capteurs | • Programmer des scripts Python simples pour lire les données d'un capteur | • Présentation orale du projet réalisé |
+| • Lire et interpréter avec précision les données de différents capteurs | • Lire les données de base d'un capteur | • Rapport de documentation technique du projet |
+| • Mettre en œuvre des algorithmes de traitement et de filtrage avancés | • Appliquer des techniques de filtrage simples aux données | |
+| • Enregistrer les données dans des formats adaptés pour différentes applications | • Enregistrer les données dans un format standard tel que CSV | |
+| • Développer une interface utilisateur interactive pour la visualisation des données | • Créer une interface de base pour afficher les données collectées | |
+| • Identifier et résoudre efficacement les problèmes complexes | • Identifier et résoudre les problèmes simples courants | |
+| • Rédiger une documentation complète et détaillée du projet | • Fournir une documentation de base couvrant les aspects essentiels | |
+| • Travailler de manière efficace et proactive au sein de l'équipe | • Participer aux tâches en équipe de manière acceptable | |
+| • PCB fonctionnel avec un routage optimisé, connecteurs adaptés aux capteurs/actionneurs, bonne disposition des composants | • Concevoir un PCB presque fonctionnel avec un schéma correct et un routage partiellement opérationnel | |
 
 **Capacité 2 : Maîtriser les protocoles de communication IdO (40%)**
 
-| Niveau | Critères | Méthodes d'évaluation |
-|--------|----------|----------------------|
-| **Cible (Niveau optimal)** | • Implémenter efficacement MQTT pour des communications fiables entre plusieurs appareils<br>• Configurer un courtier MQTT sécurisé et optimisé pour les besoins du réseau<br>• Programmer des scripts avancés gérant les publications et les souscriptions avec différents niveaux de QoS<br>• Configurer une communication entièrement sécurisée avec authentification et chiffrement<br>• Intégrer des API REST complexes pour enrichir les fonctionnalités de l'objet connecté<br>• Analyser et améliorer les performances en ajustant les paramètres réseau<br>• Diagnostiquer et résoudre des problèmes complexes de communication<br>• Fournir une documentation détaillée des configurations utilisées<br>• Optimiser les paramètres de QoS pour un équilibre entre performance et fiabilité<br>• Mettre en place une authentification robuste pour assurer la sécurité des données<br>• Automatisation partielle de tâches de traitement de données avec des résultats fonctionnels mais perfectibles | • Travaux pratiques sur l'implémentation des protocoles de communication<br>• Examen en laboratoire sur la configuration d'un courtier MQTT sécurisé<br>• Projet de communication entre objets connectés utilisant différents protocoles<br>• Rapport de configuration et optimisation des communications réseau |
-| **Seuil de réussite (Niveau minimal)** | • Mettre en place une communication de base en MQTT entre deux appareils<br>• Installer et configurer un courtier MQTT fonctionnel<br>• Programmer des scripts basiques permettant de publier et recevoir des messages via MQTT<br>• Mettre en place un chiffrement basique pour sécuriser les communications<br>• Effectuer des appels API simples pour récupérer des données externes<br>• Surveiller les performances de base des communications<br>• Identifier et résoudre des problèmes de communication courants<br>• Documenter les configurations principales des protocoles<br>• Configurer les paramètres de QoS par défaut appropriés<br>• Implémenter une méthode d'authentification basique<br>• Automatisation de tâches de traitement de données, avec des résultats cohérents et adaptés aux besoins spécifiques | |
+| Cible (Niveau optimal) | Seuil de réussite (Niveau minimal) | Méthodes d'évaluation |
+|------------------------|-----------------------------------|----------------------|
+| • Implémenter efficacement MQTT pour des communications fiables entre plusieurs appareils | • Mettre en place une communication de base en MQTT entre deux appareils | • Travaux pratiques sur l'implémentation des protocoles de communication |
+| • Configurer un courtier MQTT sécurisé et optimisé pour les besoins du réseau | • Installer et configurer un courtier MQTT fonctionnel | • Examen en laboratoire sur la configuration d'un courtier MQTT sécurisé |
+| • Programmer des scripts avancés gérant les publications et les souscriptions avec différents niveaux de QoS | • Programmer des scripts basiques permettant de publier et recevoir des messages via MQTT | • Projet de communication entre objets connectés utilisant différents protocoles |
+| • Configurer une communication entièrement sécurisée avec authentification et chiffrement | • Mettre en place un chiffrement basique pour sécuriser les communications | • Rapport de configuration et optimisation des communications réseau |
+| • Intégrer des API REST complexes pour enrichir les fonctionnalités de l'objet connecté | • Effectuer des appels API simples pour récupérer des données externes | |
+| • Analyser et améliorer les performances en ajustant les paramètres réseau | • Surveiller les performances de base des communications | |
+| • Diagnostiquer et résoudre des problèmes complexes de communication | • Identifier et résoudre des problèmes de communication courants | |
+| • Fournir une documentation détaillée des configurations utilisées | • Documenter les configurations principales des protocoles | |
+| • Optimiser les paramètres de QoS pour un équilibre entre performance et fiabilité | • Configurer les paramètres de QoS par défaut appropriés | |
+| • Mettre en place une authentification robuste pour assurer la sécurité des données | • Implémenter une méthode d'authentification basique | |
+| • Automatisation partielle de tâches de traitement de données avec des résultats fonctionnels mais perfectibles | • Automatisation de tâches de traitement de données, avec des résultats cohérents et adaptés aux besoins spécifiques | |
 
 ### 3.3 Évaluation de l'expression et de la communication en français
 
