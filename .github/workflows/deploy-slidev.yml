@@ -63,6 +63,8 @@ jobs:
             -o docs/plan-de-cours.html
           # Add wrapper div for GitHub markdown styling
           sed -i 's/<body>/<body class="markdown-body" style="max-width:900px;margin:40px auto;padding:20px;">/' docs/plan-de-cours.html
+          # Add postMessage script for iframe height
+          sed -i 's|</body>|<script>function sendHeight(){const h=document.documentElement.scrollHeight;window.parent.postMessage({iframeHeight:h},"*")}window.addEventListener("load",sendHeight);window.addEventListener("resize",sendHeight)</script></body>|' docs/plan-de-cours.html
 
       - name: Create index page
         run: |
@@ -150,6 +152,14 @@ jobs:
             <div class="footer">
               Francis Poisson - Cégep Limoilou
             </div>
+          <script>
+            function sendHeight() {
+              const height = document.documentElement.scrollHeight;
+              window.parent.postMessage({ iframeHeight: height }, '*');
+            }
+            window.addEventListener('load', sendHeight);
+            window.addEventListener('resize', sendHeight);
+          </script>
           </body>
           </html>
           EOF

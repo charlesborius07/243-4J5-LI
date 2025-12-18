@@ -91,5 +91,13 @@
     <li>Copier tout le contenu</li>
     <li>Coller dans l'éditeur Moodle en mode HTML</li>
   </ol>
+<script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ iframeHeight: height }, '*');
+  }
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+</script>
 </body>
 </html>
