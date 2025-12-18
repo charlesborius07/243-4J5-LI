@@ -48,7 +48,7 @@ jobs:
             echo "Building Semaine-$i..."
             pnpm slidev build Semaine-$i/diaporama/slides.md \
               --base /243-4J5-LI/semaine-$i/ \
-              --out ../../docs/semaine-$i
+              --out ../../../docs/semaine-$i
           done
 
       - name: Convert plan de cours to HTML
