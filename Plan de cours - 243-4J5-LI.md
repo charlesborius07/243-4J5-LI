@@ -1,22 +1,30 @@
-| Cours | |
-|-------|---|
+### Cours
+
+| | |
+|---|---|
 | **Numéro** | 243-4J5-LI |
 | **Titre** | Objets connectés |
 | **Session** | H26 |
 
-| Structure | |
-|-----------|---|
+### Structure
+
+| | |
+|---|---|
 | **Pondération** | 2-3-2 |
 | **Unités** | 2.33 |
 
-| Organisation | |
-|--------------|---|
+### Organisation
+
+| | |
+|---|---|
 | **Département** | Technologie du génie électrique |
 | **Programme** | Technologie du génie électrique : Réseaux et télécommunications |
 | **Établissement** | Cégep Limoilou |
 
-| Contact | |
-|---------|---|
+### Contact
+
+| | |
+|---|---|
 | **Enseignant** | Francis Poisson |
 
 ---

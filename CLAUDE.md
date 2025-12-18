@@ -278,12 +278,14 @@ Lors de la création d'un résumé de semaine pour Moodle, générer un texte HT
     <li><strong>QoS</strong> — trois niveaux de fiabilité (0, 1, 2)</li>
   </ul>
   <p><strong>Labo :</strong> configurer Mosquitto et établir une communication bidirectionnelle.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Finaliser la communication MQTT bidirectionnelle</li>
-    <li>Préparer le montage breadboard (LEDs, boutons)</li>
-    <li>Se préparer pour l'évaluation sommative</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser la communication MQTT bidirectionnelle</li>
+      <li>Préparer le montage breadboard (LEDs, boutons)</li>
+      <li>Se préparer pour l'évaluation sommative</li>
+    </ul>
+  </div>
   <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
     <strong>Prochaine évaluation :</strong> Évaluation sommative 2 — semaine 10<br>
     <em>Matière couverte :</em> MQTT, topics, QoS, communication bidirectionnelle<br>
@@ -298,28 +300,36 @@ Le fichier `Plan de cours - 243-4J5-LI.md` suit une structure standardisée.
 
 ### Structure de l'en-tête
 
-L'en-tête utilise plusieurs tableaux thématiques (pas de titre H1) :
+L'en-tête utilise des titres H3 suivis de tableaux à 2 colonnes (pas de titre H1) :
 
 ```markdown
-| Cours | |
-|-------|---|
+### Cours
+
+| | |
+|---|---|
 | **Numéro** | 243-4J5-LI |
 | **Titre** | Objets connectés |
 | **Session** | H26 |
 
-| Structure | |
-|-----------|---|
+### Structure
+
+| | |
+|---|---|
 | **Pondération** | 2-3-2 |
 | **Unités** | 2.33 |
 
-| Organisation | |
-|--------------|---|
+### Organisation
+
+| | |
+|---|---|
 | **Département** | ... |
 | **Programme** | ... |
 | **Établissement** | ... |
 
-| Contact | |
-|---------|---|
+### Contact
+
+| | |
+|---|---|
 | **Enseignant** | ... |
 ```
 

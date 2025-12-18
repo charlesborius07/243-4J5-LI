@@ -14,12 +14,19 @@
     <li><strong>Assistants IA CLI</strong> — coder efficacement en terminal</li>
   </ul>
   <p><strong>Labo 1 :</strong> installer Ubuntu Server sur le RPi, configurer le réseau et SSH, mettre en place Cloudflare Tunnel, et tester la compilation sur le LilyGO A7670G.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Finaliser la configuration du Raspberry Pi et Cloudflare Tunnel</li>
-    <li>Lire la documentation sur le protocole MQTT</li>
-    <li>S'assurer que le LilyGO A7670G compile et flashe correctement</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser la configuration du Raspberry Pi et Cloudflare Tunnel</li>
+      <li>Lire la documentation sur le protocole MQTT</li>
+      <li>S'assurer que le LilyGO A7670G compile et flashe correctement</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Laboratoire capteurs et Python — semaine 3 (15%)<br>
+    <em>Matière couverte :</em> chaîne d'acquisition Raspberry Pi/LilyGO, communication MQTT, montage breadboard<br>
+    <em>Format :</em> démonstration pratique en laboratoire
+  </p>
 </div>
 
 ## Semaine 2
@@ -37,12 +44,19 @@
   <p><strong>Broker Mosquitto :</strong> configuration avec authentification et WebSocket (WSS) pour traverser Cloudflare Tunnel.</p>
   <p><strong>WiFi Enterprise (WPA-EAP) :</strong> connexion au réseau du Cégep avec identifiants personnels via PEAP-MSCHAPv2.</p>
   <p><strong>Labo 2 :</strong> configurer Mosquitto, créer le tunnel MQTT via Cloudflare, et établir une communication bidirectionnelle LilyGO ↔ RPi pour contrôler des LEDs.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Finaliser la communication MQTT bidirectionnelle</li>
-    <li>Préparer le montage breadboard (LEDs, boutons)</li>
-    <li>Se préparer pour l'évaluation sommative de la semaine 3 (15%)</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser la communication MQTT bidirectionnelle</li>
+      <li>Préparer le montage breadboard (LEDs, boutons)</li>
+      <li>Se préparer pour l'évaluation sommative de la semaine 3 (15%)</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Laboratoire capteurs et Python — semaine 3 (15%)<br>
+    <em>Matière couverte :</em> chaîne d'acquisition Raspberry Pi/LilyGO, communication MQTT, montage breadboard<br>
+    <em>Format :</em> démonstration pratique en laboratoire
+  </p>
 </div>
 
 ## Semaine 3
@@ -62,12 +76,14 @@
     <li><strong>Reconnexion automatique</strong> — backoff exponentiel et watchdog timer</li>
   </ul>
   <p><strong>Labo 3 :</strong> configurer la communication LTE, implémenter la sécurité TLS, et préparer la vérification des laboratoires 1 et 2.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Installer KiCad sur votre ordinateur</li>
-    <li>Consulter les tutoriels KiCad de base</li>
-    <li>Réviser les concepts de schémas électriques</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Installer KiCad sur votre ordinateur</li>
+      <li>Consulter les tutoriels KiCad de base</li>
+      <li>Réviser les concepts de schémas électriques</li>
+    </ul>
+  </div>
 </div>
 
 ## Semaine 4
@@ -88,12 +104,19 @@
     <li><strong>Routage</strong> — tracer les pistes sur le PCB</li>
   </ul>
   <p><strong>Labo 4 :</strong> créer un premier projet KiCad, saisir un schéma simple (LED + résistance), et générer les fichiers de fabrication.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Rassembler les composants pour le prototype breadboard du projet</li>
-    <li>Planifier le schéma du shield LilyGO (2 LEDs, 2 boutons, 2 potentiomètres, accéléromètre)</li>
-    <li>Créer le dépôt GitHub pour le projet de mi-session</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Rassembler les composants pour le prototype breadboard du projet</li>
+      <li>Planifier le schéma du shield LilyGO (2 LEDs, 2 boutons, 2 potentiomètres, accéléromètre)</li>
+      <li>Créer le dépôt GitHub pour le projet de mi-session</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet de mi-session — semaine 7 (20%)<br>
+    <em>Matière couverte :</em> conception PCB KiCad, prototype breadboard, schéma électrique, routage<br>
+    <em>Livrables :</em> fichiers KiCad, Gerbers, BOM, documentation technique
+  </p>
 </div>
 
 ## Semaine 5
@@ -113,12 +136,19 @@
     <li><strong>Filtrage</strong> — moyenne mobile ou filtre passe-bas (EMA) pour stabiliser</li>
   </ul>
   <p><strong>Labo 5 :</strong> monter le prototype complet sur breadboard, tester tous les capteurs/actionneurs, et documenter le projet sur GitHub.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Finaliser le prototype breadboard fonctionnel</li>
-    <li>Compléter le schéma KiCad avec tous les composants</li>
-    <li>Passer l'ERC sans erreurs</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser le prototype breadboard fonctionnel</li>
+      <li>Compléter le schéma KiCad avec tous les composants</li>
+      <li>Passer l'ERC sans erreurs</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet de mi-session — semaine 7 (20%)<br>
+    <em>Matière couverte :</em> conception PCB KiCad, prototype breadboard, schéma électrique, routage<br>
+    <em>Livrables :</em> fichiers KiCad, Gerbers, BOM, documentation technique
+  </p>
 </div>
 
 ## Semaine 6
@@ -139,19 +169,26 @@
     <li><strong>BOM</strong> — liste des composants à acheter</li>
   </ul>
   <p><strong>Labo 6 :</strong> finaliser le routage, passer le DRC sans erreur, générer les Gerbers et les vérifier dans un visualiseur.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Finaliser tous les livrables du projet de mi-session</li>
-    <li>Vérifier les Gerbers dans un visualiseur en ligne</li>
-    <li>Compléter la documentation technique</li>
-    <li>Préparer la remise du projet (30%)</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser tous les livrables du projet de mi-session</li>
+      <li>Vérifier les Gerbers dans un visualiseur en ligne</li>
+      <li>Compléter la documentation technique</li>
+      <li>Préparer la remise du projet (20%)</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet de mi-session — semaine 7 (20%)<br>
+    <em>Matière couverte :</em> conception PCB KiCad, prototype breadboard, schéma électrique, routage<br>
+    <em>Livrables :</em> fichiers KiCad, Gerbers, BOM, documentation technique
+  </p>
 </div>
 
 ## Semaine 7
 
 <div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
-  <p><strong>Remise du projet de mi-session</strong> (30%) et introduction à la technologie <strong>LoRa</strong> (Long Range) pour la communication longue portée sans infrastructure.</p>
+  <p><strong>Remise du projet de mi-session</strong> (20%) et introduction à la technologie <strong>LoRa</strong> (Long Range) pour la communication longue portée sans infrastructure.</p>
   <p><strong>Technologie LoRa :</strong></p>
   <ul style="margin: 10px 0;">
     <li><strong>Modulation CSS</strong> — Chirp Spread Spectrum, résistante aux interférences</li>
@@ -167,12 +204,19 @@
     <li><strong>T-Beam SUPREME</strong> — ESP32-S3 + LoRa SX1262 + GPS</li>
   </ul>
   <p><strong>Labo 7 :</strong> remettre le projet PCB, flasher le firmware Meshtastic sur T-Beam, et effectuer un premier test de communication.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Se familiariser avec l'application Meshtastic (Android/iOS)</li>
-    <li>Lire la documentation sur les paramètres radio LoRa (SF, BW, CR)</li>
-    <li>Préparer des questions sur la configuration mesh</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Se familiariser avec l'application Meshtastic (Android/iOS)</li>
+      <li>Lire la documentation sur les paramètres radio LoRa (SF, BW, CR)</li>
+      <li>Préparer des questions sur la configuration mesh</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> TP Intégration LLM et automatisation — semaine 9 (20%)<br>
+    <em>Matière couverte :</em> LoRa/Meshtastic, gateway WiFi/MQTT, tests terrain, cartographie de couverture<br>
+    <em>Format :</em> démonstration pratique et rapport technique
+  </p>
 </div>
 
 ## Semaine 8
@@ -193,12 +237,19 @@
     <li><strong>Métriques</strong> — RSSI (force du signal) et SNR (rapport signal/bruit)</li>
   </ul>
   <p><strong>Labo 8 :</strong> configurer un réseau mesh en équipe, tester différents presets, mesurer les performances et documenter les résultats.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Documenter les résultats des tests de portée</li>
-    <li>Lire la documentation sur la configuration gateway MQTT</li>
-    <li>Préparer l'équipement pour les tests terrain</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Documenter les résultats des tests de portée</li>
+      <li>Lire la documentation sur la configuration gateway MQTT</li>
+      <li>Préparer l'équipement pour les tests terrain</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> TP Intégration LLM et automatisation — semaine 9 (20%)<br>
+    <em>Matière couverte :</em> LoRa/Meshtastic, gateway WiFi/MQTT, tests terrain, cartographie de couverture<br>
+    <em>Format :</em> démonstration pratique et rapport technique
+  </p>
 </div>
 
 ## Semaine 9
@@ -223,12 +274,19 @@
     <li><strong>Cartographie</strong> — visualisation de la couverture du réseau</li>
   </ul>
   <p><strong>Labo 9 :</strong> configurer la gateway WiFi/MQTT, effectuer une sortie terrain et créer une carte de couverture.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Finaliser la carte de couverture</li>
-    <li>Préparer le poste de soudure (fer, étain, flux)</li>
-    <li>Revoir les techniques de soudure THT</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser la carte de couverture</li>
+      <li>Préparer le poste de soudure (fer, étain, flux)</li>
+      <li>Revoir les techniques de soudure THT</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet final IdO — semaine 15 (30%)<br>
+    <em>Matière couverte :</em> PCB assemblé, intégration Meshtastic, LLM, tests de performance<br>
+    <em>Format :</em> présentation orale (15 min) et démonstration live
+  </p>
 </div>
 
 ## Semaine 10
@@ -253,12 +311,19 @@
     <li><strong>Périphériques</strong> — LEDs, boutons, potentiomètres, accéléromètre (scan I2C)</li>
   </ul>
   <p><strong>Labo 10 :</strong> inspecter le PCB, souder tous les composants et valider le fonctionnement avec des tests progressifs.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Finaliser la soudure et les tests du PCB</li>
-    <li>Créer un compte API chez un fournisseur LLM (OpenAI, Anthropic ou Google)</li>
-    <li>Installer les bibliothèques Python nécessaires (openai, anthropic, pydantic)</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser la soudure et les tests du PCB</li>
+      <li>Créer un compte API chez un fournisseur LLM (OpenAI, Anthropic ou Google)</li>
+      <li>Installer les bibliothèques Python nécessaires (openai, anthropic, pydantic)</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet final IdO — semaine 15 (30%)<br>
+    <em>Matière couverte :</em> PCB assemblé, intégration Meshtastic, LLM, tests de performance<br>
+    <em>Format :</em> présentation orale (15 min) et démonstration live
+  </p>
 </div>
 
 ## Semaine 11
@@ -280,12 +345,19 @@
     <li><strong>Actions</strong> — alertes, commandes aux actionneurs, logging</li>
   </ul>
   <p><strong>Labo 11 :</strong> créer un compte API, configurer le pipeline Python et intégrer l'analyse LLM aux données du shield.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Tester le pipeline LLM avec des données réelles</li>
-    <li>Documenter les prompts utilisés</li>
-    <li>Identifier les cas d'erreur potentiels</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Tester le pipeline LLM avec des données réelles</li>
+      <li>Documenter les prompts utilisés</li>
+      <li>Identifier les cas d'erreur potentiels</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet final IdO — semaine 15 (30%)<br>
+    <em>Matière couverte :</em> PCB assemblé, intégration Meshtastic, LLM, tests de performance<br>
+    <em>Format :</em> présentation orale (15 min) et démonstration live
+  </p>
 </div>
 
 ## Semaine 12
@@ -312,12 +384,19 @@
     <li><strong>Principe du moindre privilège</strong> — permissions minimales pour chaque composant</li>
   </ul>
   <p><strong>Labo 12 :</strong> ajouter la gestion d'erreurs, migrer les secrets vers .env et implémenter le logging structuré.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Finaliser la gestion d'erreurs et le logging</li>
-    <li>Préparer tous les composants pour l'intégration finale</li>
-    <li>Vérifier que chaque sous-système fonctionne individuellement</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser la gestion d'erreurs et le logging</li>
+      <li>Préparer tous les composants pour l'intégration finale</li>
+      <li>Vérifier que chaque sous-système fonctionne individuellement</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet final IdO — semaine 15 (30%)<br>
+    <em>Matière couverte :</em> PCB assemblé, intégration Meshtastic, LLM, tests de performance<br>
+    <em>Format :</em> présentation orale (15 min) et démonstration live
+  </p>
 </div>
 
 ## Semaine 13
@@ -343,12 +422,19 @@
     <li><strong>Calcul d'autonomie</strong> — capacité batterie / consommation moyenne</li>
   </ul>
   <p><strong>Labo 13 :</strong> assembler le système complet, effectuer les tests de performance et mesurer l'autonomie.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Corriger les problèmes identifiés lors des tests</li>
-    <li>Documenter les résultats de performance</li>
-    <li>Commencer la préparation des diapositives de présentation</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Corriger les problèmes identifiés lors des tests</li>
+      <li>Documenter les résultats de performance</li>
+      <li>Commencer la préparation des diapositives de présentation</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet final IdO — semaine 15 (30%)<br>
+    <em>Matière couverte :</em> PCB assemblé, intégration Meshtastic, LLM, tests de performance<br>
+    <em>Format :</em> présentation orale (15 min) et démonstration live
+  </p>
 </div>
 
 ## Semaine 14
@@ -374,13 +460,20 @@
     <li><strong>Portfolio professionnel</strong> — valoriser le projet pour CV et entretiens</li>
   </ul>
   <p><strong>Labo 14 :</strong> finaliser les corrections, compléter la documentation, préparer les diapositives et répéter la présentation.</p>
-  <p><strong>À faire pour la semaine prochaine :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li>Finaliser les diapositives et la vidéo de démonstration</li>
-    <li>Répéter la présentation (10-12 min + questions)</li>
-    <li>Préparer tous les livrables pour la remise finale</li>
-    <li>S'assurer que le système fonctionne pour la démonstration live</li>
-  </ul>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser les diapositives et la vidéo de démonstration</li>
+      <li>Répéter la présentation (10-12 min + questions)</li>
+      <li>Préparer tous les livrables pour la remise finale</li>
+      <li>S'assurer que le système fonctionne pour la démonstration live</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet final IdO — semaine 15 (30%)<br>
+    <em>Matière couverte :</em> PCB assemblé, intégration Meshtastic, LLM, tests de performance<br>
+    <em>Format :</em> présentation orale (15 min) et démonstration live
+  </p>
 </div>
 
 ## Semaine 15
