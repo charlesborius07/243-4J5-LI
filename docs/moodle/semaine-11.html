@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>243-4J5-LI</title>
+  <style>
+    body { margin: 0; padding: 10px; background: transparent; }
+  </style>
+</head>
+<body>
 <div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
   <p>Intégration des <strong>API LLM</strong> (Large Language Models) dans les systèmes IoT pour l'analyse intelligente des données et l'automatisation des décisions.</p>
   <p><strong>LLM pour l'IoT :</strong></p>
@@ -29,3 +40,13 @@
     <em>Format :</em> présentation orale (15 min) et démonstration live
   </p>
 </div>
+<script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ iframeHeight: height }, '*');
+  }
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+</script>
+</body>
+</html>

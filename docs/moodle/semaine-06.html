@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>243-4J5-LI</title>
+  <style>
+    body { margin: 0; padding: 10px; background: transparent; }
+  </style>
+</head>
+<body>
 <div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
   <p>Finalisation du <strong>routage PCB</strong> et génération des <strong>fichiers Gerber</strong> pour la fabrication. Vérification DRC et préparation à la commande chez un fabricant.</p>
   <p><strong>Routage avancé :</strong></p>
@@ -29,3 +40,13 @@
     <em>Livrables :</em> fichiers KiCad, Gerbers, BOM, documentation technique
   </p>
 </div>
+<script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ iframeHeight: height }, '*');
+  }
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+</script>
+</body>
+</html>

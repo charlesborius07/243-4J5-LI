@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>243-4J5-LI</title>
+  <style>
+    body { margin: 0; padding: 10px; background: transparent; }
+  </style>
+</head>
+<body>
 <div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
   <p>Bienvenue dans le cours <strong>243-4J5-LI — Objets connectés</strong>!</p>
   <p>Ce cours vous permettra de concevoir, programmer et déployer des systèmes IoT complets, de la conception de circuits imprimés jusqu'à l'intégration d'intelligence artificielle.</p>
@@ -27,3 +38,13 @@
     <p style="margin: 0;"><strong>Conseil :</strong> Consultez régulièrement le résumé de chaque semaine pour voir les tâches à faire et les prochaines évaluations.</p>
   </div>
 </div>
+<script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ iframeHeight: height }, '*');
+  }
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+</script>
+</body>
+</html>

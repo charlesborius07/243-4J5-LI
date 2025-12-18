@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>243-4J5-LI</title>
+  <style>
+    body { margin: 0; padding: 10px; background: transparent; }
+  </style>
+</head>
+<body>
 <div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
   <p>Introduction à l'<strong>Internet des objets (IoT)</strong> : réseaux d'appareils connectés qui collectent et échangent des données. Défis : alimentation, connectivité, sécurité.</p>
   <p><strong>Objectif du cours :</strong> concevoir, programmer et déployer des objets connectés en utilisant MQTT, LoRa, KiCad (PCB) et des outils professionnels.</p>
@@ -24,3 +35,13 @@
     <em>Format :</em> démonstration pratique en laboratoire
   </p>
 </div>
+<script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ iframeHeight: height }, '*');
+  }
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+</script>
+</body>
+</html>

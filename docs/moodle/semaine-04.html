@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>243-4J5-LI</title>
+  <style>
+    body { margin: 0; padding: 10px; background: transparent; }
+  </style>
+</head>
+<body>
 <div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
   <p>Introduction à la conception de <strong>circuits imprimés (PCB)</strong> avec <strong>KiCad</strong>, logiciel libre et professionnel. Transformer un prototype breadboard en produit fiable et reproductible.</p>
   <p><strong>Concepts PCB :</strong></p>
@@ -28,3 +39,13 @@
     <em>Livrables :</em> fichiers KiCad, Gerbers, BOM, documentation technique
   </p>
 </div>
+<script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ iframeHeight: height }, '*');
+  }
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+</script>
+</body>
+</html>
