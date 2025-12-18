@@ -269,22 +269,6 @@ layout: section
 
 ---
 
-# Architecture Publish/Subscribe
-
-<MQTTVisualizer />
-
-<v-click>
-
-<div class="mt-2 text-center text-sm">
-
-Les **publishers** et **subscribers** ne se connaissent pas directement. Le **broker** gère tout le routage.
-
-</div>
-
-</v-click>
-
----
-
 # Avantages du Publish/Subscribe
 
 <div class="grid grid-cols-3 gap-4 mt-4">
@@ -333,29 +317,35 @@ async subscribe()
 
 # Topics MQTT
 
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
 ### Structure hiérarchique
 
 Les topics utilisent `/` comme séparateur de niveaux.
 
 ```
 maison/salon/temperature
-maison/salon/humidite
 maison/cuisine/temperature
 garage/porte/etat
 ```
 
-<v-click>
+</div>
+
+<div>
 
 ### Conventions de nommage
 
 | ✅ Bonnes pratiques | ❌ À éviter |
 |-------------------|-----------|
-| `etudiant/jean-dupont/sensors/temp` | `CAPTEUR_TEMP_123` |
-| `building/floor1/room101/hvac` | `data` |
-| Minuscules, tirets | Espaces, caractères spéciaux |
+| `etudiant/id/sensors/temp` | `CAPTEUR_123` |
+| Minuscules, tirets | Espaces, accents |
 | Hiérarchie logique | Structure plate |
 
-</v-click>
+</div>
+
+</div>
 
 ---
 
@@ -635,39 +625,46 @@ graph TB
 
 # Configuration Mosquitto
 
-### Fichier `/etc/mosquitto/mosquitto.conf`
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+### `/etc/mosquitto/mosquitto.conf`
 
 ```bash
-# Désactiver l'accès anonyme
 allow_anonymous false
-
-# Fichier de mots de passe
 password_file /etc/mosquitto/passwd
 
-# Listener MQTT standard (local seulement)
+# MQTT local seulement
 listener 1883 localhost
 
-# Listener WebSocket (pour accès web/tunnel)
+# WebSocket (tunnel)
 listener 9001
 protocol websockets
 ```
 
-<v-click>
+</div>
+
+<div>
 
 ### Gestion des utilisateurs
 
 ```bash
 # Créer un utilisateur
-sudo mosquitto_passwd -c /etc/mosquitto/passwd mon_user
+sudo mosquitto_passwd -c \
+  /etc/mosquitto/passwd mon_user
 
 # Ajouter un utilisateur
-sudo mosquitto_passwd /etc/mosquitto/passwd autre_user
+sudo mosquitto_passwd \
+  /etc/mosquitto/passwd autre_user
 
-# Redémarrer le service
+# Redémarrer
 sudo systemctl restart mosquitto
 ```
 
-</v-click>
+</div>
+
+</div>
 
 ---
 
@@ -1078,25 +1075,16 @@ Le tunnel Cloudflare sert **deux fois** : SSH pour programmer, WSS pour communiq
 
 # Objectifs du Labo 2
 
-<div class="text-xl mb-6">
-
 Établir une **communication MQTT sécurisée** entre le LilyGO et le Raspberry Pi
 
-</div>
-
-```mermaid {scale: 0.7}
+```mermaid {scale: 0.6}
 graph LR
     subgraph "LilyGO A7670G"
-        ESP[ESP32]
-        LED1[LED Rouge]
-        LED2[LED Verte]
-        BTN1[Bouton 1]
-        BTN2[Bouton 2]
+        ESP[ESP32 + GPIO]
     end
 
     subgraph "Transport"
-        WIFI[WiFi/EAP]
-        LTE[LTE 4G]
+        NET[WiFi / LTE]
         CF[Cloudflare]
     end
 
@@ -1105,16 +1093,10 @@ graph LR
         UI[Interface tactile]
     end
 
-    ESP --> WIFI
-    ESP --> LTE
-    WIFI --> CF
-    LTE --> CF
-    CF --> MOSQ
-    MOSQ --> UI
-
-    UI -->|Commandes| MOSQ
-    MOSQ --> CF
-    CF --> ESP
+    ESP <--> NET
+    NET <--> CF
+    CF <--> MOSQ
+    MOSQ <--> UI
 ```
 
 ---
@@ -1157,31 +1139,39 @@ graph LR
 
 # Topics MQTT du projet
 
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+### Structure des topics
+
 ```
-etudiant/{prenom-nom}/
+etudiant/{id}/
 ├── sensors/
-│   ├── buttons    → {"btn1": true, "btn2": false}
-│   └── status     → {"uptime": 3600, "rssi": -65}
-│
+│   ├── buttons  → {btn1, btn2}
+│   └── status   → {uptime, rssi}
 ├── actuators/
-│   ├── led1       ← {"state": "on"} ou {"state": "off"}
-│   └── led2       ← {"state": "on"} ou {"state": "off"}
-│
-└── config/        ← {"interval": 1000}
+│   ├── led1     ← {state}
+│   └── led2     ← {state}
+└── config/      ← {interval}
 ```
 
-<v-click>
+</div>
+
+<div>
 
 ### Flux de données
 
-| Direction | Topic | Données |
-|-----------|-------|---------|
-| LilyGO → RPi | `sensors/buttons` | État des boutons |
-| LilyGO → RPi | `sensors/status` | Uptime, signal |
-| RPi → LilyGO | `actuators/led1` | Commande LED |
-| RPi → LilyGO | `config` | Configuration |
+| Direction | Topic |
+|-----------|-------|
+| LilyGO → RPi | `sensors/buttons` |
+| LilyGO → RPi | `sensors/status` |
+| RPi → LilyGO | `actuators/led1` |
+| RPi → LilyGO | `config` |
 
-</v-click>
+</div>
+
+</div>
 
 ---
 

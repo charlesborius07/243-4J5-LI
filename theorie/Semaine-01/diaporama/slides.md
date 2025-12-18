@@ -103,12 +103,6 @@ graph TD
 
 ---
 
-# Architecture typique IoT
-
-<IoTArchitectureDemo />
-
----
-
 # Défis de l'IoT
 
 <div class="grid grid-cols-2 gap-8 mt-4">

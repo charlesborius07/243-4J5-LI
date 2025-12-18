@@ -190,16 +190,15 @@ layout: section
 
 # Pourquoi la communication cellulaire?
 
-<div class="grid grid-cols-2 gap-6">
+<div class="grid grid-cols-3 gap-4">
 
 <div>
 
-### Limitations du WiFi
+### Limitations WiFi
 
-- ❌ Portée limitée (~100m)
-- ❌ Dépendant d'infrastructure
-- ❌ Pas de mobilité réelle
-- ❌ Congestion en zones denses
+- ❌ Portée ~100m
+- ❌ Infrastructure requise
+- ❌ Pas de mobilité
 
 </div>
 
@@ -207,27 +206,24 @@ layout: section
 
 ### Avantages LTE
 
-- ✅ Couverture étendue (km)
+- ✅ Couverture (km)
 - ✅ Mobilité complète
-- ✅ Infrastructure existante
 - ✅ Fiabilité opérateur
 
 </div>
 
+<div>
+
+### Cas d'usage IoT
+
+- Véhicules connectés
+- Agriculture (sans WiFi)
+- Logistique / tracking
+- Systèmes d'urgence
+
 </div>
 
-<v-click>
-
-### Cas d'utilisation IoT
-
-| Application | Pourquoi LTE? |
-|-------------|---------------|
-| Véhicules connectés | Mobilité constante |
-| Agriculture | Zones sans WiFi |
-| Logistique | Suivi en temps réel |
-| Urgence | Indépendance réseau local |
-
-</v-click>
+</div>
 
 ---
 
@@ -426,37 +422,38 @@ sendATCommand("AT+CGACT=1,1");
 
 # Force du signal - CSQ et RSSI
 
-### Interprétation de AT+CSQ
+<div class="grid grid-cols-2 gap-4">
 
-```
-AT+CSQ
-+CSQ: <rssi>,<ber>
-```
+<div>
+
+### Interprétation de AT+CSQ
 
 | CSQ | RSSI (dBm) | Qualité |
 |:---:|:----------:|---------|
-| 0 | -113 ou moins | Aucun signal |
+| 0 | ≤ -113 | Aucun signal |
 | 1-9 | -111 à -95 | Marginal |
 | 10-14 | -93 à -85 | Acceptable |
 | 15-19 | -83 à -75 | Bon |
-| 20-30 | -73 à -53 | Excellent |
-| 31 | -51 ou plus | Maximum |
+| 20-31 | ≥ -73 | Excellent |
 
-<v-click>
+</div>
 
-### Dans votre code
+<div>
+
+### Conversion en code
 
 ```cpp
 int getSignalStrength() {
-    String response = sendATCommand("AT+CSQ");
-    // Parser "+CSQ: XX,Y"
-    int csq = parseCSQ(response);
-    int rssi_dbm = (csq == 99) ? 0 : (-113 + 2 * csq);
-    return rssi_dbm;
+  String resp = sendATCommand("AT+CSQ");
+  int csq = parseCSQ(resp);
+  // Formule: RSSI = -113 + 2*CSQ
+  return (csq == 99) ? 0 : (-113 + 2*csq);
 }
 ```
 
-</v-click>
+</div>
+
+</div>
 
 ---
 
@@ -1114,103 +1111,141 @@ stateDiagram-v2
 
 # Backoff exponentiel
 
-### Éviter de surcharger le réseau
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+### Principe
+
+Augmenter le délai entre les tentatives pour éviter de surcharger le réseau.
+
+| Tentative | Délai |
+|:---------:|:-----:|
+| 1 | 1s |
+| 2 | 2s |
+| 3 | 4s |
+| 4 | 8s |
+| ... | max 60s |
+
+</div>
+
+<div>
+
+### Code simplifié
 
 ```cpp
-int reconnectAttempts = 0;
-const int maxAttempts = 10;
-const int baseDelay = 1000;  // 1 seconde
-const int maxDelay = 60000;  // 1 minute max
+int baseDelay = 1000, maxDelay = 60000;
 
 void reconnect() {
-    while (!client.connected() && reconnectAttempts < maxAttempts) {
-        Serial.printf("Tentative %d/%d...\n",
-                      reconnectAttempts + 1, maxAttempts);
-
-        if (client.connect(clientId, user, pass)) {
-            reconnectAttempts = 0;  // Reset on success
-            resubscribe();
-            return;
-        }
-
-        // Backoff exponentiel avec jitter
-        int delay = min(baseDelay * (1 << reconnectAttempts), maxDelay);
-        delay += random(0, 1000);  // Jitter
-        reconnectAttempts++;
-
-        Serial.printf("Échec. Attente %d ms\n", delay);
-        delay(delay);
-    }
+  int attempt = 0;
+  while (!client.connected()) {
+    if (client.connect(id, user, pass))
+      return;
+    // Backoff: 1s, 2s, 4s, 8s...
+    int wait = min(baseDelay << attempt, maxDelay);
+    wait += random(0, 1000); // Jitter
+    delay(wait);
+    attempt++;
+  }
 }
 ```
+
+</div>
+
+</div>
 
 ---
 
 # Watchdog Timer
 
-### Protection contre les blocages
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+### Principe
+
+Le watchdog redémarre automatiquement l'ESP32 si le code se bloque.
+
+- Définir un timeout (ex: 30s)
+- "Nourrir" le watchdog régulièrement
+- Si pas nourri → redémarrage
+
+</div>
+
+<div>
+
+### Code
 
 ```cpp
 #include "esp_task_wdt.h"
-
-#define WDT_TIMEOUT 30  // 30 secondes
+#define WDT_TIMEOUT 30  // secondes
 
 void setup() {
-    // Configurer le watchdog
-    esp_task_wdt_init(WDT_TIMEOUT, true);
-    esp_task_wdt_add(NULL);
-
-    // ... reste de l'initialisation
+  esp_task_wdt_init(WDT_TIMEOUT, true);
+  esp_task_wdt_add(NULL);
 }
 
 void loop() {
-    // Nourrir le watchdog à chaque itération
-    esp_task_wdt_reset();
-
-    // Si cette ligne n'est pas atteinte en 30s
-    // → Redémarrage automatique
-
-    processMessages();
-    readSensors();
-    // ...
+  esp_task_wdt_reset(); // Nourrir
+  processMessages();
+  readSensors();
 }
 ```
+
+</div>
+
+</div>
 
 ---
 
 # Gestion des erreurs AT
 
-### Timeout et retry pour commandes modem
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+### Principe
+
+- Timeout pour chaque commande
+- Retry automatique (3 tentatives)
+- Vérifier "OK" ou "ERROR"
+
+### Réponses possibles
+
+| Réponse | Action |
+|---------|--------|
+| `OK` | Succès |
+| `ERROR` | Échec, retry |
+| Timeout | Retry |
+
+</div>
+
+<div>
+
+### Code simplifié
 
 ```cpp
-String sendATCommand(const char* cmd, int timeout = 2000, int retries = 3) {
-    for (int attempt = 0; attempt < retries; attempt++) {
-        Serial2.println(cmd);
-
-        String response = "";
-        unsigned long start = millis();
-
-        while (millis() - start < timeout) {
-            if (Serial2.available()) {
-                response += (char)Serial2.read();
-            }
-            if (response.indexOf("OK") >= 0 ||
-                response.indexOf("ERROR") >= 0) {
-                break;
-            }
-        }
-
-        if (response.indexOf("OK") >= 0) {
-            return response;
-        }
-
-        Serial.printf("Retry %d for: %s\n", attempt + 1, cmd);
-        delay(500);
+String sendAT(const char* cmd,
+              int timeout = 2000) {
+  for (int i = 0; i < 3; i++) {
+    Serial2.println(cmd);
+    String resp = "";
+    unsigned long start = millis();
+    while (millis() - start < timeout) {
+      if (Serial2.available())
+        resp += (char)Serial2.read();
+      if (resp.indexOf("OK") >= 0)
+        return resp;
     }
-
-    return "TIMEOUT";
+    delay(500); // Retry
+  }
+  return "TIMEOUT";
 }
 ```
+
+</div>
+
+</div>
 
 ---
 
