@@ -20,8 +20,14 @@ Structure du projet
 │   └── Evaluation-XX/
 │       └── *.md
 │
-├── moodle/                  # Contenus pour Moodle
+├── moodle/                  # Contenus pour Moodle (source)
 │   └── resumes-hebdomadaires.md
+│
+├── docs/                    # GitHub Pages
+│   ├── index.md
+│   └── moodle/              # Résumés HTML par semaine
+│       ├── index.md
+│       └── semaine-XX.html
 │
 ├── Plan de cours - *.md     # Plan de cours global
 └── CLAUDE.md

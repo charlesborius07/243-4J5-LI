@@ -1,0 +1,29 @@
+<div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
+  <p>Début du projet de mi-session : conception d'un <strong>shield PCB pour le LilyGO A7670G</strong>. Communication <strong>I2C</strong> avec accéléromètre et lecture <strong>ADC</strong> des potentiomètres.</p>
+  <p><strong>Protocole I2C :</strong></p>
+  <ul style="margin: 10px 0;">
+    <li><strong>Bus série 2 fils</strong> — SDA (données) et SCL (horloge)</li>
+    <li><strong>Adressage</strong> — chaque périphérique a une adresse unique (ex: 0x68)</li>
+    <li><strong>Résistances pull-up</strong> — maintiennent les lignes à l'état haut</li>
+  </ul>
+  <p><strong>Conversion ADC :</strong></p>
+  <ul style="margin: 10px 0;">
+    <li><strong>Résolution 12 bits</strong> — valeurs de 0 à 4095 sur l'ESP32</li>
+    <li><strong>ADC1 uniquement</strong> — ADC2 incompatible avec WiFi actif (GPIO 32-39)</li>
+    <li><strong>Filtrage</strong> — moyenne mobile ou filtre passe-bas (EMA) pour stabiliser</li>
+  </ul>
+  <p><strong>Labo 5 :</strong> monter le prototype complet sur breadboard, tester tous les capteurs/actionneurs, et documenter le projet sur GitHub.</p>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser le prototype breadboard fonctionnel</li>
+      <li>Compléter le schéma KiCad avec tous les composants</li>
+      <li>Passer l'ERC sans erreurs</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet de mi-session — semaine 7 (20%)<br>
+    <em>Matière couverte :</em> conception PCB KiCad, prototype breadboard, schéma électrique, routage<br>
+    <em>Livrables :</em> fichiers KiCad, Gerbers, BOM, documentation technique
+  </p>
+</div>

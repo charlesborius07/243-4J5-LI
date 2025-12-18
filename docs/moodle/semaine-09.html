@@ -1,0 +1,34 @@
+<div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
+  <p>Configuration d'une <strong>gateway WiFi/MQTT</strong> pour connecter le réseau LoRa mesh à Internet, et <strong>tests terrain</strong> pour évaluer la couverture.</p>
+  <p><strong>Gateway Meshtastic :</strong></p>
+  <ul style="margin: 10px 0;">
+    <li><strong>Pont LoRa ↔ MQTT</strong> — le T-Beam connecté au WiFi publie les messages sur le broker</li>
+    <li><strong>Topics standardisés</strong> — msh/[region]/[channel]/json pour les messages</li>
+    <li><strong>Bidirectionnel</strong> — envoyer des commandes depuis Python vers le mesh</li>
+  </ul>
+  <p><strong>Architecture unifiée :</strong></p>
+  <ul style="margin: 10px 0;">
+    <li><strong>LTE + LoRa</strong> — redondance des communications</li>
+    <li><strong>Topics MQTT unifiés</strong> — iot/[projet]/[source]/[type]/[data]</li>
+  </ul>
+  <p><strong>Tests terrain :</strong></p>
+  <ul style="margin: 10px 0;">
+    <li><strong>Méthodologie</strong> — point fixe de référence, points mobiles de test</li>
+    <li><strong>Données collectées</strong> — distance, RSSI, SNR, taux de succès</li>
+    <li><strong>Cartographie</strong> — visualisation de la couverture du réseau</li>
+  </ul>
+  <p><strong>Labo 9 :</strong> configurer la gateway WiFi/MQTT, effectuer une sortie terrain et créer une carte de couverture.</p>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser la carte de couverture</li>
+      <li>Préparer le poste de soudure (fer, étain, flux)</li>
+      <li>Revoir les techniques de soudure THT</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Projet final IdO — semaine 15 (30%)<br>
+    <em>Matière couverte :</em> PCB assemblé, intégration Meshtastic, LLM, tests de performance<br>
+    <em>Format :</em> présentation orale (15 min) et démonstration live
+  </p>
+</div>

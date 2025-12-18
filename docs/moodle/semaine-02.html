@@ -1,0 +1,27 @@
+<div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
+  <p>Introduction au protocole <strong>MQTT</strong> (Message Queuing Telemetry Transport), le standard de communication pour l'IoT. Architecture <strong>publish/subscribe</strong> avec découplage spatial, temporel et de synchronisation.</p>
+  <p><strong>Concepts clés :</strong></p>
+  <ul style="margin: 10px 0;">
+    <li><strong>Topics hiérarchiques</strong> — structure avec séparateur / (ex: maison/salon/temperature)</li>
+    <li><strong>Wildcards</strong> — + (un niveau) et # (tous les niveaux)</li>
+    <li><strong>QoS</strong> — trois niveaux de fiabilité (0, 1, 2)</li>
+    <li><strong>Retained messages</strong> — dernière valeur conservée pour nouveaux subscribers</li>
+    <li><strong>Last Will Testament</strong> — message automatique si déconnexion anormale</li>
+  </ul>
+  <p><strong>Broker Mosquitto :</strong> configuration avec authentification et WebSocket (WSS) pour traverser Cloudflare Tunnel.</p>
+  <p><strong>WiFi Enterprise (WPA-EAP) :</strong> connexion au réseau du Cégep avec identifiants personnels via PEAP-MSCHAPv2.</p>
+  <p><strong>Labo 2 :</strong> configurer Mosquitto, créer le tunnel MQTT via Cloudflare, et établir une communication bidirectionnelle LilyGO ↔ RPi pour contrôler des LEDs.</p>
+  <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
+    <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>Finaliser la communication MQTT bidirectionnelle</li>
+      <li>Préparer le montage breadboard (LEDs, boutons)</li>
+      <li>Se préparer pour l'évaluation sommative de la semaine 3 (15%)</li>
+    </ul>
+  </div>
+  <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
+    <strong>Prochaine évaluation :</strong> Laboratoire capteurs et Python — semaine 3 (15%)<br>
+    <em>Matière couverte :</em> chaîne d'acquisition Raspberry Pi/LilyGO, communication MQTT, montage breadboard<br>
+    <em>Format :</em> démonstration pratique en laboratoire
+  </p>
+</div>

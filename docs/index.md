@@ -7,6 +7,9 @@ Bienvenue sur la page GitHub Pages du cours. Cette page regroupe les liens essen
 - [Projet de mi-session](../Projet-mi-session.md)
 - [TODO](../TODO.md)
 
+## Résumés Moodle
+- [Index des résumés hebdomadaires](moodle/index.md)
+
 ## Laboratoires
 - [Labo 1 : Environnement de programmation distant sur Raspberry Pi](../labo1/Labo1-environnement%20de%20programmation%20distant%20sur%20rPi.md)
 - [Labo 2 : Communication sans fil MQTT et LTE](../labo2/Labo2-communication-sans-fil-MQTT-LTE.md)
