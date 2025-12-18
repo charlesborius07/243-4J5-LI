@@ -1726,7 +1726,7 @@ projet-shield-lilygo/
 
 ### Ne pas versionner les secrets!
 
-```gitignore
+```txt
 # Secrets et configurations locales
 config.h
 config.py
