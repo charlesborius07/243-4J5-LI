@@ -1,5 +1,3 @@
-# Plan de cours
-
 | | |
 |---|---|
 | **Numéro du cours** | 243-4J5-LI |
@@ -51,19 +49,30 @@ Ces connaissances préalables sont essentielles pour aborder les sujets avancés
 
 #### Capacité 1 : Concevoir et programmer des objets connectés (60%)
 
-| Catégorie | Éléments |
-|-----------|----------|
-| **Savoirs nécessaires** | • Concepts fondamentaux de l'IdO et architectures des systèmes<br>• Composants matériels des objets connectés (capteurs, actionneurs, GPIO)<br>• Programmation Python et bonnes pratiques<br>• Formats de données (JSON, CSV)<br>• Principes de filtration et traitement des données<br>• Création d'interfaces utilisateur pour la visualisation |
-| **Savoir-faire** | • Concevoir le schéma fonctionnel d'un objet connecté<br>• Assembler les composants matériels<br>• Programmer en Python pour interagir avec des capteurs<br>• Lire, interpréter, traiter et filtrer les données<br>• Enregistrer les données dans des formats appropriés<br>• Créer une interface utilisateur en temps réel<br>• Dépanner les problèmes matériels et logiciels<br>• Documenter le processus de conception<br>• Concevoir un PCB pour l'interfaçage capteurs/actionneurs |
-| **Savoir-être** | • Agir de manière responsable dans la sphère numérique<br>• Développer sa curiosité intellectuelle et son sens de l'organisation<br>• S'investir dans son apprentissage |
+| Savoirs | Savoir-faire | Savoir-être |
+|---------|--------------|-------------|
+| • Concepts fondamentaux de l'IdO et architectures des systèmes | • Concevoir le schéma fonctionnel d'un objet connecté | • Agir de manière responsable dans la sphère numérique |
+| • Composants matériels des objets connectés (capteurs, actionneurs, GPIO) | • Assembler les composants matériels | • Développer sa curiosité intellectuelle et son sens de l'organisation |
+| • Programmation Python et bonnes pratiques | • Programmer en Python pour interagir avec des capteurs | • S'investir dans son apprentissage |
+| • Formats de données (JSON, CSV) | • Lire, interpréter, traiter et filtrer les données | |
+| • Principes de filtration et traitement des données | • Enregistrer les données dans des formats appropriés | |
+| • Création d'interfaces utilisateur pour la visualisation | • Créer une interface utilisateur en temps réel | |
+| | • Dépanner les problèmes matériels et logiciels | |
+| | • Documenter le processus de conception | |
+| | • Concevoir un PCB pour l'interfaçage capteurs/actionneurs | |
 
 #### Capacité 2 : Maîtriser les protocoles de communication IdO (40%)
 
-| Catégorie | Éléments |
-|-----------|----------|
-| **Savoirs nécessaires** | • Principes des protocoles HTTP, MQTT et CoAP (avantages/inconvénients)<br>• Fonctionnement d'un courtier MQTT et niveaux de QoS<br>• Méthodes de sécurisation et d'authentification réseau<br>• API REST et leur rôle dans l'IdO<br>• Bibliothèques Python pour les communications réseau |
-| **Savoir-faire** | • Implémenter MQTT pour la communication entre appareils<br>• Configurer un courtier MQTT (Mosquitto)<br>• Programmer des scripts Python pour publier/souscrire via MQTT<br>• Implémenter une communication sécurisée (TLS/SSL)<br>• Utiliser les API REST pour interagir avec des services web<br>• Surveiller et optimiser les performances réseau<br>• Configurer les paramètres de QoS selon les besoins<br>• Utiliser des LLM pour automatiser le traitement de données |
-| **Savoir-être** | • Agir de manière responsable dans la sphère numérique<br>• Développer sa curiosité intellectuelle et son sens de l'organisation<br>• S'investir dans son apprentissage |
+| Savoirs | Savoir-faire | Savoir-être |
+|---------|--------------|-------------|
+| • Principes des protocoles HTTP, MQTT et CoAP (avantages/inconvénients) | • Implémenter MQTT pour la communication entre appareils | • Agir de manière responsable dans la sphère numérique |
+| • Fonctionnement d'un courtier MQTT et niveaux de QoS | • Configurer un courtier MQTT (Mosquitto) | • Développer sa curiosité intellectuelle et son sens de l'organisation |
+| • Méthodes de sécurisation et d'authentification réseau | • Programmer des scripts Python pour publier/souscrire via MQTT | • S'investir dans son apprentissage |
+| • API REST et leur rôle dans l'IdO | • Implémenter une communication sécurisée (TLS/SSL) | |
+| • Bibliothèques Python pour les communications réseau | • Utiliser les API REST pour interagir avec des services web | |
+| | • Surveiller et optimiser les performances réseau | |
+| | • Configurer les paramètres de QoS selon les besoins | |
+| | • Utiliser des LLM pour automatiser le traitement de données | |
 
 ### 2.2 Organisation du cours et méthodes pédagogiques
 
