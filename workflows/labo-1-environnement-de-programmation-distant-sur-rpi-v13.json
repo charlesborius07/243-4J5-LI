@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": 7140,
+      "id": 7656,
       "slug": "start",
       "kind": "start",
       "display_name": "Début",
@@ -16,11 +16,11 @@
       "metadata": {
         "order": 1
       },
-      "created_at": "2026-01-20T15:25:27.649457Z",
-      "updated_at": "2026-01-20T15:25:27.649461Z"
+      "created_at": "2026-01-20T15:41:02.424228Z",
+      "updated_at": "2026-01-20T15:41:02.424232Z"
     },
     {
-      "id": 7141,
+      "id": 7657,
       "slug": "assistant-message-section1",
       "kind": "assistant_message",
       "display_name": "Section 1: 📐 Architecture du système",
@@ -36,11 +36,11 @@
       "metadata": {
         "order": 2
       },
-      "created_at": "2026-01-20T15:25:27.649462Z",
-      "updated_at": "2026-01-20T15:25:27.649463Z"
+      "created_at": "2026-01-20T15:41:02.424233Z",
+      "updated_at": "2026-01-20T15:41:02.424233Z"
     },
     {
-      "id": 7142,
+      "id": 7658,
       "slug": "widget-section1-done",
       "kind": "widget",
       "display_name": "Continuer: 📐 Architecture du système",
@@ -54,18 +54,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Section terminée, continuer"
+            "text": "Section terminée, continuer",
+            "title": "Prêt à continuer?"
           }
         }
       },
       "metadata": {
         "order": 3
       },
-      "created_at": "2026-01-20T15:25:27.649463Z",
-      "updated_at": "2026-01-20T15:25:27.649464Z"
+      "created_at": "2026-01-20T15:41:02.424234Z",
+      "updated_at": "2026-01-20T15:41:02.424235Z"
     },
     {
-      "id": 7143,
+      "id": 7659,
       "slug": "condition-section1-done",
       "kind": "condition",
       "display_name": "Section 1 terminée?",
@@ -81,11 +82,11 @@
       "metadata": {
         "order": 4
       },
-      "created_at": "2026-01-20T15:25:27.649465Z",
-      "updated_at": "2026-01-20T15:25:27.649465Z"
+      "created_at": "2026-01-20T15:41:02.424235Z",
+      "updated_at": "2026-01-20T15:41:02.424236Z"
     },
     {
-      "id": 7144,
+      "id": 7660,
       "slug": "end-section1-abandon",
       "kind": "end",
       "display_name": "Fin - Abandon Section 1",
@@ -104,11 +105,11 @@
       "metadata": {
         "order": 5
       },
-      "created_at": "2026-01-20T15:25:27.649466Z",
-      "updated_at": "2026-01-20T15:25:27.649467Z"
+      "created_at": "2026-01-20T15:41:02.424236Z",
+      "updated_at": "2026-01-20T15:41:02.424237Z"
     },
     {
-      "id": 7145,
+      "id": 7661,
       "slug": "assistant-message-section2",
       "kind": "assistant_message",
       "display_name": "Section 2: 🎒 Matériel requis",
@@ -124,11 +125,11 @@
       "metadata": {
         "order": 6
       },
-      "created_at": "2026-01-20T15:25:27.649467Z",
-      "updated_at": "2026-01-20T15:25:27.649468Z"
+      "created_at": "2026-01-20T15:41:02.424237Z",
+      "updated_at": "2026-01-20T15:41:02.424238Z"
     },
     {
-      "id": 7146,
+      "id": 7662,
       "slug": "widget-section2-done",
       "kind": "widget",
       "display_name": "Continuer: 🎒 Matériel requis",
@@ -142,18 +143,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Section terminée, continuer"
+            "text": "Section terminée, continuer",
+            "title": "Prêt à continuer?"
           }
         }
       },
       "metadata": {
         "order": 7
       },
-      "created_at": "2026-01-20T15:25:27.649468Z",
-      "updated_at": "2026-01-20T15:25:27.649469Z"
+      "created_at": "2026-01-20T15:41:02.424239Z",
+      "updated_at": "2026-01-20T15:41:02.424239Z"
     },
     {
-      "id": 7147,
+      "id": 7663,
       "slug": "condition-section2-done",
       "kind": "condition",
       "display_name": "Section 2 terminée?",
@@ -169,11 +171,11 @@
       "metadata": {
         "order": 8
       },
-      "created_at": "2026-01-20T15:25:27.649470Z",
-      "updated_at": "2026-01-20T15:25:27.649470Z"
+      "created_at": "2026-01-20T15:41:02.424240Z",
+      "updated_at": "2026-01-20T15:41:02.424240Z"
     },
     {
-      "id": 7148,
+      "id": 7664,
       "slug": "end-section2-abandon",
       "kind": "end",
       "display_name": "Fin - Abandon Section 2",
@@ -192,11 +194,11 @@
       "metadata": {
         "order": 9
       },
-      "created_at": "2026-01-20T15:25:27.649471Z",
-      "updated_at": "2026-01-20T15:25:27.649471Z"
+      "created_at": "2026-01-20T15:41:02.424241Z",
+      "updated_at": "2026-01-20T15:41:02.424241Z"
     },
     {
-      "id": 7149,
+      "id": 7665,
       "slug": "assistant-message-section3",
       "kind": "assistant_message",
       "display_name": "Section 3: 1. Installation Ubuntu Server",
@@ -212,11 +214,11 @@
       "metadata": {
         "order": 10
       },
-      "created_at": "2026-01-20T15:25:27.649472Z",
-      "updated_at": "2026-01-20T15:25:27.649472Z"
+      "created_at": "2026-01-20T15:41:02.424242Z",
+      "updated_at": "2026-01-20T15:41:02.424243Z"
     },
     {
-      "id": 7150,
+      "id": 7666,
       "slug": "widget-section3-done",
       "kind": "widget",
       "display_name": "Continuer: 1. Installation Ubuntu Server",
@@ -230,18 +232,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Section terminée, continuer"
+            "text": "Section terminée, continuer",
+            "title": "Prêt à continuer?"
           }
         }
       },
       "metadata": {
         "order": 11
       },
-      "created_at": "2026-01-20T15:25:27.649473Z",
-      "updated_at": "2026-01-20T15:25:27.649474Z"
+      "created_at": "2026-01-20T15:41:02.424243Z",
+      "updated_at": "2026-01-20T15:41:02.424244Z"
     },
     {
-      "id": 7151,
+      "id": 7667,
       "slug": "condition-section3-done",
       "kind": "condition",
       "display_name": "Section 3 terminée?",
@@ -257,11 +260,11 @@
       "metadata": {
         "order": 12
       },
-      "created_at": "2026-01-20T15:25:27.649474Z",
-      "updated_at": "2026-01-20T15:25:27.649475Z"
+      "created_at": "2026-01-20T15:41:02.424244Z",
+      "updated_at": "2026-01-20T15:41:02.424245Z"
     },
     {
-      "id": 7152,
+      "id": 7668,
       "slug": "end-section3-abandon",
       "kind": "end",
       "display_name": "Fin - Abandon Section 3",
@@ -280,11 +283,11 @@
       "metadata": {
         "order": 13
       },
-      "created_at": "2026-01-20T15:25:27.649476Z",
-      "updated_at": "2026-01-20T15:25:27.649476Z"
+      "created_at": "2026-01-20T15:41:02.424246Z",
+      "updated_at": "2026-01-20T15:41:02.424246Z"
     },
     {
-      "id": 7153,
+      "id": 7669,
       "slug": "assistant-message-section4",
       "kind": "assistant_message",
       "display_name": "Section 4: 2. Configuration réseau",
@@ -300,11 +303,11 @@
       "metadata": {
         "order": 14
       },
-      "created_at": "2026-01-20T15:25:27.649477Z",
-      "updated_at": "2026-01-20T15:25:27.649477Z"
+      "created_at": "2026-01-20T15:41:02.424247Z",
+      "updated_at": "2026-01-20T15:41:02.424247Z"
     },
     {
-      "id": 7154,
+      "id": 7670,
       "slug": "widget-section4-done",
       "kind": "widget",
       "display_name": "Continuer: 2. Configuration réseau",
@@ -318,18 +321,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Section terminée, continuer"
+            "text": "Section terminée, continuer",
+            "title": "Prêt à continuer?"
           }
         }
       },
       "metadata": {
         "order": 15
       },
-      "created_at": "2026-01-20T15:25:27.649478Z",
-      "updated_at": "2026-01-20T15:25:27.649479Z"
+      "created_at": "2026-01-20T15:41:02.424248Z",
+      "updated_at": "2026-01-20T15:41:02.424248Z"
     },
     {
-      "id": 7155,
+      "id": 7671,
       "slug": "condition-section4-done",
       "kind": "condition",
       "display_name": "Section 4 terminée?",
@@ -345,11 +349,11 @@
       "metadata": {
         "order": 16
       },
-      "created_at": "2026-01-20T15:25:27.649479Z",
-      "updated_at": "2026-01-20T15:25:27.649480Z"
+      "created_at": "2026-01-20T15:41:02.424249Z",
+      "updated_at": "2026-01-20T15:41:02.424249Z"
     },
     {
-      "id": 7156,
+      "id": 7672,
       "slug": "end-section4-abandon",
       "kind": "end",
       "display_name": "Fin - Abandon Section 4",
@@ -368,11 +372,11 @@
       "metadata": {
         "order": 17
       },
-      "created_at": "2026-01-20T15:25:27.649480Z",
-      "updated_at": "2026-01-20T15:25:27.649481Z"
+      "created_at": "2026-01-20T15:41:02.424250Z",
+      "updated_at": "2026-01-20T15:41:02.424251Z"
     },
     {
-      "id": 7157,
+      "id": 7673,
       "slug": "assistant-message-section5",
       "kind": "assistant_message",
       "display_name": "Section 5: 3. Connexion à distance via Cloudflare Tunnel",
@@ -388,11 +392,11 @@
       "metadata": {
         "order": 18
       },
-      "created_at": "2026-01-20T15:25:27.649481Z",
-      "updated_at": "2026-01-20T15:25:27.649482Z"
+      "created_at": "2026-01-20T15:41:02.424251Z",
+      "updated_at": "2026-01-20T15:41:02.424252Z"
     },
     {
-      "id": 7158,
+      "id": 7674,
       "slug": "widget-section5-done",
       "kind": "widget",
       "display_name": "Continuer: 3. Connexion à distance via Cloudflare Tunnel",
@@ -406,18 +410,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Section terminée, continuer"
+            "text": "Section terminée, continuer",
+            "title": "Prêt à continuer?"
           }
         }
       },
       "metadata": {
         "order": 19
       },
-      "created_at": "2026-01-20T15:25:27.649483Z",
-      "updated_at": "2026-01-20T15:25:27.649483Z"
+      "created_at": "2026-01-20T15:41:02.424252Z",
+      "updated_at": "2026-01-20T15:41:02.424253Z"
     },
     {
-      "id": 7159,
+      "id": 7675,
       "slug": "condition-section5-done",
       "kind": "condition",
       "display_name": "Section 5 terminée?",
@@ -433,11 +438,11 @@
       "metadata": {
         "order": 20
       },
-      "created_at": "2026-01-20T15:25:27.649484Z",
-      "updated_at": "2026-01-20T15:25:27.649484Z"
+      "created_at": "2026-01-20T15:41:02.424254Z",
+      "updated_at": "2026-01-20T15:41:02.424254Z"
     },
     {
-      "id": 7160,
+      "id": 7676,
       "slug": "end-section5-abandon",
       "kind": "end",
       "display_name": "Fin - Abandon Section 5",
@@ -456,11 +461,11 @@
       "metadata": {
         "order": 21
       },
-      "created_at": "2026-01-20T15:25:27.649485Z",
-      "updated_at": "2026-01-20T15:25:27.649486Z"
+      "created_at": "2026-01-20T15:41:02.424255Z",
+      "updated_at": "2026-01-20T15:41:02.424255Z"
     },
     {
-      "id": 7161,
+      "id": 7677,
       "slug": "assistant-message-section6",
       "kind": "assistant_message",
       "display_name": "Section 6: 4. Configuration Git",
@@ -476,11 +481,11 @@
       "metadata": {
         "order": 22
       },
-      "created_at": "2026-01-20T15:25:27.649486Z",
-      "updated_at": "2026-01-20T15:25:27.649487Z"
+      "created_at": "2026-01-20T15:41:02.424256Z",
+      "updated_at": "2026-01-20T15:41:02.424256Z"
     },
     {
-      "id": 7162,
+      "id": 7678,
       "slug": "widget-section6-done",
       "kind": "widget",
       "display_name": "Continuer: 4. Configuration Git",
@@ -494,18 +499,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Section terminée, continuer"
+            "text": "Section terminée, continuer",
+            "title": "Prêt à continuer?"
           }
         }
       },
       "metadata": {
         "order": 23
       },
-      "created_at": "2026-01-20T15:25:27.649487Z",
-      "updated_at": "2026-01-20T15:25:27.649488Z"
+      "created_at": "2026-01-20T15:41:02.424257Z",
+      "updated_at": "2026-01-20T15:41:02.424258Z"
     },
     {
-      "id": 7163,
+      "id": 7679,
       "slug": "condition-section6-done",
       "kind": "condition",
       "display_name": "Section 6 terminée?",
@@ -521,11 +527,11 @@
       "metadata": {
         "order": 24
       },
-      "created_at": "2026-01-20T15:25:27.649489Z",
-      "updated_at": "2026-01-20T15:25:27.649489Z"
+      "created_at": "2026-01-20T15:41:02.424258Z",
+      "updated_at": "2026-01-20T15:41:02.424259Z"
     },
     {
-      "id": 7164,
+      "id": 7680,
       "slug": "end-section6-abandon",
       "kind": "end",
       "display_name": "Fin - Abandon Section 6",
@@ -544,11 +550,11 @@
       "metadata": {
         "order": 25
       },
-      "created_at": "2026-01-20T15:25:27.649490Z",
-      "updated_at": "2026-01-20T15:25:27.649490Z"
+      "created_at": "2026-01-20T15:41:02.424259Z",
+      "updated_at": "2026-01-20T15:41:02.424260Z"
     },
     {
-      "id": 7165,
+      "id": 7681,
       "slug": "assistant-message-section7",
       "kind": "assistant_message",
       "display_name": "Section 7: 5. Interface tactile distante en mode console",
@@ -564,11 +570,11 @@
       "metadata": {
         "order": 26
       },
-      "created_at": "2026-01-20T15:25:27.649491Z",
-      "updated_at": "2026-01-20T15:25:27.649492Z"
+      "created_at": "2026-01-20T15:41:02.424260Z",
+      "updated_at": "2026-01-20T15:41:02.424261Z"
     },
     {
-      "id": 7166,
+      "id": 7682,
       "slug": "widget-section7-done",
       "kind": "widget",
       "display_name": "Continuer: 5. Interface tactile distante en mode console",
@@ -582,18 +588,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Section terminée, continuer"
+            "text": "Section terminée, continuer",
+            "title": "Prêt à continuer?"
           }
         }
       },
       "metadata": {
         "order": 27
       },
-      "created_at": "2026-01-20T15:25:27.649493Z",
-      "updated_at": "2026-01-20T15:25:27.649493Z"
+      "created_at": "2026-01-20T15:41:02.424261Z",
+      "updated_at": "2026-01-20T15:41:02.424262Z"
     },
     {
-      "id": 7167,
+      "id": 7683,
       "slug": "condition-section7-done",
       "kind": "condition",
       "display_name": "Section 7 terminée?",
@@ -609,11 +616,11 @@
       "metadata": {
         "order": 28
       },
-      "created_at": "2026-01-20T15:25:27.649494Z",
-      "updated_at": "2026-01-20T15:25:27.649494Z"
+      "created_at": "2026-01-20T15:41:02.424263Z",
+      "updated_at": "2026-01-20T15:41:02.424263Z"
     },
     {
-      "id": 7168,
+      "id": 7684,
       "slug": "end-section7-abandon",
       "kind": "end",
       "display_name": "Fin - Abandon Section 7",
@@ -632,11 +639,11 @@
       "metadata": {
         "order": 29
       },
-      "created_at": "2026-01-20T15:25:27.649495Z",
-      "updated_at": "2026-01-20T15:25:27.649495Z"
+      "created_at": "2026-01-20T15:41:02.424264Z",
+      "updated_at": "2026-01-20T15:41:02.424264Z"
     },
     {
-      "id": 7169,
+      "id": 7685,
       "slug": "assistant-message-section8",
       "kind": "assistant_message",
       "display_name": "Section 8: 6. Installation Node.js et outils CLI",
@@ -652,11 +659,11 @@
       "metadata": {
         "order": 30
       },
-      "created_at": "2026-01-20T15:25:27.649496Z",
-      "updated_at": "2026-01-20T15:25:27.649497Z"
+      "created_at": "2026-01-20T15:41:02.424265Z",
+      "updated_at": "2026-01-20T15:41:02.424265Z"
     },
     {
-      "id": 7170,
+      "id": 7686,
       "slug": "widget-section8-done",
       "kind": "widget",
       "display_name": "Continuer: 6. Installation Node.js et outils CLI",
@@ -670,18 +677,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Section terminée, continuer"
+            "text": "Section terminée, continuer",
+            "title": "Prêt à continuer?"
           }
         }
       },
       "metadata": {
         "order": 31
       },
-      "created_at": "2026-01-20T15:25:27.649497Z",
-      "updated_at": "2026-01-20T15:25:27.649498Z"
+      "created_at": "2026-01-20T15:41:02.424266Z",
+      "updated_at": "2026-01-20T15:41:02.424266Z"
     },
     {
-      "id": 7171,
+      "id": 7687,
       "slug": "condition-section8-done",
       "kind": "condition",
       "display_name": "Section 8 terminée?",
@@ -697,11 +705,11 @@
       "metadata": {
         "order": 32
       },
-      "created_at": "2026-01-20T15:25:27.649499Z",
-      "updated_at": "2026-01-20T15:25:27.649499Z"
+      "created_at": "2026-01-20T15:41:02.424267Z",
+      "updated_at": "2026-01-20T15:41:02.424267Z"
     },
     {
-      "id": 7172,
+      "id": 7688,
       "slug": "end-section8-abandon",
       "kind": "end",
       "display_name": "Fin - Abandon Section 8",
@@ -720,11 +728,11 @@
       "metadata": {
         "order": 33
       },
-      "created_at": "2026-01-20T15:25:27.649500Z",
-      "updated_at": "2026-01-20T15:25:27.649501Z"
+      "created_at": "2026-01-20T15:41:02.424268Z",
+      "updated_at": "2026-01-20T15:41:02.424269Z"
     },
     {
-      "id": 7173,
+      "id": 7689,
       "slug": "assistant-message-section9",
       "kind": "assistant_message",
       "display_name": "Section 9: 7. Programmation du LilyGO A7670G",
@@ -740,11 +748,11 @@
       "metadata": {
         "order": 34
       },
-      "created_at": "2026-01-20T15:25:27.649501Z",
-      "updated_at": "2026-01-20T15:25:27.649502Z"
+      "created_at": "2026-01-20T15:41:02.424269Z",
+      "updated_at": "2026-01-20T15:41:02.424270Z"
     },
     {
-      "id": 7174,
+      "id": 7690,
       "slug": "widget-section9-done",
       "kind": "widget",
       "display_name": "Continuer: 7. Programmation du LilyGO A7670G",
@@ -758,18 +766,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Section terminée, continuer"
+            "text": "Section terminée, continuer",
+            "title": "Prêt à continuer?"
           }
         }
       },
       "metadata": {
         "order": 35
       },
-      "created_at": "2026-01-20T15:25:27.649502Z",
-      "updated_at": "2026-01-20T15:25:27.649503Z"
+      "created_at": "2026-01-20T15:41:02.424270Z",
+      "updated_at": "2026-01-20T15:41:02.424271Z"
     },
     {
-      "id": 7175,
+      "id": 7691,
       "slug": "condition-section9-done",
       "kind": "condition",
       "display_name": "Section 9 terminée?",
@@ -785,11 +794,11 @@
       "metadata": {
         "order": 36
       },
-      "created_at": "2026-01-20T15:25:27.649503Z",
-      "updated_at": "2026-01-20T15:25:27.649504Z"
+      "created_at": "2026-01-20T15:41:02.424271Z",
+      "updated_at": "2026-01-20T15:41:02.424272Z"
     },
     {
-      "id": 7176,
+      "id": 7692,
       "slug": "end-section9-abandon",
       "kind": "end",
       "display_name": "Fin - Abandon Section 9",
@@ -808,11 +817,11 @@
       "metadata": {
         "order": 37
       },
-      "created_at": "2026-01-20T15:25:27.649505Z",
-      "updated_at": "2026-01-20T15:25:27.649505Z"
+      "created_at": "2026-01-20T15:41:02.424272Z",
+      "updated_at": "2026-01-20T15:41:02.424273Z"
     },
     {
-      "id": 7177,
+      "id": 7693,
       "slug": "assistant-message-section10",
       "kind": "assistant_message",
       "display_name": "Section 10: 🔮 Au prochain laboratoire",
@@ -828,11 +837,11 @@
       "metadata": {
         "order": 38
       },
-      "created_at": "2026-01-20T15:25:27.649506Z",
-      "updated_at": "2026-01-20T15:25:27.649506Z"
+      "created_at": "2026-01-20T15:41:02.424274Z",
+      "updated_at": "2026-01-20T15:41:02.424274Z"
     },
     {
-      "id": 7178,
+      "id": 7694,
       "slug": "widget-section10-done",
       "kind": "widget",
       "display_name": "Continuer: 🔮 Au prochain laboratoire",
@@ -846,18 +855,19 @@
           "slug": "pret-a-debuter",
           "source": "library",
           "variables": {
-            "text": "Section terminée, continuer"
+            "text": "Section terminée, continuer",
+            "title": "Prêt à continuer?"
           }
         }
       },
       "metadata": {
         "order": 39
       },
-      "created_at": "2026-01-20T15:25:27.649507Z",
-      "updated_at": "2026-01-20T15:25:27.649507Z"
+      "created_at": "2026-01-20T15:41:02.424275Z",
+      "updated_at": "2026-01-20T15:41:02.424275Z"
     },
     {
-      "id": 7179,
+      "id": 7695,
       "slug": "condition-section10-done",
       "kind": "condition",
       "display_name": "Section 10 terminée?",
@@ -873,11 +883,11 @@
       "metadata": {
         "order": 40
       },
-      "created_at": "2026-01-20T15:25:27.649508Z",
-      "updated_at": "2026-01-20T15:25:27.649508Z"
+      "created_at": "2026-01-20T15:41:02.424276Z",
+      "updated_at": "2026-01-20T15:41:02.424277Z"
     },
     {
-      "id": 7180,
+      "id": 7696,
       "slug": "end-section10-abandon",
       "kind": "end",
       "display_name": "Fin - Abandon Section 10",
@@ -896,11 +906,11 @@
       "metadata": {
         "order": 41
       },
-      "created_at": "2026-01-20T15:25:27.649509Z",
-      "updated_at": "2026-01-20T15:25:27.649510Z"
+      "created_at": "2026-01-20T15:41:02.424277Z",
+      "updated_at": "2026-01-20T15:41:02.424278Z"
     },
     {
-      "id": 7181,
+      "id": 7697,
       "slug": "assistant-message-section11",
       "kind": "assistant_message",
       "display_name": "Section 11: 📚 Devoir de préparation (à faire avant le prochain laboratoire)",
@@ -916,11 +926,11 @@
       "metadata": {
         "order": 42
       },
-      "created_at": "2026-01-20T15:25:27.649510Z",
-      "updated_at": "2026-01-20T15:25:27.649511Z"
+      "created_at": "2026-01-20T15:41:02.424278Z",
+      "updated_at": "2026-01-20T15:41:02.424279Z"
     },
     {
-      "id": 7182,
+      "id": 7698,
       "slug": "end-success",
       "kind": "end",
       "display_name": "Fin - Succès",
@@ -939,13 +949,13 @@
       "metadata": {
         "order": 43
       },
-      "created_at": "2026-01-20T15:25:27.649511Z",
-      "updated_at": "2026-01-20T15:25:27.649512Z"
+      "created_at": "2026-01-20T15:41:02.424279Z",
+      "updated_at": "2026-01-20T15:41:02.424280Z"
     }
   ],
   "edges": [
     {
-      "id": 8012,
+      "id": 8516,
       "source": "start",
       "target": "assistant-message-section1",
       "condition": null,
@@ -953,11 +963,11 @@
         "label": "",
         "order": 1
       },
-      "created_at": "2026-01-20T15:25:27.658447Z",
-      "updated_at": "2026-01-20T15:25:27.658452Z"
+      "created_at": "2026-01-20T15:41:02.432047Z",
+      "updated_at": "2026-01-20T15:41:02.432051Z"
     },
     {
-      "id": 8013,
+      "id": 8517,
       "source": "assistant-message-section1",
       "target": "widget-section1-done",
       "condition": null,
@@ -965,11 +975,11 @@
         "label": "",
         "order": 2
       },
-      "created_at": "2026-01-20T15:25:27.658453Z",
-      "updated_at": "2026-01-20T15:25:27.658453Z"
+      "created_at": "2026-01-20T15:41:02.432052Z",
+      "updated_at": "2026-01-20T15:41:02.432052Z"
     },
     {
-      "id": 8014,
+      "id": 8518,
       "source": "widget-section1-done",
       "target": "condition-section1-done",
       "condition": null,
@@ -977,11 +987,11 @@
         "label": "",
         "order": 3
       },
-      "created_at": "2026-01-20T15:25:27.658454Z",
-      "updated_at": "2026-01-20T15:25:27.658455Z"
+      "created_at": "2026-01-20T15:41:02.432053Z",
+      "updated_at": "2026-01-20T15:41:02.432053Z"
     },
     {
-      "id": 8015,
+      "id": 8519,
       "source": "condition-section1-done",
       "target": "assistant-message-section2",
       "condition": "true",
@@ -989,11 +999,11 @@
         "label": "true",
         "order": 4
       },
-      "created_at": "2026-01-20T15:25:27.658456Z",
-      "updated_at": "2026-01-20T15:25:27.658456Z"
+      "created_at": "2026-01-20T15:41:02.432054Z",
+      "updated_at": "2026-01-20T15:41:02.432055Z"
     },
     {
-      "id": 8016,
+      "id": 8520,
       "source": "condition-section1-done",
       "target": "end-section1-abandon",
       "condition": null,
@@ -1001,11 +1011,11 @@
         "label": "",
         "order": 5
       },
-      "created_at": "2026-01-20T15:25:27.658457Z",
-      "updated_at": "2026-01-20T15:25:27.658457Z"
+      "created_at": "2026-01-20T15:41:02.432055Z",
+      "updated_at": "2026-01-20T15:41:02.432056Z"
     },
     {
-      "id": 8017,
+      "id": 8521,
       "source": "assistant-message-section2",
       "target": "widget-section2-done",
       "condition": null,
@@ -1013,11 +1023,11 @@
         "label": "",
         "order": 6
       },
-      "created_at": "2026-01-20T15:25:27.658458Z",
-      "updated_at": "2026-01-20T15:25:27.658458Z"
+      "created_at": "2026-01-20T15:41:02.432056Z",
+      "updated_at": "2026-01-20T15:41:02.432057Z"
     },
     {
-      "id": 8018,
+      "id": 8522,
       "source": "widget-section2-done",
       "target": "condition-section2-done",
       "condition": null,
@@ -1025,11 +1035,11 @@
         "label": "",
         "order": 7
       },
-      "created_at": "2026-01-20T15:25:27.658459Z",
-      "updated_at": "2026-01-20T15:25:27.658460Z"
+      "created_at": "2026-01-20T15:41:02.432057Z",
+      "updated_at": "2026-01-20T15:41:02.432058Z"
     },
     {
-      "id": 8019,
+      "id": 8523,
       "source": "condition-section2-done",
       "target": "assistant-message-section3",
       "condition": "true",
@@ -1037,11 +1047,11 @@
         "label": "true",
         "order": 8
       },
-      "created_at": "2026-01-20T15:25:27.658460Z",
-      "updated_at": "2026-01-20T15:25:27.658461Z"
+      "created_at": "2026-01-20T15:41:02.432058Z",
+      "updated_at": "2026-01-20T15:41:02.432059Z"
     },
     {
-      "id": 8020,
+      "id": 8524,
       "source": "condition-section2-done",
       "target": "end-section2-abandon",
       "condition": null,
@@ -1049,11 +1059,11 @@
         "label": "",
         "order": 9
       },
-      "created_at": "2026-01-20T15:25:27.658462Z",
-      "updated_at": "2026-01-20T15:25:27.658462Z"
+      "created_at": "2026-01-20T15:41:02.432059Z",
+      "updated_at": "2026-01-20T15:41:02.432060Z"
     },
     {
-      "id": 8021,
+      "id": 8525,
       "source": "assistant-message-section3",
       "target": "widget-section3-done",
       "condition": null,
@@ -1061,11 +1071,11 @@
         "label": "",
         "order": 10
       },
-      "created_at": "2026-01-20T15:25:27.658463Z",
-      "updated_at": "2026-01-20T15:25:27.658463Z"
+      "created_at": "2026-01-20T15:41:02.432060Z",
+      "updated_at": "2026-01-20T15:41:02.432061Z"
     },
     {
-      "id": 8022,
+      "id": 8526,
       "source": "widget-section3-done",
       "target": "condition-section3-done",
       "condition": null,
@@ -1073,11 +1083,11 @@
         "label": "",
         "order": 11
       },
-      "created_at": "2026-01-20T15:25:27.658464Z",
-      "updated_at": "2026-01-20T15:25:27.658465Z"
+      "created_at": "2026-01-20T15:41:02.432061Z",
+      "updated_at": "2026-01-20T15:41:02.432062Z"
     },
     {
-      "id": 8023,
+      "id": 8527,
       "source": "condition-section3-done",
       "target": "assistant-message-section4",
       "condition": "true",
@@ -1085,11 +1095,11 @@
         "label": "true",
         "order": 12
       },
-      "created_at": "2026-01-20T15:25:27.658465Z",
-      "updated_at": "2026-01-20T15:25:27.658466Z"
+      "created_at": "2026-01-20T15:41:02.432062Z",
+      "updated_at": "2026-01-20T15:41:02.432063Z"
     },
     {
-      "id": 8024,
+      "id": 8528,
       "source": "condition-section3-done",
       "target": "end-section3-abandon",
       "condition": null,
@@ -1097,11 +1107,11 @@
         "label": "",
         "order": 13
       },
-      "created_at": "2026-01-20T15:25:27.658467Z",
-      "updated_at": "2026-01-20T15:25:27.658467Z"
+      "created_at": "2026-01-20T15:41:02.432064Z",
+      "updated_at": "2026-01-20T15:41:02.432064Z"
     },
     {
-      "id": 8025,
+      "id": 8529,
       "source": "assistant-message-section4",
       "target": "widget-section4-done",
       "condition": null,
@@ -1109,11 +1119,11 @@
         "label": "",
         "order": 14
       },
-      "created_at": "2026-01-20T15:25:27.658468Z",
-      "updated_at": "2026-01-20T15:25:27.658468Z"
+      "created_at": "2026-01-20T15:41:02.432065Z",
+      "updated_at": "2026-01-20T15:41:02.432065Z"
     },
     {
-      "id": 8026,
+      "id": 8530,
       "source": "widget-section4-done",
       "target": "condition-section4-done",
       "condition": null,
@@ -1121,11 +1131,11 @@
         "label": "",
         "order": 15
       },
-      "created_at": "2026-01-20T15:25:27.658469Z",
-      "updated_at": "2026-01-20T15:25:27.658470Z"
+      "created_at": "2026-01-20T15:41:02.432066Z",
+      "updated_at": "2026-01-20T15:41:02.432066Z"
     },
     {
-      "id": 8027,
+      "id": 8531,
       "source": "condition-section4-done",
       "target": "assistant-message-section5",
       "condition": "true",
@@ -1133,11 +1143,11 @@
         "label": "true",
         "order": 16
       },
-      "created_at": "2026-01-20T15:25:27.658470Z",
-      "updated_at": "2026-01-20T15:25:27.658471Z"
+      "created_at": "2026-01-20T15:41:02.432067Z",
+      "updated_at": "2026-01-20T15:41:02.432067Z"
     },
     {
-      "id": 8028,
+      "id": 8532,
       "source": "condition-section4-done",
       "target": "end-section4-abandon",
       "condition": null,
@@ -1145,11 +1155,11 @@
         "label": "",
         "order": 17
       },
-      "created_at": "2026-01-20T15:25:27.658472Z",
-      "updated_at": "2026-01-20T15:25:27.658472Z"
+      "created_at": "2026-01-20T15:41:02.432068Z",
+      "updated_at": "2026-01-20T15:41:02.432068Z"
     },
     {
-      "id": 8029,
+      "id": 8533,
       "source": "assistant-message-section5",
       "target": "widget-section5-done",
       "condition": null,
@@ -1157,11 +1167,11 @@
         "label": "",
         "order": 18
       },
-      "created_at": "2026-01-20T15:25:27.658473Z",
-      "updated_at": "2026-01-20T15:25:27.658473Z"
+      "created_at": "2026-01-20T15:41:02.432069Z",
+      "updated_at": "2026-01-20T15:41:02.432069Z"
     },
     {
-      "id": 8030,
+      "id": 8534,
       "source": "widget-section5-done",
       "target": "condition-section5-done",
       "condition": null,
@@ -1169,11 +1179,11 @@
         "label": "",
         "order": 19
       },
-      "created_at": "2026-01-20T15:25:27.658474Z",
-      "updated_at": "2026-01-20T15:25:27.658475Z"
+      "created_at": "2026-01-20T15:41:02.432070Z",
+      "updated_at": "2026-01-20T15:41:02.432070Z"
     },
     {
-      "id": 8031,
+      "id": 8535,
       "source": "condition-section5-done",
       "target": "assistant-message-section6",
       "condition": "true",
@@ -1181,11 +1191,11 @@
         "label": "true",
         "order": 20
       },
-      "created_at": "2026-01-20T15:25:27.658475Z",
-      "updated_at": "2026-01-20T15:25:27.658476Z"
+      "created_at": "2026-01-20T15:41:02.432071Z",
+      "updated_at": "2026-01-20T15:41:02.432072Z"
     },
     {
-      "id": 8032,
+      "id": 8536,
       "source": "condition-section5-done",
       "target": "end-section5-abandon",
       "condition": null,
@@ -1193,11 +1203,11 @@
         "label": "",
         "order": 21
       },
-      "created_at": "2026-01-20T15:25:27.658477Z",
-      "updated_at": "2026-01-20T15:25:27.658478Z"
+      "created_at": "2026-01-20T15:41:02.432072Z",
+      "updated_at": "2026-01-20T15:41:02.432073Z"
     },
     {
-      "id": 8033,
+      "id": 8537,
       "source": "assistant-message-section6",
       "target": "widget-section6-done",
       "condition": null,
@@ -1205,11 +1215,11 @@
         "label": "",
         "order": 22
       },
-      "created_at": "2026-01-20T15:25:27.658478Z",
-      "updated_at": "2026-01-20T15:25:27.658479Z"
+      "created_at": "2026-01-20T15:41:02.432073Z",
+      "updated_at": "2026-01-20T15:41:02.432074Z"
     },
     {
-      "id": 8034,
+      "id": 8538,
       "source": "widget-section6-done",
       "target": "condition-section6-done",
       "condition": null,
@@ -1217,11 +1227,11 @@
         "label": "",
         "order": 23
       },
-      "created_at": "2026-01-20T15:25:27.658479Z",
-      "updated_at": "2026-01-20T15:25:27.658480Z"
+      "created_at": "2026-01-20T15:41:02.432075Z",
+      "updated_at": "2026-01-20T15:41:02.432075Z"
     },
     {
-      "id": 8035,
+      "id": 8539,
       "source": "condition-section6-done",
       "target": "assistant-message-section7",
       "condition": "true",
@@ -1229,11 +1239,11 @@
         "label": "true",
         "order": 24
       },
-      "created_at": "2026-01-20T15:25:27.658481Z",
-      "updated_at": "2026-01-20T15:25:27.658481Z"
+      "created_at": "2026-01-20T15:41:02.432076Z",
+      "updated_at": "2026-01-20T15:41:02.432076Z"
     },
     {
-      "id": 8036,
+      "id": 8540,
       "source": "condition-section6-done",
       "target": "end-section6-abandon",
       "condition": null,
@@ -1241,11 +1251,11 @@
         "label": "",
         "order": 25
       },
-      "created_at": "2026-01-20T15:25:27.658482Z",
-      "updated_at": "2026-01-20T15:25:27.658482Z"
+      "created_at": "2026-01-20T15:41:02.432077Z",
+      "updated_at": "2026-01-20T15:41:02.432077Z"
     },
     {
-      "id": 8037,
+      "id": 8541,
       "source": "assistant-message-section7",
       "target": "widget-section7-done",
       "condition": null,
@@ -1253,11 +1263,11 @@
         "label": "",
         "order": 26
       },
-      "created_at": "2026-01-20T15:25:27.658483Z",
-      "updated_at": "2026-01-20T15:25:27.658484Z"
+      "created_at": "2026-01-20T15:41:02.432078Z",
+      "updated_at": "2026-01-20T15:41:02.432078Z"
     },
     {
-      "id": 8038,
+      "id": 8542,
       "source": "widget-section7-done",
       "target": "condition-section7-done",
       "condition": null,
@@ -1265,11 +1275,11 @@
         "label": "",
         "order": 27
       },
-      "created_at": "2026-01-20T15:25:27.658484Z",
-      "updated_at": "2026-01-20T15:25:27.658485Z"
+      "created_at": "2026-01-20T15:41:02.432079Z",
+      "updated_at": "2026-01-20T15:41:02.432080Z"
     },
     {
-      "id": 8039,
+      "id": 8543,
       "source": "condition-section7-done",
       "target": "assistant-message-section8",
       "condition": "true",
@@ -1277,11 +1287,11 @@
         "label": "true",
         "order": 28
       },
-      "created_at": "2026-01-20T15:25:27.658485Z",
-      "updated_at": "2026-01-20T15:25:27.658486Z"
+      "created_at": "2026-01-20T15:41:02.432080Z",
+      "updated_at": "2026-01-20T15:41:02.432081Z"
     },
     {
-      "id": 8040,
+      "id": 8544,
       "source": "condition-section7-done",
       "target": "end-section7-abandon",
       "condition": null,
@@ -1289,11 +1299,11 @@
         "label": "",
         "order": 29
       },
-      "created_at": "2026-01-20T15:25:27.658487Z",
-      "updated_at": "2026-01-20T15:25:27.658488Z"
+      "created_at": "2026-01-20T15:41:02.432081Z",
+      "updated_at": "2026-01-20T15:41:02.432082Z"
     },
     {
-      "id": 8041,
+      "id": 8545,
       "source": "assistant-message-section8",
       "target": "widget-section8-done",
       "condition": null,
@@ -1301,11 +1311,11 @@
         "label": "",
         "order": 30
       },
-      "created_at": "2026-01-20T15:25:27.658488Z",
-      "updated_at": "2026-01-20T15:25:27.658489Z"
+      "created_at": "2026-01-20T15:41:02.432083Z",
+      "updated_at": "2026-01-20T15:41:02.432083Z"
     },
     {
-      "id": 8042,
+      "id": 8546,
       "source": "widget-section8-done",
       "target": "condition-section8-done",
       "condition": null,
@@ -1313,11 +1323,11 @@
         "label": "",
         "order": 31
       },
-      "created_at": "2026-01-20T15:25:27.658489Z",
-      "updated_at": "2026-01-20T15:25:27.658490Z"
+      "created_at": "2026-01-20T15:41:02.432084Z",
+      "updated_at": "2026-01-20T15:41:02.432084Z"
     },
     {
-      "id": 8043,
+      "id": 8547,
       "source": "condition-section8-done",
       "target": "assistant-message-section9",
       "condition": "true",
@@ -1325,11 +1335,11 @@
         "label": "true",
         "order": 32
       },
-      "created_at": "2026-01-20T15:25:27.658490Z",
-      "updated_at": "2026-01-20T15:25:27.658491Z"
+      "created_at": "2026-01-20T15:41:02.432085Z",
+      "updated_at": "2026-01-20T15:41:02.432085Z"
     },
     {
-      "id": 8044,
+      "id": 8548,
       "source": "condition-section8-done",
       "target": "end-section8-abandon",
       "condition": null,
@@ -1337,11 +1347,11 @@
         "label": "",
         "order": 33
       },
-      "created_at": "2026-01-20T15:25:27.658492Z",
-      "updated_at": "2026-01-20T15:25:27.658492Z"
+      "created_at": "2026-01-20T15:41:02.432086Z",
+      "updated_at": "2026-01-20T15:41:02.432086Z"
     },
     {
-      "id": 8045,
+      "id": 8549,
       "source": "assistant-message-section9",
       "target": "widget-section9-done",
       "condition": null,
@@ -1349,11 +1359,11 @@
         "label": "",
         "order": 34
       },
-      "created_at": "2026-01-20T15:25:27.658493Z",
-      "updated_at": "2026-01-20T15:25:27.658493Z"
+      "created_at": "2026-01-20T15:41:02.432087Z",
+      "updated_at": "2026-01-20T15:41:02.432087Z"
     },
     {
-      "id": 8046,
+      "id": 8550,
       "source": "widget-section9-done",
       "target": "condition-section9-done",
       "condition": null,
@@ -1361,11 +1371,11 @@
         "label": "",
         "order": 35
       },
-      "created_at": "2026-01-20T15:25:27.658494Z",
-      "updated_at": "2026-01-20T15:25:27.658494Z"
+      "created_at": "2026-01-20T15:41:02.432088Z",
+      "updated_at": "2026-01-20T15:41:02.432088Z"
     },
     {
-      "id": 8047,
+      "id": 8551,
       "source": "condition-section9-done",
       "target": "assistant-message-section10",
       "condition": "true",
@@ -1373,11 +1383,11 @@
         "label": "true",
         "order": 36
       },
-      "created_at": "2026-01-20T15:25:27.658495Z",
-      "updated_at": "2026-01-20T15:25:27.658496Z"
+      "created_at": "2026-01-20T15:41:02.432089Z",
+      "updated_at": "2026-01-20T15:41:02.432089Z"
     },
     {
-      "id": 8048,
+      "id": 8552,
       "source": "condition-section9-done",
       "target": "end-section9-abandon",
       "condition": null,
@@ -1385,11 +1395,11 @@
         "label": "",
         "order": 37
       },
-      "created_at": "2026-01-20T15:25:27.658496Z",
-      "updated_at": "2026-01-20T15:25:27.658497Z"
+      "created_at": "2026-01-20T15:41:02.432090Z",
+      "updated_at": "2026-01-20T15:41:02.432090Z"
     },
     {
-      "id": 8049,
+      "id": 8553,
       "source": "assistant-message-section10",
       "target": "widget-section10-done",
       "condition": null,
@@ -1397,11 +1407,11 @@
         "label": "",
         "order": 38
       },
-      "created_at": "2026-01-20T15:25:27.658497Z",
-      "updated_at": "2026-01-20T15:25:27.658498Z"
+      "created_at": "2026-01-20T15:41:02.432091Z",
+      "updated_at": "2026-01-20T15:41:02.432091Z"
     },
     {
-      "id": 8050,
+      "id": 8554,
       "source": "widget-section10-done",
       "target": "condition-section10-done",
       "condition": null,
@@ -1409,11 +1419,11 @@
         "label": "",
         "order": 39
       },
-      "created_at": "2026-01-20T15:25:27.658498Z",
-      "updated_at": "2026-01-20T15:25:27.658499Z"
+      "created_at": "2026-01-20T15:41:02.432092Z",
+      "updated_at": "2026-01-20T15:41:02.432092Z"
     },
     {
-      "id": 8051,
+      "id": 8555,
       "source": "condition-section10-done",
       "target": "assistant-message-section11",
       "condition": "true",
@@ -1421,11 +1431,11 @@
         "label": "true",
         "order": 40
       },
-      "created_at": "2026-01-20T15:25:27.658500Z",
-      "updated_at": "2026-01-20T15:25:27.658500Z"
+      "created_at": "2026-01-20T15:41:02.432093Z",
+      "updated_at": "2026-01-20T15:41:02.432094Z"
     },
     {
-      "id": 8052,
+      "id": 8556,
       "source": "condition-section10-done",
       "target": "end-section10-abandon",
       "condition": null,
@@ -1433,11 +1443,11 @@
         "label": "",
         "order": 41
       },
-      "created_at": "2026-01-20T15:25:27.658501Z",
-      "updated_at": "2026-01-20T15:25:27.658502Z"
+      "created_at": "2026-01-20T15:41:02.432094Z",
+      "updated_at": "2026-01-20T15:41:02.432095Z"
     },
     {
-      "id": 8053,
+      "id": 8557,
       "source": "assistant-message-section11",
       "target": "end-success",
       "condition": null,
@@ -1445,8 +1455,8 @@
         "label": "",
         "order": 42
       },
-      "created_at": "2026-01-20T15:25:27.658502Z",
-      "updated_at": "2026-01-20T15:25:27.658503Z"
+      "created_at": "2026-01-20T15:41:02.432095Z",
+      "updated_at": "2026-01-20T15:41:02.432096Z"
     }
   ]
 }
