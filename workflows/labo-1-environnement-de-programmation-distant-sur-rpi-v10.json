@@ -1,0 +1,1452 @@
+{
+  "nodes": [
+    {
+      "id": 7140,
+      "slug": "start",
+      "kind": "start",
+      "display_name": "Début",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 1,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "auto_start": true
+      },
+      "metadata": {
+        "order": 1
+      },
+      "created_at": "2026-01-20T15:25:27.649457Z",
+      "updated_at": "2026-01-20T15:25:27.649461Z"
+    },
+    {
+      "id": 7141,
+      "slug": "assistant-message-section1",
+      "kind": "assistant_message",
+      "display_name": "Section 1: 📐 Architecture du système",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 2,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "# Labo 1 — Environnement de programmation distant pour objets connectés\n  Guide pas à pas pour préparer un Raspberry Pi 5, le connecter au réseau et déployer les outils nécessaires.\n\n---\n\n## 📐 Architecture du système\n\n```mermaid\ngraph TD\n  subgraph Client[\"Poste de developpement\"]\n    Dev_PC[\"SSH + Navigateur\"]\n  end\n\n  subgraph Access[\"Acces securise\"]\n    CF_ZT[\"Cloudflare Zero Trust\"]\n    CF_Tunnel[\"cloudflared (Tunnel)\"]\n  end\n\n  subgraph Lab[\"Lab On-Prem (Raspberry Pi 5)\"]\n    SSHD[\"SSH Server\"]\n    subgraph DevTools[\"Outils Dev\"]\n      Git_CLI[\"Git CLI\"]\n      Node_Gemini[\"Node + Gemini\"]\n      Python_Env[\"Python + evdev\"]\n      Arduino_CLI[\"Arduino CLI\"]\n    end\n    subgraph Devices[\"Peripheriques\"]\n      Touchscreen[\"Ecran tactile\"]\n      LilyGO_A7670G[\"LilyGO A7670G\"]\n    end\n  end\n\n  subgraph Cloud[\"Services Cloud\"]\n    GitHub_SaaS[\"GitHub\"]\n    Gemini_API[\"Gemini API\"]\n  end\n\n  Dev_PC --> CF_ZT --> CF_Tunnel --> SSHD\n  SSHD --> DevTools\n\n  Git_CLI -.-> GitHub_SaaS\n  Node_Gemini -.-> Gemini_API\n\n  Python_Env --> Touchscreen\n  Arduino_CLI --> LilyGO_A7670G\n```\n\nCe diagramme illustre l'architecture complète du laboratoire:\n- **Zone Client (vert):** Votre poste de développement\n- **Zone d'accès sécurisé (bleu):** Cloudflare Zero Trust et tunnel\n- **Zone Lab (gris):** Raspberry Pi 5 avec tous les outils et périphériques IoT\n- **Zone Cloud (jaune):** Services externes (GitHub, Gemini API)\n\n---",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 2
+      },
+      "created_at": "2026-01-20T15:25:27.649462Z",
+      "updated_at": "2026-01-20T15:25:27.649463Z"
+    },
+    {
+      "id": 7142,
+      "slug": "widget-section1-done",
+      "kind": "widget",
+      "display_name": "Continuer: 📐 Architecture du système",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 3,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Section terminée, continuer"
+          }
+        }
+      },
+      "metadata": {
+        "order": 3
+      },
+      "created_at": "2026-01-20T15:25:27.649463Z",
+      "updated_at": "2026-01-20T15:25:27.649464Z"
+    },
+    {
+      "id": 7143,
+      "slug": "condition-section1-done",
+      "kind": "condition",
+      "display_name": "Section 1 terminée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 4,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 4
+      },
+      "created_at": "2026-01-20T15:25:27.649465Z",
+      "updated_at": "2026-01-20T15:25:27.649465Z"
+    },
+    {
+      "id": 7144,
+      "slug": "end-section1-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 1",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 5,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la section « 📐 Architecture du système » sera terminée!"
+      },
+      "metadata": {
+        "order": 5
+      },
+      "created_at": "2026-01-20T15:25:27.649466Z",
+      "updated_at": "2026-01-20T15:25:27.649467Z"
+    },
+    {
+      "id": 7145,
+      "slug": "assistant-message-section2",
+      "kind": "assistant_message",
+      "display_name": "Section 2: 🎒 Matériel requis",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 6,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 🎒 Matériel requis\n\n  - Clavier Raspberry Pi\n  - Raspberry Pi 5\n  - Écran tactile pour Raspberry Pi 5\n  - Alimentation USB-C pour Raspberry Pi 5\n  - Câble micro-USB pour clavier\n  - Carte micro SD 64 GB\n  - LilyGO A7670G avec antenne GPS et LTE\n  - Plaquette de prototypage (breadboard)\n  - LED rouge et LED verte\n  - Résistances appropriées (220Ω - 330Ω)\n  - Fils de connexion (jumper wires)\n  - Carte SIM\n  - Câble USB-A à USB-C\n\n### 📝 Pourquoi ce matériel?\n\n**Raspberry Pi 5 comme station de programmation distante:**\nLe Raspberry Pi 5 servira de **passerelle de développement accessible à distance**. Vous le configurerez une fois sur place avec un écran et un clavier, puis vous y accéderez via SSH depuis n'importe où grâce à Cloudflare Tunnel. Il hébergera tous vos outils de développement (Arduino CLI, Node.js, Git) et servira de pont pour programmer le LilyGO. Cette approche simule un environnement professionnel où les appareils IoT sont souvent déployés dans des lieux difficiles d'accès.\n\n**Écran tactile et clavier (configuration initiale uniquement):**\nCes périphériques sont essentiels pour la **configuration initiale** du Raspberry Pi: installation d'Ubuntu, configuration réseau, et premiers tests. Une fois le système configuré et accessible à distance, vous n'en aurez plus besoin au quotidien. L'écran tactile servira également pour l'exercice d'interface utilisateur en mode console (Section 5).\n\n**Carte micro SD 64 GB:**\nLe système d'exploitation, les outils de développement, et vos projets seront stockés sur cette carte. Une capacité de 64 GB offre amplement d'espace pour Ubuntu Server, Node.js, Arduino CLI, et tous vos programmes.\n\n**LilyGO A7670G:**\nCe module ESP32 avec modem cellulaire intégré (LTE Cat-1) et GPS représente votre **objet connecté cible**. Il sera programmé **via le Raspberry Pi à distance**. Dans un scénario réel, cet appareil pourrait être déployé sur un véhicule, dans un champ agricole, ou sur une station météo isolée. Vous le programmerez comme si vous mettiez à jour un appareil IoT sur le terrain, sans y être physiquement.\n\n**Carte SIM et antennes:**\nLa carte SIM permet au LilyGO de se connecter au réseau cellulaire pour envoyer des données sans dépendre du WiFi. Les antennes GPS et LTE sont essentielles pour la réception des signaux satellites et cellulaires. Cela simule des cas d'usage réels où les appareils IoT doivent communiquer depuis des zones sans infrastructure WiFi.\n\n**Câble USB-A vers USB-C:**\nCe câble connecte le Raspberry Pi au LilyGO pour deux fonctions critiques:\n1. **Téléversement du code** depuis le Raspberry Pi vers le LilyGO (via Arduino CLI)\n2. **Débogage série** pour lire les messages du LilyGO en temps réel\n\nLe flux complet est: **Votre PC → (SSH/Cloudflare) → Raspberry Pi → (USB) → LilyGO**",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 6
+      },
+      "created_at": "2026-01-20T15:25:27.649467Z",
+      "updated_at": "2026-01-20T15:25:27.649468Z"
+    },
+    {
+      "id": 7146,
+      "slug": "widget-section2-done",
+      "kind": "widget",
+      "display_name": "Continuer: 🎒 Matériel requis",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 7,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Section terminée, continuer"
+          }
+        }
+      },
+      "metadata": {
+        "order": 7
+      },
+      "created_at": "2026-01-20T15:25:27.649468Z",
+      "updated_at": "2026-01-20T15:25:27.649469Z"
+    },
+    {
+      "id": 7147,
+      "slug": "condition-section2-done",
+      "kind": "condition",
+      "display_name": "Section 2 terminée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 8,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 8
+      },
+      "created_at": "2026-01-20T15:25:27.649470Z",
+      "updated_at": "2026-01-20T15:25:27.649470Z"
+    },
+    {
+      "id": 7148,
+      "slug": "end-section2-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 2",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 9,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la section « 🎒 Matériel requis » sera terminée!"
+      },
+      "metadata": {
+        "order": 9
+      },
+      "created_at": "2026-01-20T15:25:27.649471Z",
+      "updated_at": "2026-01-20T15:25:27.649471Z"
+    },
+    {
+      "id": 7149,
+      "slug": "assistant-message-section3",
+      "kind": "assistant_message",
+      "display_name": "Section 3: 1. Installation Ubuntu Server",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 10,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 1. Installation Ubuntu Server\n> 🎯 **Objectif :** préparer la carte SD avec Ubuntu Server, SSH et l'écran tactile.\n\n### 💡 Concepts clés\n\n**Pourquoi Ubuntu Server et non Desktop?**\nUbuntu Server est une version allégée de Linux sans interface graphique (GUI). Pour un appareil IoT ou une station de développement distante, cela présente plusieurs avantages:\n- **Moins de ressources:** Plus de RAM et CPU disponibles pour vos applications\n- **Plus stable:** Moins de services en arrière-plan qui pourraient causer des problèmes\n- **Accès à distance naturel:** Conçu pour être administré via SSH (ligne de commande)\n- **Mise à jour automatique:** Parfait pour des appareils non surveillés\n\n**Importance de SSH dès le départ:**\nSSH (Secure Shell) est le protocole qui vous permettra de contrôler le Raspberry Pi à distance via la ligne de commande. En l'activant lors de l'installation, vous évitez de devoir brancher un écran et un clavier plus tard pour le configurer manuellement.\n\n**Configuration hostname, username, password:**\n- **Hostname:** Le nom du Raspberry Pi sur le réseau (ex: `rpi-francis`). Facilite l'identification si vous avez plusieurs appareils\n- **Username/Password:** Vos identifiants pour vous connecter. À noter: le mot de passe sera demandé lors des connexions SSH\n\n### Préparation de la carte SD\n1. Installer Ubuntu Server (dernière version LTS) sur le Raspberry Pi 5\n   - Utilisez **Raspberry Pi Imager** (outil officiel) disponible sur [raspberrypi.com](https://www.raspberrypi.com/software/)\n   - Sélectionnez: `Other general-purpose OS → Ubuntu → Ubuntu Server 24.04 LTS (64-bit)`\n\n2. Lors de la préparation de la carte micro-SD:\n   - **Activer SSH** ✓ (crucial pour l'accès à distance)\n   - **Configurer username, password et hostname** (ces identifiants seront utilisés pour toutes les connexions)\n\n3. Pendant la préparation de la carte, installer l'écran sur le Raspberry Pi 5 (suivre les instructions du fabricant attentivement)\n   - L'écran se connecte via les ports GPIO et DSI\n   - Assurez-vous que les connexions sont bien enfoncées\n\n4. Brancher le clavier sur le Raspberry Pi 5 (port USB)\n\n**🔍 Premier démarrage**\n\n  - Au premier boot, Ubuntu va finaliser l'installation (2-3 minutes)\n  - Vous verrez des messages de log défiler à l'écran\n  - Attendez l'invite de connexion: `ubuntu login:`\n  - Connectez-vous avec le username/password que vous avez configurés",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 10
+      },
+      "created_at": "2026-01-20T15:25:27.649472Z",
+      "updated_at": "2026-01-20T15:25:27.649472Z"
+    },
+    {
+      "id": 7150,
+      "slug": "widget-section3-done",
+      "kind": "widget",
+      "display_name": "Continuer: 1. Installation Ubuntu Server",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 11,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Section terminée, continuer"
+          }
+        }
+      },
+      "metadata": {
+        "order": 11
+      },
+      "created_at": "2026-01-20T15:25:27.649473Z",
+      "updated_at": "2026-01-20T15:25:27.649474Z"
+    },
+    {
+      "id": 7151,
+      "slug": "condition-section3-done",
+      "kind": "condition",
+      "display_name": "Section 3 terminée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 12,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 12
+      },
+      "created_at": "2026-01-20T15:25:27.649474Z",
+      "updated_at": "2026-01-20T15:25:27.649475Z"
+    },
+    {
+      "id": 7152,
+      "slug": "end-section3-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 3",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 13,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la section « 1. Installation Ubuntu Server » sera terminée!"
+      },
+      "metadata": {
+        "order": 13
+      },
+      "created_at": "2026-01-20T15:25:27.649476Z",
+      "updated_at": "2026-01-20T15:25:27.649476Z"
+    },
+    {
+      "id": 7153,
+      "slug": "assistant-message-section4",
+      "kind": "assistant_message",
+      "display_name": "Section 4: 2. Configuration réseau",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 14,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 2. Configuration réseau\n> 🌐 **Objectif :** disposer d'une connexion filaire fixe et d'un WiFi prêt pour le réseau du Cégep.\n\n### 💡 Concepts clés\n\n**Netplan : le gestionnaire réseau d'Ubuntu**\nUbuntu utilise **Netplan**, un outil de configuration réseau basé sur des fichiers YAML. Au lieu de modifier plusieurs fichiers de configuration disparates, vous créez un seul fichier `.yaml` décrivant votre réseau. Netplan se charge ensuite de configurer les services réseau appropriés (`networkd` ou `NetworkManager`).\n\n**IP statique vs DHCP :**\n- **DHCP (Dynamic):** Le routeur attribue automatiquement une adresse IP qui peut changer à chaque redémarrage\n- **IP statique (Static):** Vous choisissez une adresse IP fixe qui ne change jamais\n\nPour un appareil IoT ou une station de développement, une **IP statique** est préférable car:\n- Vous savez toujours comment le joindre sur le réseau local\n- Simplifie la configuration SSH et des règles de pare-feu\n- Essentiel si vous voulez exposer des services (serveur web, MQTT, etc.)\n\n**Pourquoi configurer DEUX interfaces réseau?**\n1. **Ethernet (eth0):** Connexion filaire stable avec IP statique → pour votre développement à la maison\n2. **WiFi (wlan0):** Connexion sans fil au réseau du Cégep → pour travailler en classe\n\nCette double configuration vous permet de travailler dans les deux environnements sans reconfiguration.\n\n**WiFi WPA-EAP (Enterprise) :**\nContrairement au WiFi domestique (WPA2-PSK avec mot de passe simple), les réseaux d'entreprise et institutionnels utilisent **WPA-EAP** (Extensible Authentication Protocol):\n- Authentification par **username + password** (pas juste un mot de passe partagé)\n- Protocole PEAP (Protected EAP) avec MS-CHAPv2\n- Chaque utilisateur a ses propres identifiants\n- Plus sécurisé car on peut révoquer l'accès d'un utilisateur individuel\n\n### 2.1 Adresse IP statique (Ethernet)\n\n#### Créer/éditer le fichier Netplan\n```bash\nsudo nano /etc/netplan/01-ethernet.yaml\n```\n\n#### Configuration\n```yaml\nnetwork:\n  version: 2\n  renderer: networkd\n  ethernets:\n    eth0:\n      dhcp4: false\n      addresses:\n        - 192.168.1.9/24\n      gateway4: 192.168.1.1\n      nameservers:\n        addresses:\n          - 1.1.1.1\n          - 8.8.8.8\n```\n\n**📖 Explication des paramètres (connexion directe PC ↔ RPi)**\n\n  - `dhcp4: false` → Désactive DHCP, on configure une IP statique\n  - `192.168.1.9` → IP statique du Raspberry Pi\n  - `/24` → Masque 255.255.255.0 (notation CIDR)\n  - `gateway4: 192.168.1.1` → Passerelle (peut être fictive dans ce contexte)\n  - `nameservers` → Serveurs DNS (1.1.1.1 = Cloudflare, 8.8.8.8 = Google)\n\n**🔌 Configuration en connexion directe**\nVous allez connecter un câble Ethernet **directement** entre votre PC et le Raspberry Pi, sans routeur intermédiaire. Les deux appareils doivent avoir des IPs statiques sur le **même sous-réseau**:\n\n  - **Raspberry Pi:** 192.168.1.9/24\n  - **Votre PC:** 192.168.1.10/24 (à configurer sur votre PC)\n\nLes deux appareils peuvent communiquer directement sans passer par Internet. Le SSH fonctionnera entre eux même sans accès Internet. La gateway et les DNS ne sont utiles que si vous branchez ensuite un câble au routeur pour l'accès Internet.\n\n#### Appliquer la configuration\n```bash\nsudo netplan apply\n```\n\nOu avec debug:\n```bash\nsudo netplan --debug apply\n```\n\n#### Vérification\n```bash\nip a\n```\nVous devriez voir: `inet 192.168.1.9/24`\n\n**Test Internet:**\n```bash\nping 1.1.1.1\nping google.com\n```\n\n### 2.2 Connexion SSH locale\n1. Brancher le câble réseau entre votre RPi et votre PC\n2. Se connecter en SSH au Raspberry Pi\n\n### 2.3 Configuration WiFi WPA-EAP (Réseau Cégep)\n\n#### Créer le fichier de configuration WiFi\n```bash\nsudo nano /etc/netplan/01-wifi.yaml\n```\n```yaml\nnetwork:\n  version: 2\n  renderer: networkd\n  wifis:\n    wlan0:\n      dhcp4: true\n      access-points:\n        \"MonSSID\":\n          mode: infrastructure\n          auth:\n            key-management: wpa-eap\n            eap-method: peap\n            identity: \"mon_user\"\n            password: \"mon_password\"\n            phase2-auth: mschapv2\n```\n\n**📖 Explication des paramètres WiFi WPA-EAP**\n\n  - `dhcp4: true` → Le réseau du Cégep attribue automatiquement l'IP via DHCP\n  - `\"MonSSID\"` → Remplacez par le nom du réseau WiFi du Cégep\n  - `mode: infrastructure` → Mode standard pour se connecter à un point d'accès WiFi\n  - `key-management: wpa-eap` → Authentification entreprise (pas un simple mot de passe)\n  - `eap-method: peap` → Protected EAP, tunnel chiffré pour l'authentification\n  - `identity` → Votre nom d'utilisateur du Cégep (ex: numéro de DA)\n  - `password` → Votre mot de passe du Cégep\n  - `phase2-auth: mschapv2` → Méthode d'authentification interne (MS-CHAP version 2)\n\n**🔐 Sécurité**\nAttention: vos identifiants sont stockés en texte clair dans ce fichier. Assurez-vous que seul root peut le lire :\n```sudo chmod 600 /etc/netplan/01-wifi.yaml```\n\n#### Appliquer la configuration WiFi\n```bash\nsudo netplan generate\nsudo netplan apply\n```\n\n#### Debug si la connexion échoue\n```bash\nsudo netplan --debug apply\nsudo journalctl -u systemd-networkd -f\n```\n\n#### Test de connectivité\n```bash\nping www.google.ca\n```",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 14
+      },
+      "created_at": "2026-01-20T15:25:27.649477Z",
+      "updated_at": "2026-01-20T15:25:27.649477Z"
+    },
+    {
+      "id": 7154,
+      "slug": "widget-section4-done",
+      "kind": "widget",
+      "display_name": "Continuer: 2. Configuration réseau",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 15,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Section terminée, continuer"
+          }
+        }
+      },
+      "metadata": {
+        "order": 15
+      },
+      "created_at": "2026-01-20T15:25:27.649478Z",
+      "updated_at": "2026-01-20T15:25:27.649479Z"
+    },
+    {
+      "id": 7155,
+      "slug": "condition-section4-done",
+      "kind": "condition",
+      "display_name": "Section 4 terminée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 16,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 16
+      },
+      "created_at": "2026-01-20T15:25:27.649479Z",
+      "updated_at": "2026-01-20T15:25:27.649480Z"
+    },
+    {
+      "id": 7156,
+      "slug": "end-section4-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 4",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 17,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la section « 2. Configuration réseau » sera terminée!"
+      },
+      "metadata": {
+        "order": 17
+      },
+      "created_at": "2026-01-20T15:25:27.649480Z",
+      "updated_at": "2026-01-20T15:25:27.649481Z"
+    },
+    {
+      "id": 7157,
+      "slug": "assistant-message-section5",
+      "kind": "assistant_message",
+      "display_name": "Section 5: 3. Connexion à distance via Cloudflare Tunnel",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 18,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 3. Connexion à distance via Cloudflare Tunnel\n> 🔒 **Objectif :** sécuriser l'accès SSH via un tunnel Cloudflare et Zero Trust.\n\n### 💡 Concepts clés\n\n**Pourquoi un tunnel Cloudflare au lieu de l'exposition de ports?**\n\nDans une configuration classique, pour accéder à votre Raspberry Pi depuis l'extérieur, vous devriez:\n1. **Ouvrir le port 22 (SSH)** sur votre routeur (port forwarding)\n2. Connaître votre **IP publique** (qui change régulièrement chez la plupart des fournisseurs)\n3. Exposer directement votre appareil à Internet\n\n**Problèmes de cette approche :**\n- 🚨 Exposition directe aux attaques (bots qui scannent le port 22 en continu)\n- 🔄 IP dynamique qui change sans prévenir\n- 🔧 Configuration complexe du routeur et pare-feu\n- 🏢 Impossible si vous êtes derrière un réseau d'entreprise/Cégep (NAT, pare-feu strict)\n\n**Solution: Cloudflare Tunnel**\n\nCloudflare Tunnel crée une **connexion sortante sécurisée** de votre Raspberry Pi vers les serveurs de Cloudflare. Vous n'avez **aucun port à ouvrir**!\n\n**Architecture du tunnel:**\n```\nVotre PC → Cloudflare Edge → Tunnel chiffré → Raspberry Pi\n```\n\n**Flux de connexion:**\n1. Votre Raspberry Pi établit une connexion **sortante** vers Cloudflare (via `cloudflared`)\n2. Cette connexion reste ouverte en permanence (websocket persistant)\n3. Quand vous voulez vous connecter, vous passez par Cloudflare qui route vers le tunnel\n4. Cloudflare **authentifie** d'abord votre identité (Zero Trust)\n5. Une fois autorisé, vos commandes SSH passent par le tunnel chiffré\n\n**Avantages:**\n- ✅ Aucun port ouvert sur votre routeur → pas de surface d'attaque\n- ✅ Fonctionne même derrière un NAT strict ou pare-feu d'entreprise\n- ✅ Pas besoin de connaître votre IP publique\n- ✅ Authentification robuste via Zero Trust (email, 2FA, etc.)\n- ✅ Logs d'accès détaillés\n- ✅ Révocation d'accès en un clic\n\n**Qu'est-ce que Zero Trust?**\n\nLe modèle **Zero Trust** (confiance zéro) repose sur le principe: \"Ne jamais faire confiance, toujours vérifier\". Même si quelqu'un connaît votre URL (`rpi.edxo.ca`), ils ne peuvent pas se connecter sans:\n1. Être authentifié (email/2FA)\n2. Être dans la liste des utilisateurs autorisés (policies)\n3. Passer les vérifications de sécurité de Cloudflare\n\nC'est comme avoir un **garde de sécurité virtuel** qui vérifie l'identité de chaque visiteur avant de les laisser passer.\n\n### 3.1 Prérequis\n1. Se créer un compte gratuit sur Cloudflare\n2. Acheter un nom de domaine public\n\n### 3.2 Installation et configuration sur le Raspberry Pi\n\n#### Authentification Cloudflare\n```bash\ncloudflared login\n```\n\n#### Créer un tunnel nommé\n```bash\ncloudflared tunnel create rpi-ssh\n```\n\nLa commande affichera:\n- Un **UUID** (ex: `12345678-abcd-...`) - **gardez-le précieusement**\n- Créera un fichier JSON de credentials dans: `/home/fpoisson/.cloudflared/.json`\n\n#### Créer le fichier de configuration\n```bash\nnano /home/fpoisson/.cloudflared/config.yml\n```\n\n**Contenu:**\n```yaml\ntunnel: \ncredentials-file: /home/fpoisson/.cloudflared/.json\n\ningress:\n  - hostname: rpi.edxo.ca\n    service: ssh://localhost:22\n  - service: http_status:404\n```\n\n**📖 Explication de la configuration**\n\n  - `tunnel:` → L'UUID unique de votre tunnel (généré par `cloudflared tunnel create`)\n  - `credentials-file:` → Fichier JSON contenant les clés d'authentification du tunnel\n  - `ingress:` → Règles de routage (où envoyer le trafic qui arrive au tunnel)\n  - `hostname: rpi.edxo.ca` → Quand quelqu'un accède à cette URL...\n  - `service: ssh://localhost:22` → ...redirige vers le port SSH local (22)\n  - `service: http_status:404` → Règle par défaut (obligatoire) : retourne 404 pour tout autre trafic\n\n**⚙️ À personnaliser**\n\n  - `&lt;TON-UUID-ICI&gt;` → Remplacez par l'UUID affiché lors de la création du tunnel\n  - `rpi.edxo.ca` → Remplacez par votre sous-domaine (ex: rpi.votredomaine.com)\n  - `/home/fpoisson/` → Adaptez si votre username est différent\n\n#### Lier le tunnel au DNS\n```bash\ncloudflared tunnel route dns rpi-ssh rpi.edxo.ca\n```\n- `rpi-ssh` → nom du tunnel\n- `rpi.edxo.ca` → hostname externe\n\nCela crée automatiquement l'entrée DNS dans votre compte Cloudflare.\n\n#### Tester le tunnel manuellement\n```bash\ncloudflared tunnel run rpi-ssh\n```\nLaissez cette commande tourner (utilisez `tmux` ou `screen` si nécessaire).\n\nSi tout fonctionne, vous verrez des logs: `\"Connection established\"` / `\"Proxying tunnel\"`\n\n#### Installer le service (démarrage automatique)\nUne fois le test réussi:\n```bash\nsudo cloudflared service install\n```\n\n### 3.3 Configuration Cloudflare Zero Trust (Dashboard web)\n1. Aller sur le dashboard Cloudflare\n2. Accéder à **Zero Trust** (ou \"Cloudflare One\")\n3. Naviguer vers: **Access → Applications → Add an application**\n\n**Configuration de l'application:**\n- **Type:** Self-hosted\n- **Application name:** rpi-ssh (ou autre nom)\n- **Domain:** rpi.edxo.ca\n- **Session duration:** 24h (ou selon préférence)\n\n**Configuration des Policies:**\n- **Action:** Allow\n- **Include:** Emails → Votre email Cloudflare (ex: francis.poisson2@...)\n- Enregistrer\n\n**Résultat:** Seul un utilisateur autorisé (vous) pourra utiliser `rpi.edxo.ca` en SSH via Access.\n\n### 3.4 Connexion SSH via Cloudflare Access\n\n#### Configuration SSH locale (sur votre PC)\nÉditer `~/.ssh/config`:\n```bash\nnano ~/.ssh/config\n```\n\n**Ajouter:**\n```\nHost rpi\n  HostName rpi.edxo.ca\n  User fpoisson\n  ProxyCommand cloudflared access ssh --hostname %h\n```\n\n#### Se connecter\n```bash\nssh rpi\n```\n\nVous verrez soit:\n- `fpoisson@rpi's password:` (authentification par mot de passe)\n- `Authenticated with public key...` (si clé SSH configurée)",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 18
+      },
+      "created_at": "2026-01-20T15:25:27.649481Z",
+      "updated_at": "2026-01-20T15:25:27.649482Z"
+    },
+    {
+      "id": 7158,
+      "slug": "widget-section5-done",
+      "kind": "widget",
+      "display_name": "Continuer: 3. Connexion à distance via Cloudflare Tunnel",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 19,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Section terminée, continuer"
+          }
+        }
+      },
+      "metadata": {
+        "order": 19
+      },
+      "created_at": "2026-01-20T15:25:27.649483Z",
+      "updated_at": "2026-01-20T15:25:27.649483Z"
+    },
+    {
+      "id": 7159,
+      "slug": "condition-section5-done",
+      "kind": "condition",
+      "display_name": "Section 5 terminée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 20,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 20
+      },
+      "created_at": "2026-01-20T15:25:27.649484Z",
+      "updated_at": "2026-01-20T15:25:27.649484Z"
+    },
+    {
+      "id": 7160,
+      "slug": "end-section5-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 5",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 21,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la section « 3. Connexion à distance via Cloudflare Tunnel » sera terminée!"
+      },
+      "metadata": {
+        "order": 21
+      },
+      "created_at": "2026-01-20T15:25:27.649485Z",
+      "updated_at": "2026-01-20T15:25:27.649486Z"
+    },
+    {
+      "id": 7161,
+      "slug": "assistant-message-section6",
+      "kind": "assistant_message",
+      "display_name": "Section 6: 4. Configuration Git",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 22,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 4. Configuration Git\n> 🔧 **Objectif :** configurer Git et GitHub pour collaborer sur le projet du cours.\n\n### 💡 Concepts clés\n\n**Pourquoi Git et GitHub pour l'IoT?**\n\nGit est un système de **contrôle de version** qui sauvegarde l'historique complet de votre code. Pour des projets IoT sur Raspberry Pi, c'est essentiel car vous devez synchroniser votre code entre GitHub et votre appareil distant, et pouvoir revenir à une version stable en cas de problème.\n\n**Personal Access Token (PAT):**\nGitHub n'accepte plus les mots de passe simples. Les tokens sont plus sécurisés car ils peuvent être limités en permissions et révoqués sans changer votre mot de passe principal.\n\n### 4.1 Création du compte GitHub et token d'accès\n\n#### Créer un compte GitHub\n1. Si vous n'avez pas de compte, allez sur [github.com](https://github.com) et créez-en un\n2. Vérifiez votre adresse email\n\n#### Créer un Personal Access Token (Classic)\n1. Connectez-vous à GitHub\n2. Allez dans **Settings** (en haut à droite, cliquez sur votre avatar)\n3. Dans le menu de gauche, en bas, cliquez sur **Developer settings**\n4. Cliquez sur **Personal access tokens** → **Tokens (classic)**\n5. Cliquez sur **Generate new token** → **Generate new token (classic)**\n6. Configurez le token:\n   - **Note:** `Raspberry Pi - 243-4J5-LI`\n   - **Expiration:** 90 days (ou selon préférence)\n   - **Scopes:** Cochez au minimum `repo` (accès complet aux dépôts privés et publics)\n7. Cliquez sur **Generate token**\n8. **⚠️ IMPORTANT:** Copiez le token immédiatement, vous ne pourrez plus le voir!\n\n### 4.2 Configuration Git sur le Raspberry Pi\n\n#### Configuration de l'identité\n```bash\ngit config --global user.name \"Votre Nom\"\ngit config --global user.email \"votre.email@example.com\"\n```\n\n#### Configurer le credential store\nPour éviter de retaper le token à chaque fois:\n```bash\ngit config --global credential.helper store\n```\n\n**⚠️ Attention sécurité**\n\n  - Le mode `store` enregistre le token en **texte clair** dans `~/.git-credentials`\n  - Sur un système partagé, préférez `cache` : `git config --global credential.helper cache`\n  - Pour un timeout de 1h : `git config --global credential.helper 'cache --timeout=3600'`\n\n### 4.3 Cloner le dépôt du cours\n\n#### Cloner le repository\n```bash\ncd ~\ngit clone https://github.com/fpoisson2/243-4J5-LI.git\ncd 243-4J5-LI\n```\n\nLors du premier clone, Git vous demandera:\n- **Username:** Votre nom d'utilisateur GitHub\n- **Password:** Collez votre **token** (pas votre mot de passe!)\n\nLe credential helper sauvegarde ces informations pour les prochaines fois.\n\n### 4.4 Travailler avec les branches\n\n#### 💡 Qu'est-ce qu'une branche?\n\n**La branche `main` (principal/tronc):**\nLa branche `main` (anciennement appelée `master`) est la branche **principale** du projet. Elle contient la version \"officielle\" et stable du code. Dans un projet professionnel, c'est souvent le code déployé en production. Pour ce cours, `main` contient la version de base du projet partagée par tous les étudiants.\n\n**Votre branche personnelle:**\nPour ne pas perturber `main` et pour que chaque étudiant travaille indépendamment, vous créez votre **propre branche** à partir de `main`. C'est comme une copie isolée où vous pouvez faire tous les changements que vous voulez sans affecter les autres.\n\n**Analogie:** Imaginez `main` comme un livre de référence à la bibliothèque. Vous ne pouvez pas écrire dedans. Votre branche est une photocopie personnelle sur laquelle vous pouvez annoter, modifier, expérimenter. Quand votre travail est prêt, vous pouvez proposer de fusionner vos modifications dans le livre de référence (via une Pull Request).\n\n#### Créer votre branche personnelle\n```bash\ngit checkout -b prenom-nom/labo1\n```\n\n**Explication:**\n- `git checkout -b` → Créer une nouvelle branche ET basculer dessus immédiatement\n- `prenom-nom/labo1` → Le nom de votre branche (convention: `prenom-nom/description`)\n\nExemple: `git checkout -b francis-poisson/labo1`\n\n#### Vérifier votre branche actuelle\n```bash\ngit branch\n```\n\n**Résultat:**\n```\n  main\n* prenom-nom/labo1\n```\nL'astérisque `*` indique la branche active (celle sur laquelle vous travaillez actuellement).\n\n#### Faire des modifications et les sauvegarder\n\n**Vérifier l'état:**\n```bash\ngit status\n```\n\n**Ce que cette commande affiche:**\n- Fichiers modifiés (en rouge) → pas encore ajoutés au prochain commit\n- Fichiers ajoutés (en vert) → seront inclus dans le prochain commit\n- Fichiers non suivis (untracked) → nouveaux fichiers que Git ne surveille pas encore\n\n**Ajouter vos modifications:**\n```bash\ngit add .\n```\n**Explication:** Le `.` signifie \"tous les fichiers modifiés dans le dossier actuel et sous-dossiers\"\n\nOu pour ajouter un fichier spécifique:\n```bash\ngit add chemin/vers/fichier.py\n```\n\n**Créer un commit:**\n```bash\ngit commit -m \"Description de vos changements\"\n```\n\n**Explication:**\n- `commit` → Crée un \"point de sauvegarde\" dans l'historique Git\n- `-m` → Le message qui décrit ce que vous avez fait\n- Le message doit être court et descriptif (verbe à l'impératif ou infinitif)\n\nExemple: `git commit -m \"Ajout de l'interface tactile avec trois boutons\"`\n\n**Pousser vers GitHub:**\n```bash\ngit push origin prenom-nom/labo1\n```\n\n**Explication:**\n- `push` → Envoyer vos commits locaux vers GitHub\n- `origin` → Le nom du dépôt distant (par défaut, c'est GitHub)\n- `prenom-nom/labo1` → La branche distante vers laquelle pousser\n\nSi c'est le **premier push** de cette branche:\n```bash\ngit push -u origin prenom-nom/labo1\n```\n\n**Explication:** Le flag `-u` (ou `--set-upstream`) établit le lien entre votre branche locale et la branche distante. Après ce premier push, vous pourrez simplement faire `git push` sans préciser le nom de la branche.\n\n### 4.5 Synchroniser avec le dépôt principal\n\n#### 💡 Pourquoi synchroniser?\n\nPendant que vous travaillez sur votre branche, le professeur ou d'autres étudiants peuvent avoir mis à jour la branche `main` (nouveaux exercices, corrections de bugs, fichiers supplémentaires). Il est important de **récupérer ces changements** régulièrement pour:\n- Avoir accès aux dernières ressources\n- Éviter les conflits massifs lors de la fusion finale\n- Vous assurer que votre code fonctionne avec la version la plus récente\n\n#### Récupérer les dernières modifications\n```bash\ngit fetch origin\n```\n\n**Explication:**\n- `fetch` → Télécharge les informations sur les nouvelles modifications depuis GitHub\n- N'applique AUCUN changement à vos fichiers locaux\n- C'est une opération \"sûre\" qui sert juste à voir ce qui a changé sur GitHub\n\n#### Mettre à jour votre branche locale depuis main\n```bash\ngit checkout main\ngit pull origin main\n```\n\n**Explication:**\n- `git checkout main` → Bascule sur votre branche locale `main`\n- `git pull origin main` → Télécharge ET applique les modifications de `main` depuis GitHub\n- Équivalent à : `git fetch` + `git merge origin/main`\n\n#### Fusionner main dans votre branche\n```bash\ngit checkout prenom-nom/labo1\ngit merge main\n```\n\n**Explication:**\n- `git checkout prenom-nom/labo1` → Retourne sur votre branche de travail\n- `git merge main` → Fusionne les modifications de `main` dans votre branche\n\n**Ce qui se passe:**\n- Git essaie de combiner automatiquement les modifications\n- Si aucun conflit: fusion automatique réussie ✅\n- Si conflit: Git vous demande de choisir quelle version garder (vous devrez éditer les fichiers marqués en conflit)\n\n**Workflow complet de synchronisation:**\n```bash\ngit fetch origin              # 1. Voir ce qui a changé\ngit checkout main             # 2. Aller sur main\ngit pull origin main          # 3. Mettre à jour main localement\ngit checkout votre-branche    # 4. Retourner sur votre branche\ngit merge main                # 5. Intégrer les changements de main\n```\n\n**💡 Bonnes pratiques**\n\n  - Faites des commits fréquents avec des messages clairs\n  - Synchronisez régulièrement avec `main` pour éviter les conflits\n  - Nommez vos branches de façon descriptive: `prenom-nom/feature-description`\n  - Ne travaillez jamais directement sur `main`",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 22
+      },
+      "created_at": "2026-01-20T15:25:27.649486Z",
+      "updated_at": "2026-01-20T15:25:27.649487Z"
+    },
+    {
+      "id": 7162,
+      "slug": "widget-section6-done",
+      "kind": "widget",
+      "display_name": "Continuer: 4. Configuration Git",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 23,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Section terminée, continuer"
+          }
+        }
+      },
+      "metadata": {
+        "order": 23
+      },
+      "created_at": "2026-01-20T15:25:27.649487Z",
+      "updated_at": "2026-01-20T15:25:27.649488Z"
+    },
+    {
+      "id": 7163,
+      "slug": "condition-section6-done",
+      "kind": "condition",
+      "display_name": "Section 6 terminée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 24,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 24
+      },
+      "created_at": "2026-01-20T15:25:27.649489Z",
+      "updated_at": "2026-01-20T15:25:27.649489Z"
+    },
+    {
+      "id": 7164,
+      "slug": "end-section6-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 6",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 25,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la section « 4. Configuration Git » sera terminée!"
+      },
+      "metadata": {
+        "order": 25
+      },
+      "created_at": "2026-01-20T15:25:27.649490Z",
+      "updated_at": "2026-01-20T15:25:27.649490Z"
+    },
+    {
+      "id": 7165,
+      "slug": "assistant-message-section7",
+      "kind": "assistant_message",
+      "display_name": "Section 7: 5. Interface tactile distante en mode console",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 26,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 5. Interface tactile distante en mode console\n> 📱 **Objectif :** afficher un tableau de bord tactile minimal directement sur la console du Raspberry Pi (TTY1) via `curses` et `evdev`.\n\n### 💡 Concepts clés\n\n**Interface tactile SANS serveur X (mode texte uniquement):**\n\nNormalement, pour avoir une interface graphique (fenêtres, boutons, images), vous avez besoin d'un **serveur X** (X11) ou **Wayland**. Mais sur Ubuntu Server, il n'y a pas d'environnement graphique installé, seulement une **console texte** (TTY).\n\nCe projet montre comment créer une interface **interactive et tactile** directement dans la console, sans installer de serveur graphique. C'est parfait pour:\n- Des appareils embarqués avec ressources limitées\n- Des tableaux de bord minimalistes sur écrans tactiles\n- Des interfaces de contrôle rapides sans overhead graphique\n\n**Bibliothèques utilisées:**\n\n1. **`curses`** (interface texte stylisée):\n   - Permet de positionner du texte n'importe où sur l'écran\n   - Ajouter des couleurs, des bordures, des zones interactives\n   - Créer des \"fenêtres\" en mode texte\n   - C'est la bibliothèque derrière beaucoup d'outils CLI interactifs (nano, htop, etc.)\n\n2. **`evdev`** (événements tactiles):\n   - Lit directement les événements du périphérique tactile (`/dev/input/eventX`)\n   - Capture les coordonnées X/Y des touchers d'écran\n   - Fonctionne au niveau du kernel Linux (bas niveau)\n   - Pas besoin de X11 ou Wayland\n\n**TTY1 vs votre session SSH:**\n\nQuand vous vous connectez en SSH, vous utilisez un terminal virtuel (pseudo-terminal). L'écran physique du Raspberry Pi affiche **TTY1**, la console locale. La commande dans cette section lance l'interface sur TTY1, donc vous la verrez sur l'écran tactile du Raspberry Pi, pas dans votre session SSH.\n\n**Pourquoi `sudo` et `setsid`?**\n\n- `sudo`: Nécessaire pour accéder aux périphériques d'entrée (`/dev/input/`) et à TTY1\n- `chvt 1`: Bascule l'affichage sur la console locale (TTY1)\n- `setsid`: Démarre le script dans une nouvelle session pour rediriger correctement STDIN/STDOUT/STDERR vers l'écran physique\n\n### 5.1 Code prêt à l'emploi\n- Le script se trouve dans `~/243-4J5-LI/labo1/code/touch_ui.py`.\n- Il affiche trois boutons (STATUS, LOGS, QUIT) et réagit aux taps du panneau tactile sans serveur X.\n- `q` ou le bouton **QUIT** ferment l'application.\n- **Architecture:** Le script utilise `curses` pour dessiner l'interface et `evdev` pour détecter les touchés et mapper les coordonnées aux boutons.\n\n### 5.2 Dépendances requises\n```bash\nsudo apt update\nsudo apt install -y python3 python3-evdev\n```\n\n### 5.3 Lancer l'UI sur l'écran distant\nExécuter depuis une session SSH (le Pi doit avoir l'écran tactile branché) :\n```bash\nsudo chvt 1\nsudo setsid sh -c 'exec /dev/tty1 2>&1 python3 /home/fpoisson/243-4J5-LI/labo1/code/touch_ui.py'\n\nPour tuer le processus Python distant si l'application ne répond pas:\n```bash\nsudo pkill python3\n```\n```\n- `chvt 1` bascule l'affichage sur la console locale (TTY1).\n- `setsid` démarre le script dans un nouveau groupe de sessions et redirige STDIN/STDOUT/STDERR vers l'écran, ce qui permet de voir et toucher l'interface à distance.\n- Une fois le programme terminé, libérez l'écran local si nécessaire avec `sudo fuser -v /dev/tty1`.",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 26
+      },
+      "created_at": "2026-01-20T15:25:27.649491Z",
+      "updated_at": "2026-01-20T15:25:27.649492Z"
+    },
+    {
+      "id": 7166,
+      "slug": "widget-section7-done",
+      "kind": "widget",
+      "display_name": "Continuer: 5. Interface tactile distante en mode console",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 27,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Section terminée, continuer"
+          }
+        }
+      },
+      "metadata": {
+        "order": 27
+      },
+      "created_at": "2026-01-20T15:25:27.649493Z",
+      "updated_at": "2026-01-20T15:25:27.649493Z"
+    },
+    {
+      "id": 7167,
+      "slug": "condition-section7-done",
+      "kind": "condition",
+      "display_name": "Section 7 terminée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 28,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 28
+      },
+      "created_at": "2026-01-20T15:25:27.649494Z",
+      "updated_at": "2026-01-20T15:25:27.649494Z"
+    },
+    {
+      "id": 7168,
+      "slug": "end-section7-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 7",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 29,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la section « 5. Interface tactile distante en mode console » sera terminée!"
+      },
+      "metadata": {
+        "order": 29
+      },
+      "created_at": "2026-01-20T15:25:27.649495Z",
+      "updated_at": "2026-01-20T15:25:27.649495Z"
+    },
+    {
+      "id": 7169,
+      "slug": "assistant-message-section8",
+      "kind": "assistant_message",
+      "display_name": "Section 8: 6. Installation Node.js et outils CLI",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 30,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 6. Installation Node.js et outils CLI\n> 🛠️ **Objectif :** installer Node.js 22 avec NVM puis la Gemini CLI.\n\n### 💡 Concepts clés\n\n**Pourquoi Node.js dans un projet IoT?**\n\nNode.js est un runtime JavaScript côté serveur. Dans le contexte IoT, il est très populaire car:\n- **npm** (Node Package Manager): accès à des milliers de bibliothèques pour MQTT, HTTP, capteurs, etc.\n- **Asynchrone par nature**: parfait pour gérer plusieurs connexions simultanées (capteurs, API, etc.)\n- **Léger**: peut tourner sur des appareils à ressources limitées comme le Raspberry Pi\n- **Écosystème riche**: outils CLI, frameworks web, bibliothèques de communication\n\n**NVM (Node Version Manager) : Pourquoi ne pas installer Node directement?**\n\nSans NVM, vous installeriez Node.js via `apt install nodejs`, mais:\n- ❌ Version souvent obsolète (Ubuntu LTS a des versions anciennes de Node)\n- ❌ Nécessite `sudo` pour installer des packages globaux\n- ❌ Difficile de changer de version de Node\n\nAvec NVM:\n- ✅ Installez N'IMPORTE quelle version de Node (22, 20, 18, etc.)\n- ✅ Basculez entre versions facilement (`nvm use 22`, `nvm use 20`)\n- ✅ Pas besoin de `sudo` → tout est dans votre dossier utilisateur (`~/.nvm`)\n- ✅ Isolation: chaque projet peut utiliser une version différente de Node\n\n**Gemini CLI : Assistant IA pour le développement**\n\nGemini CLI est un outil développé par Google qui vous donne accès à l'IA Gemini directement depuis la ligne de commande. Vous pouvez:\n- Poser des questions sur votre code\n- Demander de générer du code\n- Obtenir de l'aide pour déboguer\n- Améliorer ou documenter votre code existant\n\n**IMPORTANT:** Gemini CLI peut aussi **exécuter des commandes système pour vous** en mode CLI:\n- 🔧 **Compiler et téléverser du code Arduino** vers l'ESP32 (via `arduino-cli compile` et `arduino-cli upload`)\n- 🔌 **Accéder au port série** de l'ESP32 pour lire les logs et déboguer (`arduino-cli monitor`)\n- 📦 **Exécuter des commandes Git** (add, commit, push, pull, etc.)\n- 🐚 **Lancer n'importe quelle commande Bash** sur le Raspberry Pi\n\n**Exemple de workflow avec Gemini CLI:**\n```\nVous: \"Ajoute un bouton REBOOT à l'interface tactile et teste-le\"\nGemini: [Modifie le code Python]\n        [Exécute: sudo chvt 1 && sudo setsid sh -c '...']\n        [Affiche le résultat]\n\nVous: \"Compile et téléverse ce code sur l'ESP32\"\nGemini: [Exécute: arduino-cli compile --fqbn esp32:esp32:esp32 ...]\n        [Exécute: arduino-cli upload -p /dev/ttyUSB0 ...]\n        [Affiche les logs de compilation]\n```\n\nC'est particulièrement puissant quand vous travaillez sur le Raspberry Pi à distance sans interface graphique : Gemini devient votre assistant qui comprend le contexte ET peut agir sur le système.\n\n### 6.1 Installation de base\n```bash\nsudo apt install npm\n```\n\n### 6.2 Configuration NVM (Node Version Manager)\n\n#### Activer NVM dans la session\n```bash\nexport NVM_DIR=\"$HOME/.nvm\"\n[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"\n[ -s \"$NVM_DIR/bash_completion\" ] && . \"$NVM_DIR/bash_completion\"\n```\n\n#### Vérifier NVM\n```bash\ncommand -v nvm\n```\n\nDevrait répondre: `nvm` ou `/home/fpoisson/.nvm/nvm.sh`\n\n#### Installer Node.js 22\n```bash\nnvm install 22\nnvm use 22\n```\n\n#### Vérification\n```bash\nnode -v    # Devrait afficher v22.x.x\nnpm -v\n```\n\n**Important:** Avec NVM, pas besoin de `sudo` pour `node`/`npm`. Tout est dans votre `$HOME`.\n\n### 6.3 Installation Gemini CLI\n\n#### Installation\n```bash\nnpm install -g @google/gemini-cli\n```\n\n#### Vérification\n```bash\ngemini --help\n```\n\nVous ne devriez plus voir l'erreur: `SyntaxError: Invalid regular expression flags`\n\n#### Utilisation\n```bash\ngemini\n```\nLancer dans le dossier du code Python créé pour assistance.\n\n### 6.4 Nettoyage (optionnel)\nPour supprimer l'ancienne installation globale:\n```bash\nnvm use system\nnpm uninstall -g @google/gemini-cli\nnvm use 22\n```\n\n**Astuce:** Ajoutez `nvm use 22` dans votre `~/.bashrc` pour en faire la version par défaut.\n\n### 6.5 Exercice pratique avec Gemini CLI\n\nMaintenant que vous avez installé Gemini CLI, testez-le pour améliorer votre code!\n\n**Exemple d'utilisation:**\n1. Naviguez vers votre code:\n   ```bash\n   cd ~/243-4J5-LI/labo1/code\n   ```\n\n2. Lancez Gemini et demandez-lui d'ajouter une fonctionnalité:\n   ```bash\n   gemini\n   ```\n\n3. **Suggestions de requêtes:**\n   - \"Ajoute un quatrième bouton 'REBOOT' qui affiche un message de confirmation\"\n   - \"Ajoute des couleurs différentes pour chaque bouton\"\n   - \"Crée une fonction qui affiche l'heure actuelle dans le coin supérieur droit\"\n   - \"Ajoute un indicateur de batterie factice qui change de couleur\"\n\n4. Testez le code modifié:\n   ```bash\n   sudo chvt 1\n   sudo setsid sh -c 'exec /dev/tty1 2>&1 python3 /home/fpoisson/243-4J5-LI/labo1/code/touch_ui.py'\n   ```\n\n5. Sauvegardez vos changements avec Git:\n   ```bash\n   git add .\n   git commit -m \"Ajout de fonctionnalité via Gemini: [décrivez ce que vous avez ajouté]\"\n   git push origin prenom-nom/labo1\n   ```\n\n**✅ À remettre:**\n\n  - Capturez une photo de votre écran tactile montrant la nouvelle fonctionnalité\n  - Notez la requête Gemini que vous avez utilisée\n  - Décrivez brièvement ce qui fonctionne et ce qui ne fonctionne pas",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 30
+      },
+      "created_at": "2026-01-20T15:25:27.649496Z",
+      "updated_at": "2026-01-20T15:25:27.649497Z"
+    },
+    {
+      "id": 7170,
+      "slug": "widget-section8-done",
+      "kind": "widget",
+      "display_name": "Continuer: 6. Installation Node.js et outils CLI",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 31,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Section terminée, continuer"
+          }
+        }
+      },
+      "metadata": {
+        "order": 31
+      },
+      "created_at": "2026-01-20T15:25:27.649497Z",
+      "updated_at": "2026-01-20T15:25:27.649498Z"
+    },
+    {
+      "id": 7171,
+      "slug": "condition-section8-done",
+      "kind": "condition",
+      "display_name": "Section 8 terminée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 32,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 32
+      },
+      "created_at": "2026-01-20T15:25:27.649499Z",
+      "updated_at": "2026-01-20T15:25:27.649499Z"
+    },
+    {
+      "id": 7172,
+      "slug": "end-section8-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 8",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 33,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la section « 6. Installation Node.js et outils CLI » sera terminée!"
+      },
+      "metadata": {
+        "order": 33
+      },
+      "created_at": "2026-01-20T15:25:27.649500Z",
+      "updated_at": "2026-01-20T15:25:27.649501Z"
+    },
+    {
+      "id": 7173,
+      "slug": "assistant-message-section9",
+      "kind": "assistant_message",
+      "display_name": "Section 9: 7. Programmation du LilyGO A7670G",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 34,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 7. Programmation du LilyGO A7670G\n> 🚀 **Objectif :** installer Arduino CLI et programmer le module LilyGO pour communiquer via LTE.\n\n### 💡 Concepts clés\n\n**Qu'est-ce que le LilyGO A7670G?**\n\nLe LilyGO A7670G est un module de développement qui combine:\n1. **ESP32:** Microcontrôleur WiFi/Bluetooth (dual-core, 240 MHz)\n2. **A7670G:** Modem cellulaire 4G LTE Cat-1 (2G/3G/4G)\n3. **GPS:** Récepteur GNSS pour la géolocalisation\n4. **Connectivité:** WiFi, Bluetooth, LTE, GPS sur une seule carte\n\nC'est l'outil idéal pour des applications IoT mobiles : trackers GPS, stations météo distantes, surveillance de véhicules, capteurs agricoles, etc.\n\n**Pourquoi Arduino CLI (et pas l'IDE Arduino)?**\n\nL'**IDE Arduino** est une application graphique. Sur un Raspberry Pi en mode serveur (sans interface graphique) accessible uniquement par SSH, vous ne pouvez pas l'utiliser.\n\n**Arduino CLI** est la version ligne de commande qui vous permet de:\n- ✅ Compiler des sketches Arduino depuis SSH\n- ✅ Téléverser du code vers l'ESP32 via USB\n- ✅ Installer des bibliothèques\n- ✅ Gérer plusieurs boards (ESP32, Arduino Uno, etc.)\n- ✅ Automatiser le build/upload avec des scripts\n\n**Architecture ESP32 vs Raspberry Pi:**\n\nL'ESP32 est un microcontrôleur (MCU) très différent d'un Raspberry Pi:\n\n| Caractéristique | Raspberry Pi 5 | ESP32 (LilyGO) |\n|-----------------|----------------|----------------|\n| Type | Ordinateur SBC | Microcontrôleur |\n| OS | Linux (Ubuntu) | Aucun (bare metal) |\n| Langage | Python, Node.js, C++, etc. | C/C++ (Arduino) |\n| RAM | 4-8 GB | ~520 KB |\n| Consommation | 5-10W | 0.05-0.3W |\n| Prix | ~100$ | ~20-30$ |\n| Usage IoT | Passerelle, serveur, développement | Capteur, actuateur, endpoint |\n\n**Flux de programmation à distance:**\n```\nVotre PC → (SSH/Cloudflare) → Raspberry Pi → (USB) → ESP32 (LilyGO)\n                                    ↓\n                          Arduino CLI compile\n                                    ↓\n                          Téléversement série\n                                    ↓\n                          ESP32 exécute le code\n```\n\nAvec **Gemini CLI**, vous pouvez demander à l'IA de gérer toute cette chaîne pour vous!\n\n**FQBN (Fully Qualified Board Name):**\n\nLe **FQBN** identifie le type de board pour la compilation. Format: `vendor:architecture:board`\n\nPour l'ESP32 générique: `esp32:esp32:esp32`\n- `esp32` = vendor (Espressif)\n- `esp32` = architecture (famille ESP32)\n- `esp32` = board (modèle ESP32 générique)\n\n**Bibliothèques essentielles pour LTE/GPS:**\n- **TinyGSM**: Communication avec modems cellulaires (AT commands, connexion réseau)\n- **ArduinoJson**: Parser/créer des données JSON pour APIs\n- **PubSubClient**: Client MQTT pour envoyer des données vers un broker\n\n### 7.1 Installation Arduino CLI\n\n#### Télécharger et installer Arduino CLI\n```bash\ncd ~\ncurl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh\n```\n\n#### Ajouter Arduino CLI au PATH\n```bash\necho 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc\nsource ~/.bashrc\n```\n\n#### Vérifier l'installation\n```bash\narduino-cli version\n```\n\n#### Initialiser la configuration\n```bash\narduino-cli config init\n```\n\n#### Mettre à jour l'index des boards\n```bash\narduino-cli core update-index\n```\n\n### 7.2 Configuration pour ESP32\n\n#### Ajouter l'URL des ESP32\n```bash\narduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json\n```\n\n#### Mettre à jour l'index\n```bash\narduino-cli core update-index\n```\n\n#### Installer le support ESP32\n```bash\narduino-cli core install esp32:esp32\n```\n\n> 💡 **Si vous obtenez l'erreur** `esp32:esp32-arduino-libs@idf-release_v5.5-8410210c-v2 net/http: request canceled ...`, il y a probablement une limite de taille (~400 Mo) sur votre connexion. Téléchargez alors manuellement les archives volumineuses dans le dossier de staging Arduino avant de relancer l'installation:\n> ```bash\n> mkdir -p ~/.arduino15/staging/packages\n> cd ~/.arduino15/staging/packages\n> # Librairies Arduino ESP32 (≈428 Mo, reprise possible)\n> wget -c https://github.com/espressif/arduino-esp32/releases/download/3.3.4/esp32-3.3.4-libs.zip\n> # Toolchains (adaptées pour aarch64; remplacez si autre architecture)\n> wget -c https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20250730/xtensa-esp-elf-14.2.0_20250730-aarch64-linux-gnu.tar.gz\n> wget -c https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20250730/riscv32-esp-elf-14.2.0_20250730-aarch64-linux-gnu.tar.gz\n> # Puis relancer l'installation\n> arduino-cli core install esp32:esp32\n> ```\n> Les téléchargements supportent la reprise (`-c`) en cas de coupure.\n\n#### Lister les boards disponibles\n```bash\narduino-cli board listall esp32\n```\n\n### 7.3 Installation des bibliothèques requises\n\n#### Bibliothèques Arduino\nPour le LilyGO A7670G, installer les bibliothèques nécessaires:\n```bash\narduino-cli lib install \"TinyGSM\"\narduino-cli lib install \"ArduinoJson\"\narduino-cli lib install \"PubSubClient\"\n```\n\n#### Bibliothèque Python pour communication série\nPour que l'interface tactile puisse communiquer avec le LilyGO:\n```bash\nsudo apt install -y python3-serial\n```\n\n### 7.4 Premier programme simple\n\n#### Créer un dossier pour le projet\n```bash\nmkdir -p ~/243-4J5-LI/labo1/lilygo-test\ncd ~/243-4J5-LI/labo1/lilygo-test\n```\n\n#### Créer le sketch Arduino\n```bash\nnano lilygo-test.ino\n```\n\n**Code de test simple:**\n```cpp\n// Test basique pour LilyGO A7670G\n// Vérifie la communication série et allume la LED\n\n#define LED_PIN 12  // LED intégrée sur le LilyGO\n\nvoid setup() {\n  // Initialiser la communication série\n  Serial.begin(115200);\n  delay(1000);\n\n  // Configurer la LED\n  pinMode(LED_PIN, OUTPUT);\n\n  Serial.println(\"=========================\");\n  Serial.println(\"LilyGO A7670G - Test\");\n  Serial.println(\"=========================\");\n  Serial.println(\"Démarrage...\");\n}\n\nvoid loop() {\n  // Faire clignoter la LED\n  digitalWrite(LED_PIN, HIGH);\n  Serial.println(\"LED ON\");\n  delay(1000);\n\n  digitalWrite(LED_PIN, LOW);\n  Serial.println(\"LED OFF\");\n  delay(1000);\n}\n```\n\n### 7.5 Compilation et téléversement\n\n#### Connecter le LilyGO\n1. Brancher le câble USB-A vers USB-C entre le Raspberry Pi et le LilyGO\n2. Vérifier la connexion:\n```bash\narduino-cli board list\n```\n\nVous devriez voir un port comme `/dev/ttyUSB0` ou `/dev/ttyACM0`\n\n#### Compiler le sketch\n```bash\narduino-cli compile --fqbn esp32:esp32:esp32 lilygo-test.ino\n```\n\n#### Téléverser vers le LilyGO\n```bash\narduino-cli upload -p /dev/ttyUSB0 --fqbn esp32:esp32:esp32 lilygo-test.ino\n```\n\n**Note:** Remplacez `/dev/ttyUSB0` par le port détecté sur votre système.\n\n#### Moniteur série pour voir les messages\n```bash\narduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200\n```\n\nVous devriez voir:\n```\n=========================\nLilyGO A7670G - Test\n=========================\nDémarrage...\nLED ON\nLED OFF\nLED ON\nLED OFF\n...\n```\n\nPour quitter le moniteur série: `Ctrl+C`\n\n### 7.6 Exercice pratique : Contrôle de LEDs via port série\n\n**⚡ Dépannage**\n\n  - Si `/dev/ttyUSB0` n'apparaît pas, vérifiez le câble USB\n  - Ajoutez votre utilisateur au groupe dialout: `sudo usermod -a -G dialout $USER` puis redémarrez\n  - Si l'upload échoue, appuyez sur le bouton BOOT du LilyGO pendant l'upload\n  - Pour voir tous les ports: `ls -la /dev/tty*`\n\n**Objectif :** Mettre en place un circuit avec deux LEDs (rouge et verte) contrôlables via des commandes envoyées sur le port série.\n\n#### Ce que vous devez réaliser\n\n1. **Circuit électronique:**\n   - Branchez une LED rouge et une LED verte sur votre plaquette de prototypage\n   - Connectez-les aux GPIO appropriés de votre LilyGO\n   - N'oubliez pas les résistances de limitation de courant\n\n2. **Interface tactile (touch_ui.py):**\n   - Modifiez le programme Python de l'interface tactile créé à la section 5\n   - Ajoutez deux gros boutons: \"ROUGE\" et \"VERT\"\n   - Chaque bouton doit envoyer la couleur correspondante sur le port série du LilyGO (`/dev/ttyUSB0`)\n   - L'interface tactile devient ainsi votre panneau de contrôle visuel pour les LEDs\n\n3. **Programme Arduino:**\n   - Modifiez le sketch pour écouter les commandes sur le port série\n   - Implémentez la logique pour allumer la LED correspondante selon la couleur reçue (\"rouge\" ou \"verte\")\n   - Les deux commandes doivent éteindre l'autre LED si elle est allumée\n\n4. **Test complet:**\n   - Lancez l'interface tactile sur l'écran du Raspberry Pi\n   - Appuyez sur les boutons ROUGE et VERT\n   - Vérifiez que les LEDs s'allument correctement\n   - Testez aussi via `arduino-cli monitor` pour déboguer si nécessaire\n\n**💡 Indices**\n\n  - **Python (interface tactile):** La bibliothèque `serial` (PySerial) permet d'écrire sur le port série\n  - **Arduino:** Utilisez `Serial.available()` et `Serial.readStringUntil()` pour lire les commandes\n  - La fonction `String.trim()` peut être utile pour nettoyer l'entrée\n  - Pensez à définir les pins des LEDs en `OUTPUT` dans le `setup()`\n  - Testez d'abord votre code Arduino avec `arduino-cli monitor` avant d'intégrer l'interface tactile\n\n#### Commit de votre travail\n\nUne fois que votre circuit fonctionne et que l'interface tactile contrôle les LEDs:\n```bash\n# Ajouter le code Arduino\ncd ~/243-4J5-LI/labo1/lilygo-test\ngit add .\n\n# Ajouter le code Python modifié\ncd ~/243-4J5-LI/labo1/code\ngit add touch_ui.py\n\n# Committer et pousser\ncd ~/243-4J5-LI\ngit commit -m \"Ajout du contrôle de LEDs via interface tactile et port série\"\ngit push origin prenom-nom/labo1\n```\n\n**✅ À remettre:**\n\n  - Photo du circuit sur la plaquette de prototypage\n  - Photo de l'interface tactile avec les boutons ROUGE et VERT\n  - Votre code Python modifié (touch_ui.py)\n  - Votre code Arduino (lilygo-test.ino)\n  - Photo montrant les LEDs allumées lors d'un test\n  - Tous les fichiers doivent être dans votre dépôt Git",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 34
+      },
+      "created_at": "2026-01-20T15:25:27.649501Z",
+      "updated_at": "2026-01-20T15:25:27.649502Z"
+    },
+    {
+      "id": 7174,
+      "slug": "widget-section9-done",
+      "kind": "widget",
+      "display_name": "Continuer: 7. Programmation du LilyGO A7670G",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 35,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Section terminée, continuer"
+          }
+        }
+      },
+      "metadata": {
+        "order": 35
+      },
+      "created_at": "2026-01-20T15:25:27.649502Z",
+      "updated_at": "2026-01-20T15:25:27.649503Z"
+    },
+    {
+      "id": 7175,
+      "slug": "condition-section9-done",
+      "kind": "condition",
+      "display_name": "Section 9 terminée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 36,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 36
+      },
+      "created_at": "2026-01-20T15:25:27.649503Z",
+      "updated_at": "2026-01-20T15:25:27.649504Z"
+    },
+    {
+      "id": 7176,
+      "slug": "end-section9-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 9",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 37,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la section « 7. Programmation du LilyGO A7670G » sera terminée!"
+      },
+      "metadata": {
+        "order": 37
+      },
+      "created_at": "2026-01-20T15:25:27.649505Z",
+      "updated_at": "2026-01-20T15:25:27.649505Z"
+    },
+    {
+      "id": 7177,
+      "slug": "assistant-message-section10",
+      "kind": "assistant_message",
+      "display_name": "Section 10: 🔮 Au prochain laboratoire",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 38,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 🔮 Au prochain laboratoire\n\nMaintenant que vous maîtrisez la programmation distante et la communication série, vous allez faire évoluer votre système vers une architecture IoT moderne et sans fil.\n\n### 📡 Évolution de l'architecture de communication\n\n**Phase 1 : Protocole MQTT**\n- Introduction au protocole **MQTT** (Message Queuing Telemetry Transport)\n- Concepts de **broker**, **publisher** et **subscriber**\n- Architecture publish/subscribe pour l'IoT\n- Avantages : léger, asynchrone, découplage des composants\n\n**Phase 2 : Communication WiFi**\n- Remplacement de la communication série (câble USB) par **WiFi**\n- Le LilyGO devient autonome et peut communiquer sans fil avec le Raspberry Pi\n- Utilisation du module WiFi intégré de l'ESP32\n- Publication de messages MQTT via WiFi\n\n**Phase 3 : Communication cellulaire (LTE)**\n- Activation du modem **A7670G** pour la connectivité **4G LTE**\n- Remplacement du WiFi par le **réseau cellulaire**\n- Intégration de la **carte SIM** et configuration APN\n- Le LilyGO peut maintenant communiquer **n'importe où** avec couverture cellulaire\n- Application : télémétrie mobile, tracking GPS, capteurs distants\n\n### 🎯 Vision finale\n\nÀ la fin du prochain laboratoire, votre système pourra :\n- Envoyer des données depuis le LilyGO via **4G LTE** vers un broker MQTT\n- Recevoir ces données sur le Raspberry Pi (ou n'importe où dans le monde)\n- Contrôler les LEDs **à distance** via MQTT sans connexion physique\n- Déployer le LilyGO en **mode terrain** avec localisation GPS et télémétrie cellulaire\n\n**Passez de :**\n```\n[Interface tactile] → [Câble USB] → [LilyGO]\n```\n\n**À :**\n```\n[Interface tactile] → [MQTT/WiFi] → [Broker] → [MQTT/LTE] → [LilyGO anywhere]\n                         ↓\n                     [Internet]\n```\n\n**💡 Réflexion**\nPensez à des cas d'usage réels où cette architecture serait utile :\n\n  - Surveillance de ruches d'abeilles en campagne (température, humidité, poids)\n  - Tracking de véhicules en temps réel avec géolocalisation\n  - Stations météo déployées dans des zones reculées\n  - Capteurs agricoles pour irrigation intelligente\n  - Systèmes d'alerte en cas de dépassement de seuils (température, mouvement, etc.)",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 38
+      },
+      "created_at": "2026-01-20T15:25:27.649506Z",
+      "updated_at": "2026-01-20T15:25:27.649506Z"
+    },
+    {
+      "id": 7178,
+      "slug": "widget-section10-done",
+      "kind": "widget",
+      "display_name": "Continuer: 🔮 Au prochain laboratoire",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 39,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "widget": {
+          "slug": "pret-a-debuter",
+          "source": "library",
+          "variables": {
+            "text": "Section terminée, continuer"
+          }
+        }
+      },
+      "metadata": {
+        "order": 39
+      },
+      "created_at": "2026-01-20T15:25:27.649507Z",
+      "updated_at": "2026-01-20T15:25:27.649507Z"
+    },
+    {
+      "id": 7179,
+      "slug": "condition-section10-done",
+      "kind": "condition",
+      "display_name": "Section 10 terminée?",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 40,
+      "is_enabled": true,
+      "parameters": {
+        "mode": "value",
+        "path": "input.action.raw_payload.value.",
+        "tools": null
+      },
+      "metadata": {
+        "order": 40
+      },
+      "created_at": "2026-01-20T15:25:27.649508Z",
+      "updated_at": "2026-01-20T15:25:27.649508Z"
+    },
+    {
+      "id": 7180,
+      "slug": "end-section10-abandon",
+      "kind": "end",
+      "display_name": "Fin - Abandon Section 10",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 41,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Étudiant a abandonné"
+        },
+        "message": "Reviens quand la section « 🔮 Au prochain laboratoire » sera terminée!"
+      },
+      "metadata": {
+        "order": 41
+      },
+      "created_at": "2026-01-20T15:25:27.649509Z",
+      "updated_at": "2026-01-20T15:25:27.649510Z"
+    },
+    {
+      "id": 7181,
+      "slug": "assistant-message-section11",
+      "kind": "assistant_message",
+      "display_name": "Section 11: 📚 Devoir de préparation (à faire avant le prochain laboratoire)",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 42,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "message": "## 📚 Devoir de préparation (à faire avant le prochain laboratoire)\n\nProfitez de votre accès distant au Raspberry Pi pour préparer le terrain! Ces tâches vous permettront de démarrer rapidement le prochain laboratoire.\n\n### 1. Installation du broker MQTT sur le Raspberry Pi\n\n**Tâche :** Installer Mosquitto (broker MQTT) sur votre Raspberry Pi.\n\n```bash\nsudo apt update\nsudo apt install -y mosquitto mosquitto-clients\nsudo systemctl enable mosquitto\nsudo systemctl start mosquitto\n```\n\n**Vérifier que le service est actif :**\n```bash\nsudo systemctl status mosquitto\n```\n\n### 2. Tests de base avec MQTT\n\n**Tester la communication locale :**\n\nDans un premier terminal SSH :\n```bash\nmosquitto_sub -h localhost -t \"test/topic\"\n```\n\nDans un deuxième terminal SSH :\n```bash\nmosquitto_pub -h localhost -t \"test/topic\" -m \"Hello MQTT!\"\n```\n\nVous devriez voir le message apparaître dans le premier terminal.\n\n**💡 Astuce**\nUtilisez `tmux` ou `screen` pour gérer plusieurs terminaux SSH simultanément :\n```# Installer tmux\nsudo apt install tmux\n\n# Lancer tmux\ntmux\n\n# Créer une nouvelle fenêtre : Ctrl+b puis c\n# Naviguer entre fenêtres : Ctrl+b puis n (next) ou p (previous)\n# Détacher la session : Ctrl+b puis d\n# Rattacher : tmux attach\n```\n\n### 3. Test de connexion WiFi avec l'ESP32\n\n**Tâche :** Créer un sketch Arduino simple qui teste la connexion WiFi de votre LilyGO.\n\n**Créer le projet :**\n```bash\nmkdir -p ~/243-4J5-LI/labo1/wifi-test\ncd ~/243-4J5-LI/labo1/wifi-test\nnano wifi-test.ino\n```\n\n**Code de base à adapter :**\n```cpp\n#include \n\n// À REMPLACER par vos informations\nconst char* ssid = \"VOTRE_SSID\";\nconst char* password = \"VOTRE_PASSWORD\";\n\nvoid setup() {\n  Serial.begin(115200);\n  delay(1000);\n\n  Serial.println(\"Test de connexion WiFi...\");\n\n  WiFi.begin(ssid, password);\n\n  int attempts = 0;\n  while (WiFi.status() != WL_CONNECTED && attempts < 20) {\n    delay(500);\n    Serial.print(\".\");\n    attempts++;\n  }\n\n  if (WiFi.status() == WL_CONNECTED) {\n    Serial.println(\"\\nConnecté au WiFi!\");\n    Serial.print(\"Adresse IP: \");\n    Serial.println(WiFi.localIP());\n  } else {\n    Serial.println(\"\\nÉchec de connexion WiFi\");\n  }\n}\n\nvoid loop() {\n  // Rien ici pour l'instant\n  delay(1000);\n}\n```\n\n**Compiler et téléverser :**\n```bash\narduino-cli compile --fqbn esp32:esp32:esp32 wifi-test.ino\narduino-cli upload -p /dev/ttyUSB0 --fqbn esp32:esp32:esp32 wifi-test.ino\narduino-cli monitor -p /dev/ttyUSB0 -c baudrate=115200\n```\n\n### 4. Recherche et compréhension\n\n**À faire :**\n- 📖 Lire sur le protocole MQTT : qu'est-ce qu'un **topic**, un **QoS** (Quality of Service), un **retained message**?\n- 📖 Comprendre la différence entre **publish/subscribe** et **requête/réponse** (HTTP)\n- 📖 Regarder des exemples de messages MQTT au format JSON\n- 📖 Explorer la bibliothèque Arduino **PubSubClient** (déjà installée) : [https://pubsubclient.knolleary.net/](https://pubsubclient.knolleary.net/)\n\n### 5. Commit de votre travail\n\n```bash\ncd ~/243-4J5-LI/labo1/wifi-test\ngit add .\ncd ~/243-4J5-LI\ngit commit -m \"Préparation Labo 2: installation Mosquitto et test WiFi ESP32\"\ngit push origin prenom-nom/labo1\n```\n\n**⚠️ Important**\n\n  - Ces tâches sont **obligatoires** et facilitent grandement le prochain laboratoire\n  - Ne partagez pas vos identifiants WiFi dans le code que vous poussez sur GitHub\n  - Si vous rencontrez des problèmes, documentez-les pour en discuter au prochain cours\n  - Testez votre configuration avant le prochain labo pour éviter de perdre du temps\n\n**✅ À remettre (facultatif mais recommandé):**\n\n  - Capture d'écran du `systemctl status mosquitto` montrant le service actif\n  - Capture d'écran de votre test MQTT (pub/sub) fonctionnel\n  - Capture d'écran du moniteur série montrant la connexion WiFi réussie\n  - Code du test WiFi dans votre dépôt Git",
+        "simulate_stream_delay_ms": 5
+      },
+      "metadata": {
+        "order": 42
+      },
+      "created_at": "2026-01-20T15:25:27.649510Z",
+      "updated_at": "2026-01-20T15:25:27.649511Z"
+    },
+    {
+      "id": 7182,
+      "slug": "end-success",
+      "kind": "end",
+      "display_name": "Fin - Succès",
+      "agent_key": null,
+      "parent_slug": null,
+      "position": 43,
+      "is_enabled": true,
+      "parameters": {
+        "tools": null,
+        "status": {
+          "type": "closed",
+          "reason": "Laboratoire complété avec succès"
+        },
+        "message": "Laboratoire 1 terminé avec succès! Bravo!"
+      },
+      "metadata": {
+        "order": 43
+      },
+      "created_at": "2026-01-20T15:25:27.649511Z",
+      "updated_at": "2026-01-20T15:25:27.649512Z"
+    }
+  ],
+  "edges": [
+    {
+      "id": 8012,
+      "source": "start",
+      "target": "assistant-message-section1",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 1
+      },
+      "created_at": "2026-01-20T15:25:27.658447Z",
+      "updated_at": "2026-01-20T15:25:27.658452Z"
+    },
+    {
+      "id": 8013,
+      "source": "assistant-message-section1",
+      "target": "widget-section1-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 2
+      },
+      "created_at": "2026-01-20T15:25:27.658453Z",
+      "updated_at": "2026-01-20T15:25:27.658453Z"
+    },
+    {
+      "id": 8014,
+      "source": "widget-section1-done",
+      "target": "condition-section1-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 3
+      },
+      "created_at": "2026-01-20T15:25:27.658454Z",
+      "updated_at": "2026-01-20T15:25:27.658455Z"
+    },
+    {
+      "id": 8015,
+      "source": "condition-section1-done",
+      "target": "assistant-message-section2",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 4
+      },
+      "created_at": "2026-01-20T15:25:27.658456Z",
+      "updated_at": "2026-01-20T15:25:27.658456Z"
+    },
+    {
+      "id": 8016,
+      "source": "condition-section1-done",
+      "target": "end-section1-abandon",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 5
+      },
+      "created_at": "2026-01-20T15:25:27.658457Z",
+      "updated_at": "2026-01-20T15:25:27.658457Z"
+    },
+    {
+      "id": 8017,
+      "source": "assistant-message-section2",
+      "target": "widget-section2-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 6
+      },
+      "created_at": "2026-01-20T15:25:27.658458Z",
+      "updated_at": "2026-01-20T15:25:27.658458Z"
+    },
+    {
+      "id": 8018,
+      "source": "widget-section2-done",
+      "target": "condition-section2-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 7
+      },
+      "created_at": "2026-01-20T15:25:27.658459Z",
+      "updated_at": "2026-01-20T15:25:27.658460Z"
+    },
+    {
+      "id": 8019,
+      "source": "condition-section2-done",
+      "target": "assistant-message-section3",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 8
+      },
+      "created_at": "2026-01-20T15:25:27.658460Z",
+      "updated_at": "2026-01-20T15:25:27.658461Z"
+    },
+    {
+      "id": 8020,
+      "source": "condition-section2-done",
+      "target": "end-section2-abandon",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 9
+      },
+      "created_at": "2026-01-20T15:25:27.658462Z",
+      "updated_at": "2026-01-20T15:25:27.658462Z"
+    },
+    {
+      "id": 8021,
+      "source": "assistant-message-section3",
+      "target": "widget-section3-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 10
+      },
+      "created_at": "2026-01-20T15:25:27.658463Z",
+      "updated_at": "2026-01-20T15:25:27.658463Z"
+    },
+    {
+      "id": 8022,
+      "source": "widget-section3-done",
+      "target": "condition-section3-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 11
+      },
+      "created_at": "2026-01-20T15:25:27.658464Z",
+      "updated_at": "2026-01-20T15:25:27.658465Z"
+    },
+    {
+      "id": 8023,
+      "source": "condition-section3-done",
+      "target": "assistant-message-section4",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 12
+      },
+      "created_at": "2026-01-20T15:25:27.658465Z",
+      "updated_at": "2026-01-20T15:25:27.658466Z"
+    },
+    {
+      "id": 8024,
+      "source": "condition-section3-done",
+      "target": "end-section3-abandon",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 13
+      },
+      "created_at": "2026-01-20T15:25:27.658467Z",
+      "updated_at": "2026-01-20T15:25:27.658467Z"
+    },
+    {
+      "id": 8025,
+      "source": "assistant-message-section4",
+      "target": "widget-section4-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 14
+      },
+      "created_at": "2026-01-20T15:25:27.658468Z",
+      "updated_at": "2026-01-20T15:25:27.658468Z"
+    },
+    {
+      "id": 8026,
+      "source": "widget-section4-done",
+      "target": "condition-section4-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 15
+      },
+      "created_at": "2026-01-20T15:25:27.658469Z",
+      "updated_at": "2026-01-20T15:25:27.658470Z"
+    },
+    {
+      "id": 8027,
+      "source": "condition-section4-done",
+      "target": "assistant-message-section5",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 16
+      },
+      "created_at": "2026-01-20T15:25:27.658470Z",
+      "updated_at": "2026-01-20T15:25:27.658471Z"
+    },
+    {
+      "id": 8028,
+      "source": "condition-section4-done",
+      "target": "end-section4-abandon",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 17
+      },
+      "created_at": "2026-01-20T15:25:27.658472Z",
+      "updated_at": "2026-01-20T15:25:27.658472Z"
+    },
+    {
+      "id": 8029,
+      "source": "assistant-message-section5",
+      "target": "widget-section5-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 18
+      },
+      "created_at": "2026-01-20T15:25:27.658473Z",
+      "updated_at": "2026-01-20T15:25:27.658473Z"
+    },
+    {
+      "id": 8030,
+      "source": "widget-section5-done",
+      "target": "condition-section5-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 19
+      },
+      "created_at": "2026-01-20T15:25:27.658474Z",
+      "updated_at": "2026-01-20T15:25:27.658475Z"
+    },
+    {
+      "id": 8031,
+      "source": "condition-section5-done",
+      "target": "assistant-message-section6",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 20
+      },
+      "created_at": "2026-01-20T15:25:27.658475Z",
+      "updated_at": "2026-01-20T15:25:27.658476Z"
+    },
+    {
+      "id": 8032,
+      "source": "condition-section5-done",
+      "target": "end-section5-abandon",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 21
+      },
+      "created_at": "2026-01-20T15:25:27.658477Z",
+      "updated_at": "2026-01-20T15:25:27.658478Z"
+    },
+    {
+      "id": 8033,
+      "source": "assistant-message-section6",
+      "target": "widget-section6-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 22
+      },
+      "created_at": "2026-01-20T15:25:27.658478Z",
+      "updated_at": "2026-01-20T15:25:27.658479Z"
+    },
+    {
+      "id": 8034,
+      "source": "widget-section6-done",
+      "target": "condition-section6-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 23
+      },
+      "created_at": "2026-01-20T15:25:27.658479Z",
+      "updated_at": "2026-01-20T15:25:27.658480Z"
+    },
+    {
+      "id": 8035,
+      "source": "condition-section6-done",
+      "target": "assistant-message-section7",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 24
+      },
+      "created_at": "2026-01-20T15:25:27.658481Z",
+      "updated_at": "2026-01-20T15:25:27.658481Z"
+    },
+    {
+      "id": 8036,
+      "source": "condition-section6-done",
+      "target": "end-section6-abandon",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 25
+      },
+      "created_at": "2026-01-20T15:25:27.658482Z",
+      "updated_at": "2026-01-20T15:25:27.658482Z"
+    },
+    {
+      "id": 8037,
+      "source": "assistant-message-section7",
+      "target": "widget-section7-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 26
+      },
+      "created_at": "2026-01-20T15:25:27.658483Z",
+      "updated_at": "2026-01-20T15:25:27.658484Z"
+    },
+    {
+      "id": 8038,
+      "source": "widget-section7-done",
+      "target": "condition-section7-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 27
+      },
+      "created_at": "2026-01-20T15:25:27.658484Z",
+      "updated_at": "2026-01-20T15:25:27.658485Z"
+    },
+    {
+      "id": 8039,
+      "source": "condition-section7-done",
+      "target": "assistant-message-section8",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 28
+      },
+      "created_at": "2026-01-20T15:25:27.658485Z",
+      "updated_at": "2026-01-20T15:25:27.658486Z"
+    },
+    {
+      "id": 8040,
+      "source": "condition-section7-done",
+      "target": "end-section7-abandon",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 29
+      },
+      "created_at": "2026-01-20T15:25:27.658487Z",
+      "updated_at": "2026-01-20T15:25:27.658488Z"
+    },
+    {
+      "id": 8041,
+      "source": "assistant-message-section8",
+      "target": "widget-section8-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 30
+      },
+      "created_at": "2026-01-20T15:25:27.658488Z",
+      "updated_at": "2026-01-20T15:25:27.658489Z"
+    },
+    {
+      "id": 8042,
+      "source": "widget-section8-done",
+      "target": "condition-section8-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 31
+      },
+      "created_at": "2026-01-20T15:25:27.658489Z",
+      "updated_at": "2026-01-20T15:25:27.658490Z"
+    },
+    {
+      "id": 8043,
+      "source": "condition-section8-done",
+      "target": "assistant-message-section9",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 32
+      },
+      "created_at": "2026-01-20T15:25:27.658490Z",
+      "updated_at": "2026-01-20T15:25:27.658491Z"
+    },
+    {
+      "id": 8044,
+      "source": "condition-section8-done",
+      "target": "end-section8-abandon",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 33
+      },
+      "created_at": "2026-01-20T15:25:27.658492Z",
+      "updated_at": "2026-01-20T15:25:27.658492Z"
+    },
+    {
+      "id": 8045,
+      "source": "assistant-message-section9",
+      "target": "widget-section9-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 34
+      },
+      "created_at": "2026-01-20T15:25:27.658493Z",
+      "updated_at": "2026-01-20T15:25:27.658493Z"
+    },
+    {
+      "id": 8046,
+      "source": "widget-section9-done",
+      "target": "condition-section9-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 35
+      },
+      "created_at": "2026-01-20T15:25:27.658494Z",
+      "updated_at": "2026-01-20T15:25:27.658494Z"
+    },
+    {
+      "id": 8047,
+      "source": "condition-section9-done",
+      "target": "assistant-message-section10",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 36
+      },
+      "created_at": "2026-01-20T15:25:27.658495Z",
+      "updated_at": "2026-01-20T15:25:27.658496Z"
+    },
+    {
+      "id": 8048,
+      "source": "condition-section9-done",
+      "target": "end-section9-abandon",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 37
+      },
+      "created_at": "2026-01-20T15:25:27.658496Z",
+      "updated_at": "2026-01-20T15:25:27.658497Z"
+    },
+    {
+      "id": 8049,
+      "source": "assistant-message-section10",
+      "target": "widget-section10-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 38
+      },
+      "created_at": "2026-01-20T15:25:27.658497Z",
+      "updated_at": "2026-01-20T15:25:27.658498Z"
+    },
+    {
+      "id": 8050,
+      "source": "widget-section10-done",
+      "target": "condition-section10-done",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 39
+      },
+      "created_at": "2026-01-20T15:25:27.658498Z",
+      "updated_at": "2026-01-20T15:25:27.658499Z"
+    },
+    {
+      "id": 8051,
+      "source": "condition-section10-done",
+      "target": "assistant-message-section11",
+      "condition": "true",
+      "metadata": {
+        "label": "true",
+        "order": 40
+      },
+      "created_at": "2026-01-20T15:25:27.658500Z",
+      "updated_at": "2026-01-20T15:25:27.658500Z"
+    },
+    {
+      "id": 8052,
+      "source": "condition-section10-done",
+      "target": "end-section10-abandon",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 41
+      },
+      "created_at": "2026-01-20T15:25:27.658501Z",
+      "updated_at": "2026-01-20T15:25:27.658502Z"
+    },
+    {
+      "id": 8053,
+      "source": "assistant-message-section11",
+      "target": "end-success",
+      "condition": null,
+      "metadata": {
+        "label": "",
+        "order": 42
+      },
+      "created_at": "2026-01-20T15:25:27.658502Z",
+      "updated_at": "2026-01-20T15:25:27.658503Z"
+    }
+  ]
+}
