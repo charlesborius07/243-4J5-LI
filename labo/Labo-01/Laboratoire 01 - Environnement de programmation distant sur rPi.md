@@ -37,7 +37,7 @@ graph TD
 
             subgraph Dev_Stack ["🛠️ Outils Dev"]
                 Git_CLI["Git CLI"]:::componentService
-                Node_Gemini["Node + Gemini"]:::componentService
+                Opencode["Opencode CLI"]:::componentService
                 Python_Env["Python + evdev"]:::componentService
                 Arduino_CLI["Arduino CLI"]:::componentService
             end
@@ -67,7 +67,7 @@ graph TD
     Git_CLI -.->|"git clone/pull/push"| GitHub_SaaS
 
     %% 3. APPELS IA
-    Node_Gemini -.->|"API REST"| Gemini_API
+    Opencode -.->|"API REST"| Gemini_API
 
     %% 4. INTERACTIONS MATÉRIELLES
     Python_Env -->|"UI tactile<br/>/dev/input"| Touchscreen
@@ -96,7 +96,7 @@ Ce diagramme illustre l'architecture complète du laboratoire:
 - [Connexion à distance via Cloudflare Tunnel](#3-connexion-à-distance-via-cloudflare-tunnel)
 - [Configuration Git](#4-configuration-git)
 - [Interface tactile en mode console](#5-interface-tactile-distante-en-mode-console)
-- [Installation Node.js et outils CLI](#6-installation-nodejs-et-outils-cli)
+- [Installation d'Opencode et configuration de l'IA](#6-installation-dopencode-et-configuration-de-lia)
 - [Programmation du LilyGO A7670G](#7-programmation-du-lilygo-a7670e)
 - [Notes importantes](#-notes-importantes)
 - [Commandes de vérification](#-commandes-de-vérification-utiles)
@@ -820,129 +820,78 @@ sudo pkill python3
 <div style="height: 5px; background: linear-gradient(90deg, #f59e0b, #f97316); border-radius: 999px; margin: 22px 0;"></div>
 
 
-## 6. Installation Node.js et outils CLI
-> 🛠️ **Objectif :** installer Node.js 22 avec NVM puis la Gemini CLI.
+## 6. Installation d'Opencode et configuration de l'IA
+> 🛠️ **Objectif :** installer Opencode CLI et configurer l'accès à l'IA Gemini.
 
 ### 💡 Concepts clés
 
-**Pourquoi Node.js dans un projet IoT?**
+**Pourquoi Opencode dans un projet IoT?**
 
-Node.js est un runtime JavaScript côté serveur. Dans le contexte IoT, il est très populaire car:
-- **npm** (Node Package Manager): accès à des milliers de bibliothèques pour MQTT, HTTP, capteurs, etc.
-- **Asynchrone par nature**: parfait pour gérer plusieurs connexions simultanées (capteurs, API, etc.)
-- **Léger**: peut tourner sur des appareils à ressources limitées comme le Raspberry Pi
-- **Écosystème riche**: outils CLI, frameworks web, bibliothèques de communication
+Opencode est un environnement de développement interactif qui permet d'intégrer des outils d'IA directement dans votre flux de travail. Dans le contexte IoT, il facilite :
+- **L'assistance au codage** : Génération et optimisation de code pour microcontrôleurs.
+- **Le débogage intelligent** : Analyse des logs d'erreurs et suggestions de corrections.
+- **L'automatisation** : Exécution de commandes complexes via l'IA.
 
-**NVM (Node Version Manager) : Pourquoi ne pas installer Node directement?**
+**Opencode CLI : Votre assistant IA sur le terrain**
 
-Sans NVM, vous installeriez Node.js via `apt install nodejs`, mais:
-- ❌ Version souvent obsolète (Ubuntu LTS a des versions anciennes de Node)
-- ❌ Nécessite `sudo` pour installer des packages globaux
-- ❌ Difficile de changer de version de Node
+Opencode vous donne accès à l'IA Gemini (y compris le palier gratuit) directement dans votre terminal, sans avoir à gérer la facturation API séparée.
 
-Avec NVM:
-- ✅ Installez N'IMPORTE quelle version de Node (22, 20, 18, etc.)
-- ✅ Basculez entre versions facilement (`nvm use 22`, `nvm use 20`)
-- ✅ Pas besoin de `sudo` → tout est dans votre dossier utilisateur (`~/.nvm`)
-- ✅ Isolation: chaque projet peut utiliser une version différente de Node
+**IMPORTANT:** Opencode peut aussi **exécuter des commandes système pour vous** :
+- 🔧 **Compiler et téléverser du code Arduino** vers l'ESP32.
+- 🔌 **Accéder au port série** de l'ESP32 pour lire les logs et déboguer.
+- 📦 **Exécuter des commandes Git**.
+- 🐚 **Lancer n'importe quelle commande Bash** sur le Raspberry Pi.
 
-**Gemini CLI : Assistant IA pour le développement**
+### 6.1 Installation d'Opencode CLI
 
-Gemini CLI est un outil développé par Google qui vous donne accès à l'IA Gemini directement depuis la ligne de commande. Vous pouvez:
-- Poser des questions sur votre code
-- Demander de générer du code
-- Obtenir de l'aide pour déboguer
-- Améliorer ou documenter votre code existant
-
-**IMPORTANT:** Gemini CLI peut aussi **exécuter des commandes système pour vous** en mode CLI:
-- 🔧 **Compiler et téléverser du code Arduino** vers l'ESP32 (via `arduino-cli compile` et `arduino-cli upload`)
-- 🔌 **Accéder au port série** de l'ESP32 pour lire les logs et déboguer (`arduino-cli monitor`)
-- 📦 **Exécuter des commandes Git** (add, commit, push, pull, etc.)
-- 🐚 **Lancer n'importe quelle commande Bash** sur le Raspberry Pi
-
-**Exemple de workflow avec Gemini CLI:**
-```
-Vous: "Ajoute un bouton REBOOT à l'interface tactile et teste-le"
-Gemini: [Modifie le code Python]
-        [Exécute: sudo chvt 1 && sudo setsid sh -c '...']
-        [Affiche le résultat]
-
-Vous: "Compile et téléverse ce code sur l'ESP32"
-Gemini: [Exécute: arduino-cli compile --fqbn esp32:esp32:esp32 ...]
-        [Exécute: arduino-cli upload -p /dev/ttyUSB0 ...]
-        [Affiche les logs de compilation]
-```
-
-C'est particulièrement puissant quand vous travaillez sur le Raspberry Pi à distance sans interface graphique : Gemini devient votre assistant qui comprend le contexte ET peut agir sur le système.
-
-### 6.1 Installation de base
+#### Installation via curl
+Opencode s'installe avec une seule commande :
 ```bash
-sudo apt install npm
+curl -fsSL https://opencode.ai/install | bash
 ```
 
-### 6.2 Configuration NVM (Node Version Manager)
-
-#### Activer NVM dans la session
+Après l'installation, redémarrez votre terminal ou exécutez :
 ```bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+source ~/.bashrc
 ```
 
-#### Vérifier NVM
+### 6.2 Configuration du plugin Gemini
+
+Ce plugin vous permet d'utiliser votre forfait Gemini existant directement dans Opencode, sans facturation API séparée.
+
+#### Ajouter le plugin
+Éditez votre fichier de configuration Opencode (`~/.config/opencode/opencode.json`) :
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-gemini-auth@latest"]
+}
+```
+
+### 6.3 Authentification et Connexion
+
+#### Lancer la procédure de connexion
 ```bash
-command -v nvm
+opencode auth login
 ```
 
-Devrait répondre: `nvm` ou `/home/fpoisson/.nvm/nvm.sh`
+#### Étapes de connexion :
+1. **Select Provider :** Choisissez **Google** dans la liste.
+2. **Authenticate :** Sélectionnez **OAuth with Google (Gemini CLI)**.
+3. **Approbation :** Une fenêtre de navigateur s'ouvrira pour approuver l'accès.
+   - Le plugin lance un serveur local temporaire pour capturer le retour.
+   - Si le serveur échoue (port utilisé ou environnement headless), vous pourrez coller manuellement l'URL de retour ou le code d'autorisation.
 
-#### Installer Node.js 22
+Une fois authentifié, Opencode pourra utiliser votre compte Google pour les requêtes Gemini.
+
+#### Lancer Opencode
 ```bash
-nvm install 22
-nvm use 22
+opencode
 ```
 
-#### Vérification
-```bash
-node -v    # Devrait afficher v22.x.x
-npm -v
-```
+### 6.4 Exercice pratique avec Opencode
 
-**Important:** Avec NVM, pas besoin de `sudo` pour `node`/`npm`. Tout est dans votre `$HOME`.
-
-### 6.3 Installation Gemini CLI
-
-#### Installation
-```bash
-npm install -g @google/gemini-cli
-```
-
-#### Vérification
-```bash
-gemini --help
-```
-
-Vous ne devriez plus voir l'erreur: `SyntaxError: Invalid regular expression flags`
-
-#### Utilisation
-```bash
-gemini
-```
-Lancer dans le dossier du code Python créé pour assistance.
-
-### 6.4 Nettoyage (optionnel)
-Pour supprimer l'ancienne installation globale:
-```bash
-nvm use system
-npm uninstall -g @google/gemini-cli
-nvm use 22
-```
-
-**Astuce:** Ajoutez `nvm use 22` dans votre `~/.bashrc` pour en faire la version par défaut.
-
-### 6.5 Exercice pratique avec Gemini CLI
-
-Maintenant que vous avez installé Gemini CLI, testez-le pour améliorer votre code!
+Maintenant que vous avez installé Opencode, testez-le pour améliorer votre code!
 
 **Exemple d'utilisation:**
 1. Naviguez vers votre code:
@@ -950,16 +899,15 @@ Maintenant que vous avez installé Gemini CLI, testez-le pour améliorer votre c
    cd ~/243-4J5-LI/labo1/code
    ```
 
-2. Lancez Gemini et demandez-lui d'ajouter une fonctionnalité:
+2. Lancez Opencode:
    ```bash
-   gemini
+   opencode
    ```
 
 3. **Suggestions de requêtes:**
    - "Ajoute un quatrième bouton 'REBOOT' qui affiche un message de confirmation"
    - "Ajoute des couleurs différentes pour chaque bouton"
    - "Crée une fonction qui affiche l'heure actuelle dans le coin supérieur droit"
-   - "Ajoute un indicateur de batterie factice qui change de couleur"
 
 4. Testez le code modifié:
    ```bash
@@ -970,18 +918,14 @@ Maintenant que vous avez installé Gemini CLI, testez-le pour améliorer votre c
 5. Sauvegardez vos changements avec Git:
    ```bash
    git add .
-   git commit -m "Ajout de fonctionnalité via Gemini: [décrivez ce que vous avez ajouté]"
+   git commit -m "Ajout de fonctionnalité via Opencode: [décrivez ce que vous avez ajouté]"
    git push origin prenom-nom/labo1
    ```
 
-<div style="background:#f0fdf4; border:1px solid #22c55e; padding:10px 12px; border-radius:10px;">
-<strong>✅ À remettre:</strong>
-<ul>
-  <li>Capturez une photo de votre écran tactile montrant la nouvelle fonctionnalité</li>
-  <li>Notez la requête Gemini que vous avez utilisée</li>
-  <li>Décrivez brièvement ce qui fonctionne et ce qui ne fonctionne pas</li>
-</ul>
-</div>
+**À remettre:**
+- Capturez une photo de votre écran tactile montrant la nouvelle fonctionnalité
+- Notez la requête Opencode que vous avez utilisée
+- Décrivez brièvement ce qui fonctionne et ce qui ne fonctionne pas
 
 <div style="height: 5px; background: linear-gradient(90deg, #34d399, #fbbf24); border-radius: 999px; margin: 22px 0;"></div>
 
