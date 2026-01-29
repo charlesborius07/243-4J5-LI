@@ -21,6 +21,48 @@
     <li><strong>Assistants IA CLI</strong> — coder efficacement en terminal</li>
   </ul>
   <p><strong>Labo 1 :</strong> installer Ubuntu Server sur le RPi, configurer le réseau et SSH, mettre en place Cloudflare Tunnel, et tester la compilation sur le LilyGO A7670G.</p>
+  <p><strong>Correctif Labo 1 :</strong> configuration WiFi WPA-EAP avec NetworkManager.</p>
+  <p><strong>Problème rencontré :</strong> la configuration WiFi par défaut avec <strong>networkd</strong> (renderer par défaut d'Ubuntu Server) pose problème avec les réseaux d'entreprise comme celui du Cégep. Le système tente de valider le certificat du serveur d'authentification (RADIUS) et, n'y arrivant pas, refuse la connexion et désactive l'interface WiFi.</p>
+  <p><strong>Solution :</strong> utiliser <strong>NetworkManager</strong>, plus permissif avec les certificats des réseaux WPA-EAP et mieux adapté à ce type de connexion.</p>
+  <p><strong>Étape 1 :</strong> se connecter temporairement à Internet (hotspot du téléphone).</p>
+  <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; overflow: auto;"><code># /etc/netplan/01-wifi.yaml
+network:
+  version: 2
+  renderer: networkd
+  wifis:
+    wlan0:
+      dhcp4: true
+      access-points:
+        "NomDeVotreHotspot":
+          password: "motdepasseduhotspot"</code></pre>
+  <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; overflow: auto;"><code>sudo netplan apply
+ping google.com</code></pre>
+  <p><strong>Étape 2 :</strong> installer NetworkManager.</p>
+  <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; overflow: auto;"><code>sudo apt update
+sudo apt install network-manager -y</code></pre>
+  <p><strong>Étape 3 :</strong> configurer le réseau du Cégep.</p>
+  <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; overflow: auto;"><code>sudo nano /etc/netplan/01-wifi.yaml</code></pre>
+  <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; overflow: auto;"><code>network:
+  version: 2
+  renderer: NetworkManager
+  wifis:
+    wlan0:
+      dhcp4: true
+      access-points:
+        "NomDuReseauCegep":
+          auth:
+            key-management: wpa-eap
+            method: peap
+            identity: "votre_identifiant"
+            password: "votre_mot_de_passe"
+            phase2-auth: mschapv2</code></pre>
+  <p><strong>Attention :</strong> remplacez <strong>NomDuReseauCegep</strong>, <strong>votre_identifiant</strong> et <strong>votre_mot_de_passe</strong> par vos informations réelles.</p>
+  <p><strong>Étape 4 :</strong> appliquer et tester.</p>
+  <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; overflow: auto;"><code>sudo netplan apply
+ip a
+ping google.com</code></pre>
+  <p><strong>Sécurité :</strong> protégez le fichier qui contient vos identifiants.</p>
+  <pre style="background: #f5f5f5; padding: 8px; border-radius: 4px; overflow: auto;"><code>sudo chmod 600 /etc/netplan/01-wifi.yaml</code></pre>
   <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
     <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
     <ul style="margin: 0; padding-left: 20px;">
