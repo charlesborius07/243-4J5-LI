@@ -1,0 +1,837 @@
+[
+  {
+    "field_id": "Enseignants 1",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      107.16,
+      605.4,
+      314.88,
+      621.24
+    ]
+  },
+  {
+    "field_id": "Date de la demande",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      470.76,
+      605.4,
+      577.44,
+      621.24
+    ]
+  },
+  {
+    "field_id": "Enseignants 2",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      107.16,
+      588.84,
+      314.88,
+      604.68
+    ]
+  },
+  {
+    "field_id": "Formation continue",
+    "type": "checkbox",
+    "checked_value": "/Oui",
+    "unchecked_value": "/Off",
+    "page": 1,
+    "rect": [
+      266.719,
+      568.167,
+      281.749,
+      583.197
+    ]
+  },
+  {
+    "field_id": "R\u00e9gulier",
+    "type": "checkbox",
+    "checked_value": "/Oui",
+    "unchecked_value": "/Off",
+    "page": 1,
+    "rect": [
+      79.2012,
+      568.077,
+      94.2311,
+      583.107
+    ]
+  },
+  {
+    "field_id": "Magasinier",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      108.48,
+      550.735,
+      314.88,
+      566.575
+    ]
+  },
+  {
+    "field_id": "Laboratoire",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      468,
+      524.558,
+      570.12,
+      539.52
+    ]
+  },
+  {
+    "field_id": "Cours",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      104.64,
+      524.223,
+      312.6,
+      539.52
+    ]
+  },
+  {
+    "field_id": "Date",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      201.6,
+      506.88,
+      312.6,
+      521.73
+    ]
+  },
+  {
+    "field_id": "Heure",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      379.8,
+      506.88,
+      468.12,
+      522.72
+    ]
+  },
+  {
+    "field_id": "Date_2",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      201.6,
+      489.84,
+      312.6,
+      505.68
+    ]
+  },
+  {
+    "field_id": "Heure_2",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      379.8,
+      489.84,
+      468.84,
+      505.68
+    ]
+  },
+  {
+    "field_id": "JourRow1",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      30.24,
+      443.52,
+      206.28,
+      454.56
+    ]
+  },
+  {
+    "field_id": "Heure d\u00e9butRow1",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      207.36,
+      443.52,
+      404.76,
+      454.56
+    ]
+  },
+  {
+    "field_id": "Heure finRow1",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      405.84,
+      443.52,
+      576.6,
+      454.56
+    ]
+  },
+  {
+    "field_id": "JourRow2",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      30.24,
+      431.52,
+      206.28,
+      442.56
+    ]
+  },
+  {
+    "field_id": "Heure d\u00e9butRow2",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      207.36,
+      431.52,
+      404.76,
+      442.56
+    ]
+  },
+  {
+    "field_id": "Heure finRow2",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      405.84,
+      431.52,
+      576.6,
+      442.56
+    ]
+  },
+  {
+    "field_id": "JourRow3",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      30.24,
+      419.52,
+      206.28,
+      430.56
+    ]
+  },
+  {
+    "field_id": "Heure d\u00e9butRow3",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      207.36,
+      419.52,
+      404.76,
+      430.56
+    ]
+  },
+  {
+    "field_id": "Heure finRow3",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      405.84,
+      419.52,
+      576.6,
+      430.56
+    ]
+  },
+  {
+    "field_id": "JourRow4",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      30.24,
+      407.52,
+      206.28,
+      418.56
+    ]
+  },
+  {
+    "field_id": "Heure d\u00e9butRow4",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      207.36,
+      407.52,
+      404.76,
+      418.56
+    ]
+  },
+  {
+    "field_id": "Heure finRow4",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      405.84,
+      407.52,
+      576.6,
+      418.56
+    ]
+  },
+  {
+    "field_id": "JourRow5",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      30.24,
+      395.52,
+      206.28,
+      406.56
+    ]
+  },
+  {
+    "field_id": "Heure d\u00e9butRow5",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      207.36,
+      395.52,
+      404.76,
+      406.56
+    ]
+  },
+  {
+    "field_id": "Heure finRow5",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      405.84,
+      395.52,
+      576.6,
+      406.56
+    ]
+  },
+  {
+    "field_id": "Chariot 1",
+    "type": "checkbox",
+    "checked_value": "/Oui",
+    "unchecked_value": "/Off",
+    "page": 1,
+    "rect": [
+      168.867,
+      364.064,
+      183.897,
+      379.094
+    ]
+  },
+  {
+    "field_id": "Kit 1",
+    "type": "checkbox",
+    "checked_value": "/Oui",
+    "unchecked_value": "/Off",
+    "page": 1,
+    "rect": [
+      61.7861,
+      363.234,
+      76.816,
+      378.264
+    ]
+  },
+  {
+    "field_id": "Comptoir",
+    "type": "checkbox",
+    "checked_value": "/Oui",
+    "unchecked_value": "/Off",
+    "page": 1,
+    "rect": [
+      281.889,
+      362.914,
+      296.919,
+      377.944
+    ]
+  },
+  {
+    "field_id": "Quantit\u00e9",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      136.887,
+      341.542,
+      194.324,
+      355.527
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row1",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      312.96,
+      64.08,
+      324
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow1",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      312.96,
+      539.16,
+      324
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row2",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      300.96,
+      64.08,
+      312
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow2",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      300.96,
+      539.16,
+      312
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row3",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      288.96,
+      64.08,
+      300
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow3",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      288.96,
+      539.16,
+      300
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row4",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      276.96,
+      64.08,
+      288
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow4",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      276.96,
+      539.16,
+      288
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row5",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      264.96,
+      64.08,
+      276
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow5",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      264.96,
+      539.16,
+      276
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row6",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      252.96,
+      64.08,
+      264
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow6",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      252.96,
+      539.16,
+      264
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row7",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      240.96,
+      64.08,
+      252
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow7",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      240.96,
+      539.16,
+      252
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row8",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      228.96,
+      64.08,
+      240
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow8",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      228.96,
+      539.16,
+      240
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row9",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      216.96,
+      64.08,
+      228
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow9",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      216.96,
+      539.16,
+      228
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row10",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      204.96,
+      64.08,
+      216
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow10",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      204.96,
+      539.16,
+      216
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row11",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      193.08,
+      64.08,
+      204
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow11",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      193.08,
+      539.16,
+      204
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row12",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      181.08,
+      64.08,
+      192.12
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow12",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      181.08,
+      539.16,
+      192.12
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row13",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      169.08,
+      64.08,
+      180.12
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow13",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      169.08,
+      539.16,
+      180.12
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row14",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      157.08,
+      64.08,
+      168.12
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow14",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      157.08,
+      539.16,
+      168.12
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row15",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      145.08,
+      64.08,
+      156.12
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow15",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      145.08,
+      539.16,
+      156.12
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row16",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      133.08,
+      64.08,
+      144.12
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow16",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      133.08,
+      539.16,
+      144.12
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row17",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      121.08,
+      64.08,
+      132.12
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow17",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      121.08,
+      539.16,
+      132.12
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row18",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      109.08,
+      65.07,
+      120.12
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow18",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      109.08,
+      539.16,
+      120.12
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row19",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      97.08,
+      64.08,
+      108.12
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow19",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      97.08,
+      539.16,
+      108.12
+    ]
+  },
+  {
+    "field_id": "Qt\u00e9Row20",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      31.44,
+      85.08,
+      64.08,
+      96.12
+    ]
+  },
+  {
+    "field_id": "Mat\u00e9rielRow20",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      65.16,
+      85.08,
+      539.16,
+      96.12
+    ]
+  },
+  {
+    "field_id": "Commentaires",
+    "type": "text",
+    "page": 1,
+    "rect": [
+      140.64,
+      49.95,
+      576.36,
+      84.6901
+    ]
+  },
+  {
+    "field_id": "R\u00e9initialiser",
+    "type": "checkbox",
+    "page": 1,
+    "rect": [
+      430.693,
+      15.9603,
+      502.693,
+      35.9603
+    ]
+  },
+  {
+    "field_id": "Imprimer",
+    "type": "checkbox",
+    "page": 1,
+    "rect": [
+      102.764,
+      15.7785,
+      174.764,
+      35.7785
+    ]
+  },
+  {
+    "field_id": "Envoyer",
+    "type": "checkbox",
+    "page": 1,
+    "rect": [
+      268.365,
+      15.3057,
+      340.365,
+      35.3057
+    ]
+  }
+]

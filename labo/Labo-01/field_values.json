@@ -1,0 +1,368 @@
+[
+  {
+    "field_id": "Cours",
+    "description": "Cours",
+    "page": 1,
+    "value": "243-4J5-LI"
+  },
+  {
+    "field_id": "Laboratoire",
+    "description": "Laboratoire",
+    "page": 1,
+    "value": "Q2224"
+  },
+  {
+    "field_id": "Enseignants 1",
+    "description": "Enseignant",
+    "page": 1,
+    "value": "Francis Poisson"
+  },
+  {
+    "field_id": "Date de la demande",
+    "description": "Date de la demande",
+    "page": 1,
+    "value": "23-01-2026"
+  },
+  {
+    "field_id": "Régulier",
+    "description": "Checkbox Regulier",
+    "page": 1,
+    "value": "/Oui"
+  },
+  {
+    "field_id": "Formation continue",
+    "description": "Checkbox Formation continue",
+    "page": 1,
+    "value": "/Off"
+  },
+  {
+    "field_id": "Kit 1",
+    "description": "Checkbox Kit",
+    "page": 1,
+    "value": "/Off"
+  },
+  {
+    "field_id": "Chariot 1",
+    "description": "Checkbox Chariot",
+    "page": 1,
+    "value": "/Oui"
+  },
+  {
+    "field_id": "Comptoir",
+    "description": "Checkbox Comptoir",
+    "page": 1,
+    "value": "/Off"
+  },
+  {
+    "field_id": "Quantité",
+    "description": "Quantite chariot",
+    "page": 1,
+    "value": "8"
+  },
+  {
+    "field_id": "QtéRow1",
+    "description": "Quantite 1",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow1",
+    "description": "Materiel 1",
+    "page": 1,
+    "value": "Raspberry Pi 5"
+  },
+  {
+    "field_id": "QtéRow2",
+    "description": "Quantite 2",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow2",
+    "description": "Materiel 2",
+    "page": 1,
+    "value": "Clavier et écran tactile"
+  },
+  {
+    "field_id": "QtéRow3",
+    "description": "Quantite 3",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow3",
+    "description": "Materiel 3",
+    "page": 1,
+    "value": "Alimentation USB-C officielle/équivalente"
+  },
+  {
+    "field_id": "QtéRow4",
+    "description": "Quantite 4",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow4",
+    "description": "Materiel 4",
+    "page": 1,
+    "value": "Carte microSD 64 GB avec Ubuntu Server"
+  },
+  {
+    "field_id": "QtéRow5",
+    "description": "Quantite 5",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow5",
+    "description": "Materiel 5",
+    "page": 1,
+    "value": "Câble micro-USB pour le clavier (si requis)"
+  },
+  {
+    "field_id": "QtéRow6",
+    "description": "Quantite 6",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow6",
+    "description": "Materiel 6",
+    "page": 1,
+    "value": "Connexion Ethernet"
+  },
+  {
+    "field_id": "QtéRow7",
+    "description": "Quantite 7",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow7",
+    "description": "Materiel 7",
+    "page": 1,
+    "value": "Cloudflare Tunnel (cloudflared)"
+  },
+  {
+    "field_id": "QtéRow8",
+    "description": "Quantite 8",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow8",
+    "description": "Materiel 8",
+    "page": 1,
+    "value": "Réseau WiFi prêt (profil Cégep)"
+  },
+  {
+    "field_id": "QtéRow9",
+    "description": "Quantite 9",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow9",
+    "description": "Materiel 9",
+    "page": 1,
+    "value": "LilyGO A7670G avec antennes LTE et GPS"
+  },
+  {
+    "field_id": "QtéRow10",
+    "description": "Quantite 10",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow10",
+    "description": "Materiel 10",
+    "page": 1,
+    "value": "Carte SIM activee (PIN desactive ou connu)"
+  },
+  {
+    "field_id": "QtéRow11",
+    "description": "Quantite 11",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow11",
+    "description": "Materiel 11",
+    "page": 1,
+    "value": "Cable USB-A vers USB-C"
+  },
+  {
+    "field_id": "QtéRow12",
+    "description": "Quantite 12",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow12",
+    "description": "Materiel 12",
+    "page": 1,
+    "value": "Plaquette de prototypage (breadboard)"
+  },
+  {
+    "field_id": "QtéRow13",
+    "description": "Quantite 13",
+    "page": 1,
+    "value": "2"
+  },
+  {
+    "field_id": "MatérielRow13",
+    "description": "Materiel 13",
+    "page": 1,
+    "value": "LEDs 5 mm (rouge et verte)"
+  },
+  {
+    "field_id": "QtéRow14",
+    "description": "Quantite 14",
+    "page": 1,
+    "value": "2"
+  },
+  {
+    "field_id": "MatérielRow14",
+    "description": "Materiel 14",
+    "page": 1,
+    "value": "Resistances 220 ohm ou 330 ohm"
+  },
+  {
+    "field_id": "QtéRow15",
+    "description": "Quantite 15",
+    "page": 1,
+    "value": "1"
+  },
+  {
+    "field_id": "MatérielRow15",
+    "description": "Materiel 15",
+    "page": 1,
+    "value": "Fils jumper"
+  },
+  {
+    "field_id": "QtéRow16",
+    "description": "Quantite 16",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "MatérielRow16",
+    "description": "Materiel 16",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "QtéRow17",
+    "description": "Quantite 17",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "MatérielRow17",
+    "description": "Materiel 17",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "QtéRow18",
+    "description": "Quantite 18",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "MatérielRow18",
+    "description": "Materiel 18",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "QtéRow19",
+    "description": "Quantite 19",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "MatérielRow19",
+    "description": "Materiel 19",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "QtéRow20",
+    "description": "Quantite 20",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "MatérielRow20",
+    "description": "Materiel 20",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "Commentaires",
+    "description": "Commentaires",
+    "page": 1,
+    "value": "8 etudiants"
+  },
+  {
+    "field_id": "Date",
+    "description": "Début - Date",
+    "page": 1,
+    "value": "23-01-2026"
+  },
+  {
+    "field_id": "Heure",
+    "description": "Début - Heure",
+    "page": 1,
+    "value": "08:00"
+  },
+  {
+    "field_id": "Date_2",
+    "description": "Fin - Date",
+    "page": 1,
+    "value": "23-01-2026"
+  },
+  {
+    "field_id": "Heure_2",
+    "description": "Fin - Heure",
+    "page": 1,
+    "value": "11:00"
+  },
+  {
+    "field_id": "JourRow1",
+    "description": "Horaire 1 - Jour",
+    "page": 1,
+    "value": "Jeudi"
+  },
+  {
+    "field_id": "Heure débutRow1",
+    "description": "Horaire 1 - Debut",
+    "page": 1,
+    "value": "08:00"
+  },
+  {
+    "field_id": "Heure finRow1",
+    "description": "Horaire 1 - Fin",
+    "page": 1,
+    "value": "11:00"
+  },
+  {
+    "field_id": "JourRow2",
+    "description": "Horaire 2 - Jour",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "Heure débutRow2",
+    "description": "Horaire 2 - Debut",
+    "page": 1,
+    "value": ""
+  },
+  {
+    "field_id": "Heure finRow2",
+    "description": "Horaire 2 - Fin",
+    "page": 1,
+    "value": ""
+  }
+]

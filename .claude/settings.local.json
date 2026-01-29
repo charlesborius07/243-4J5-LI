@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ren:*)",
+      "Bash(ren labo2.json \"Labo 2 - Communication sans fil.json\")",
+      "Bash(dir:*)"
+    ]
+  }
+}
