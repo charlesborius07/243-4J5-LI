@@ -411,6 +411,12 @@ C'est comme avoir un **garde de sécurité virtuel** qui vérifie l'identité de
 
 ### 3.2 Installation et configuration sur le Raspberry Pi
 
+#### Installer cloudflared
+```bash
+wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64.deb
+sudo dpkg -i cloudflared-linux-arm64.deb
+```
+
 #### Authentification Cloudflare
 ```bash
 cloudflared login
@@ -1449,6 +1455,17 @@ git push origin prenom-nom/labo1
   <li>Capture d'écran de votre test MQTT (pub/sub) fonctionnel</li>
   <li>Capture d'écran du moniteur série montrant la connexion WiFi réussie</li>
   <li>Code du test WiFi dans votre dépôt Git</li>
+</ul>
+</div>
+
+## 📝 Notes importantes (Mise à jour 2026)
+
+<div style="background:#fef2f2; border:1px solid #ef4444; padding:10px 12px; border-radius:10px;">
+<strong>🔧 Correctifs Labo 1 (2026)</strong>
+<ul>
+  <li><strong>WiFi du Cégep:</strong> commencer par un point d'accès mobile en <code>networkd</code>, installer <code>network-manager</code>, puis basculer sur <code>NetworkManager</code> pour se connecter au réseau du Cégep (WPA-EAP).</li>
+  <li><strong>Cloudflare (workflow):</strong> le fichier <code>config.yml</code> doit afficher l'UUID du tunnel sur la ligne <code>tunnel:</code>.</li>
+  <li><strong>Cloudflare (workflow):</strong> ajouter la commande d'installation de <code>cloudflared</code> si elle est absente.</li>
 </ul>
 </div>
 
