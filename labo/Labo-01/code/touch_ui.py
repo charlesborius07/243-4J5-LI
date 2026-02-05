@@ -69,25 +69,35 @@ class CoolConsoleUI:
     def _init_colors(self):
         curses.start_color()
         curses.use_default_colors()
-        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_CYAN)   # bouton normal
-        curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_GREEN)  # bouton actif
-        curses.init_pair(3, curses.COLOR_YELLOW, -1)                 # texte status
+        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_CYAN)   # STATUS
+        curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_GREEN)  # Active (Pressed)
+        curses.init_pair(3, curses.COLOR_YELLOW, -1)                 # Texte status
+        curses.init_pair(4, curses.COLOR_BLACK, curses.COLOR_MAGENTA)# LOGS
+        curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_YELLOW) # REBOOT
+        curses.init_pair(6, curses.COLOR_WHITE, curses.COLOR_RED)    # QUIT
 
     def _build_buttons(self, h, w):
         """
-        Construit 3 gros boutons centrés verticalement.
+        Construit 4 gros boutons centrés verticalement.
         """
         self.buttons = []
         btn_width = max(20, w - 4)
         btn_height = 3
 
         # positions verticales
-        start_row = h // 2 - 5
-        if start_row < 3:
-            start_row = 3
+        start_row = h // 2 - 7  # Ajusté pour 4 boutons
+        if start_row < 2:
+            start_row = 2
 
-        labels = ["STATUS", "LOGS", "QUIT"]
-        for i, label in enumerate(labels):
+        # Label + index de couleur (défini dans _init_colors)
+        button_defs = [
+            ("STATUS", 1),
+            ("LOGS", 4),
+            ("REBOOT", 5),
+            ("QUIT", 6)
+        ]
+
+        for i, (label, color_idx) in enumerate(button_defs):
             row = start_row + i * (btn_height + 1)
             col = (w - btn_width) // 2
             self.buttons.append({
@@ -97,6 +107,7 @@ class CoolConsoleUI:
                 "height": btn_height,
                 "width": btn_width,
                 "active": False,
+                "color_idx": color_idx,
             })
 
     def _draw(self):
@@ -119,7 +130,9 @@ class CoolConsoleUI:
 
         # Dessin des boutons
         for btn in self.buttons:
-            attr = curses.color_pair(2) if btn["active"] else curses.color_pair(1)
+            # Si actif (touché), on utilise la paire 2 (Vert), sinon la couleur spécifique du bouton
+            attr = curses.color_pair(2) if btn["active"] else curses.color_pair(btn["color_idx"])
+            
             for r in range(btn["row"], btn["row"] + btn["height"]):
                 if 0 <= r < h:
                     self.stdscr.attron(attr)
@@ -182,6 +195,8 @@ class CoolConsoleUI:
             self.status_message = f"STATUS: Tout roule. Touch={row},{col}"
         elif label == "LOGS":
             self.status_message = "LOGS: (ici tu pourrais afficher des logs système, etc.)"
+        elif label == "REBOOT":
+            self.status_message = "REBOOT: Voulez-vous vraiment redémarrer ?"
         elif label == "QUIT":
             self.status_message = "Quit demandé..."
             self.running = False
