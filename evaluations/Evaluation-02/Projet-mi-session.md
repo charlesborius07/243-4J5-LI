@@ -367,12 +367,12 @@ Vous pouvez proposer votre propre projet. Il doit :
 │   ├── shield.kicad_sch
 │   └── shield.kicad_pcb
 ├── firmware/                   # Code LilyGO A7670G
-│   ├── src/
-│   │   └── main.cpp
-│   ├── platformio.ini
+│   ├── firmware.ino            # Sketch principal Arduino (même nom que le dossier)
+│   ├── auth.h                  # Credentials MQTT (ne pas committer — voir auth.h.example)
+│   ├── trust_anchors.h         # Certificats TLS
 │   ├── tests/
 │   │   └── checklist.md        # Checklist de validation firmware
-│   └── README.md               # Instructions de compilation
+│   └── README.md               # Instructions de téléversement (Arduino IDE)
 ├── interface/                  # Interface Python Raspberry Pi
 │   ├── main.py
 │   ├── requirements.txt
@@ -463,7 +463,7 @@ Votre projet doit **partir du code développé dans les labos précédents** :
 | Outil | Usage |
 |-------|-------|
 | KiCad | Schéma et PCB |
-| Arduino IDE / PlatformIO | Firmware LilyGO |
+| Arduino IDE | Firmware LilyGO |
 | Python 3 + pygame + paho-mqtt | Interface Raspberry Pi |
 | Multimètre | Tests du prototype breadboard |
 
