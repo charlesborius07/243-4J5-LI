@@ -151,6 +151,7 @@ L'interface Python sur le Raspberry Pi 5 doit :
 2. **Permettre le contrôle** des LEDs via l'interface tactile
 3. **Être fonctionnelle** sur l'écran tactile du Raspberry Pi
 4. **Implémenter la logique applicative** de votre projet
+5. **Démarrer automatiquement** au démarrage du Raspberry Pi
 
 ### Fonctionnalités minimales
 
@@ -159,6 +160,54 @@ L'interface Python sur le Raspberry Pi 5 doit :
 - Affichage des données de l'accéléromètre (axes X, Y, Z + inclinaison)
 - Boutons tactiles pour contrôler les LEDs à distance
 - Interface adaptée à votre concept de projet (jeu, dashboard, etc.)
+
+### Démarrage automatique au boot
+
+L'interface doit se lancer sans intervention manuelle au démarrage du Raspberry Pi. Utiliser un service **systemd** :
+
+**1. Créer le fichier de service**
+
+```bash
+sudo nano /etc/systemd/system/iot-interface.service
+```
+
+```ini
+[Unit]
+Description=Interface IoT — Projet mi-session
+After=network.target mosquitto.service
+Wants=mosquitto.service
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/243-4J5-LI/projet-mi-session/interface
+ExecStart=/usr/bin/python3 /home/pi/243-4J5-LI/projet-mi-session/interface/main.py
+Restart=on-failure
+RestartSec=5
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+
+[Install]
+WantedBy=graphical.target
+```
+
+**2. Activer et démarrer le service**
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable iot-interface.service
+sudo systemctl start iot-interface.service
+```
+
+**3. Vérifier le statut**
+
+```bash
+sudo systemctl status iot-interface.service
+# Journaux en temps réel :
+journalctl -u iot-interface.service -f
+```
+
+> **Note :** Le service redémarre automatiquement en cas de crash (`Restart=on-failure`). Pour l'arrêter manuellement : `sudo systemctl stop iot-interface.service`.
 
 ### Standards de qualité de l'interface
 
@@ -238,6 +287,11 @@ Compléter et inclure dans votre dépôt le fichier `interface/tests/checklist.m
 ### Contrôle
 - [ ] Chaque bouton tactile LED envoie la commande MQTT correcte
 - [ ] L'état de la LED se reflète dans l'interface (feedback visuel)
+
+### Démarrage automatique
+- [ ] Service systemd `iot-interface.service` créé et activé
+- [ ] Interface se lance automatiquement après un redémarrage (`sudo reboot`)
+- [ ] Service redémarre après un kill forcé (`kill -9 <pid>`)
 
 ### Qualité
 - [ ] Aucune exception Python non gérée lors de l'utilisation normale
@@ -322,9 +376,10 @@ Vous pouvez proposer votre propre projet. Il doit :
 ├── interface/                  # Interface Python Raspberry Pi
 │   ├── main.py
 │   ├── requirements.txt
+│   ├── iot-interface.service   # Service systemd (copier dans /etc/systemd/system/)
 │   ├── tests/
 │   │   └── checklist.md        # Checklist de validation interface
-│   └── README.md               # Instructions d'exécution
+│   └── README.md               # Instructions d'exécution et d'activation du service
 ├── fabrication/                # Fichiers de fabrication PCB
 │   ├── gerbers/
 │   ├── bom.csv
@@ -344,7 +399,7 @@ Vous pouvez proposer votre propre projet. Il doit :
 |---------|:-----------:|-------------|
 | **Shield PCB** | 25% | Schéma complet (ERC propre), routage soigné (DRC propre), plan de masse, silkscreen clair, prototype fonctionnel |
 | **Programme embarqué** | 25% | Lecture de tous les capteurs, publication MQTT, réception des commandes, qualité et lisibilité du code |
-| **Interface Raspberry Pi** | 20% | Affichage temps réel, contrôle des LEDs, ergonomie tactile, apparence professionnelle |
+| **Interface Raspberry Pi** | 20% | Affichage temps réel, contrôle des LEDs, ergonomie tactile, apparence professionnelle, démarrage automatique au boot |
 | **Tests et validation** | 15% | Checklists complétées et signées, tests documentés, robustesse démontrée |
 | **Documentation** | 15% | README clair, schéma PDF inclus, BOM, instructions de compilation/exécution, photos/vidéo |
 
