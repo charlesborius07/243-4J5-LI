@@ -131,26 +131,21 @@ ping google.com</code></pre>
 ## Semaine 4
 
 <div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
-  <p>Introduction à la conception de <strong>circuits imprimés (PCB)</strong> avec <strong>KiCad</strong>, logiciel libre et professionnel. Transformer un prototype breadboard en produit fiable et reproductible.</p>
-  <p><strong>Concepts PCB :</strong></p>
+  <p>Cette semaine, les étudiants ont réalisé le <strong>Labo 3 – Workflow complet KiCad</strong> en travaux pratiques. Aucune présentation théorique n'a été diffusée cette semaine.</p>
+  <p><strong>Labo 3 (pratique) :</strong></p>
   <ul style="margin: 10px 0;">
-    <li><strong>Schéma électrique</strong> — représentation logique des connexions</li>
-    <li><strong>Empreintes (footprints)</strong> — dimensions physiques des composants</li>
-    <li><strong>Pistes et pastilles</strong> — chemins de cuivre pour les connexions</li>
-    <li><strong>ERC</strong> — vérification des règles électriques du schéma</li>
+    <li><strong>Création d'un projet KiCad</strong> — fichiers .kicad_pro, .kicad_sch, .kicad_pcb</li>
+    <li><strong>Saisie de schéma</strong> — placement de composants, connexions, symboles d'alimentation</li>
+    <li><strong>Assignation des empreintes</strong> — THT résistances, LED, connecteurs</li>
+    <li><strong>Routage 2 couches</strong> — placement, traces, plan de masse</li>
+    <li><strong>Génération Gerbers/BOM</strong> — fichiers de fabrication</li>
   </ul>
-  <p><strong>Workflow KiCad :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li><strong>Saisie du schéma</strong> — placement des symboles et connexions</li>
-    <li><strong>Assignation des empreintes</strong> — THT (traversant) ou SMD (CMS)</li>
-    <li><strong>Routage</strong> — tracer les pistes sur le PCB</li>
-  </ul>
-  <p><strong>Labo 4 :</strong> créer un premier projet KiCad, saisir un schéma simple (LED + résistance), et générer les fichiers de fabrication.</p>
+  <p>Ce labo pratique prépare les étudiants à dessiner leur propre schéma PCB lors des semaines 5 et 6.</p>
   <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
     <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
     <ul style="margin: 0; padding-left: 20px;">
-      <li>Rassembler les composants pour le prototype breadboard du projet</li>
-      <li>Planifier le schéma du shield LilyGO (2 LEDs, 2 boutons, 2 potentiomètres, accéléromètre)</li>
+      <li>Revoir le workflow KiCad pratiqué en labo</li>
+      <li>Identifier les composants de votre projet de mi-session</li>
       <li>Créer le dépôt GitHub pour le projet de mi-session</li>
     </ul>
   </div>
@@ -164,26 +159,29 @@ ping google.com</code></pre>
 ## Semaine 5
 
 <div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
-  <p>Début du projet de mi-session : conception d'un <strong>shield PCB pour le LilyGO A7670G</strong>. Communication <strong>I2C</strong> avec accéléromètre et lecture <strong>ADC</strong> des potentiomètres.</p>
-  <p><strong>Protocole I2C :</strong></p>
+  <p>Introduction théorique à la conception de <strong>circuits imprimés (PCB)</strong> avec <strong>KiCad</strong>. Transformer le prototype breadboard du projet en un schéma électrique rigoureux, puis en layout PCB.</p>
+  <p><strong>Concepts PCB :</strong></p>
   <ul style="margin: 10px 0;">
-    <li><strong>Bus série 2 fils</strong> — SDA (données) et SCL (horloge)</li>
-    <li><strong>Adressage</strong> — chaque périphérique a une adresse unique (ex: 0x68)</li>
-    <li><strong>Résistances pull-up</strong> — maintiennent les lignes à l'état haut</li>
+    <li><strong>Schéma électrique</strong> — représentation logique des connexions (symboles, fils, labels)</li>
+    <li><strong>Empreintes (footprints)</strong> — dimensions physiques réelles des composants sur le PCB</li>
+    <li><strong>Pistes et pastilles</strong> — chemins de cuivre pour les connexions</li>
+    <li><strong>ERC</strong> — vérification des règles électriques avant routage</li>
+    <li><strong>Composants THT vs SMD</strong> — traversants (plus faciles à souder) vs CMS</li>
   </ul>
-  <p><strong>Conversion ADC :</strong></p>
+  <p><strong>Un symbole, plusieurs empreintes :</strong> une résistance peut être THT (R_Axial_DIN0207) ou SMD (0805, 0603, 0402) — même valeur, forme physique différente.</p>
+  <p><strong>Workflow KiCad :</strong></p>
   <ul style="margin: 10px 0;">
-    <li><strong>Résolution 12 bits</strong> — valeurs de 0 à 4095 sur l'ESP32</li>
-    <li><strong>ADC1 uniquement</strong> — ADC2 incompatible avec WiFi actif (GPIO 32-39)</li>
-    <li><strong>Filtrage</strong> — moyenne mobile ou filtre passe-bas (EMA) pour stabiliser</li>
+    <li><strong>Saisie du schéma</strong> — placement des symboles et connexions électriques</li>
+    <li><strong>Assignation des empreintes</strong> — lier chaque composant à ses dimensions physiques</li>
+    <li><strong>Importation dans l'éditeur PCB</strong> — mise en page physique du circuit</li>
   </ul>
-  <p><strong>Labo 5 :</strong> monter le prototype complet sur breadboard, tester tous les capteurs/actionneurs, et documenter le projet sur GitHub.</p>
+  <p><strong>Labo 5 :</strong> commencer le schéma KiCad du shield LilyGO A7670G — placer les composants assignés (LEDs, boutons, potentiomètres selon assignation, accéléromètre MPU6050, connecteurs femelles) et établir toutes les connexions électriques.</p>
   <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
     <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
     <ul style="margin: 0; padding-left: 20px;">
-      <li>Finaliser le prototype breadboard fonctionnel</li>
-      <li>Compléter le schéma KiCad avec tous les composants</li>
-      <li>Passer l'ERC sans erreurs</li>
+      <li>Compléter le schéma KiCad du shield (ERC sans erreurs)</li>
+      <li>Monter ou finaliser le prototype breadboard</li>
+      <li>Assigner les empreintes à tous les composants</li>
     </ul>
   </div>
   <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
@@ -196,27 +194,34 @@ ping google.com</code></pre>
 ## Semaine 6
 
 <div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
-  <p>Finalisation du <strong>routage PCB</strong> et génération des <strong>fichiers Gerber</strong> pour la fabrication. Vérification DRC et préparation à la commande chez un fabricant.</p>
-  <p><strong>Routage avancé :</strong></p>
+  <p>Prototype <strong>breadboard</strong> complet du shield LilyGO et finalisation du <strong>routage PCB</strong>. Communication <strong>I2C</strong> avec l'accéléromètre MPU6050 et lecture <strong>ADC</strong> des potentiomètres.</p>
+  <p><strong>Protocole I2C (accéléromètre MPU6050) :</strong></p>
   <ul style="margin: 10px 0;">
-    <li><strong>Plan de masse</strong> — couche Bottom remplie de GND pour réduire le bruit</li>
-    <li><strong>Vias</strong> — trous métallisés pour connecter les couches Top et Bottom</li>
-    <li><strong>Largeur des pistes</strong> — 0.25mm pour signaux, 0.5mm pour alimentation</li>
+    <li><strong>Bus série 2 fils</strong> — SDA (données) et SCL (horloge), résistances pull-up 4.7 kΩ</li>
+    <li><strong>Adresse I2C</strong> — 0x68 (MPU6050), chaque périphérique a une adresse unique</li>
+    <li><strong>Registres</strong> — lecture des axes X, Y, Z (accélération 16 bits par axe)</li>
+    <li><strong>Bibliothèque Adafruit_MPU6050</strong> — simplifie l'utilisation du capteur</li>
+  </ul>
+  <p><strong>Conversion ADC (potentiomètres) :</strong></p>
+  <ul style="margin: 10px 0;">
+    <li><strong>Résolution 12 bits</strong> — valeurs de 0 à 4095 sur l'ESP32</li>
+    <li><strong>ADC1 uniquement</strong> — GPIO 32-39, compatible avec WiFi actif</li>
+    <li><strong>Filtrage EMA</strong> — lissage exponentiel pour stabiliser les lectures bruyantes</li>
+  </ul>
+  <p><strong>Finalisation routage PCB :</strong></p>
+  <ul style="margin: 10px 0;">
+    <li><strong>Plan de masse</strong> — couche Bottom en GND pour réduire le bruit</li>
+    <li><strong>Vias</strong> — connexions entre les couches Top et Bottom</li>
     <li><strong>DRC</strong> — vérification des règles de conception (clearance, drill)</li>
+    <li><strong>Gerbers</strong> — génération des fichiers de fabrication (.GTL, .GBL, .DRL, BOM)</li>
   </ul>
-  <p><strong>Fichiers de fabrication :</strong></p>
-  <ul style="margin: 10px 0;">
-    <li><strong>Gerber</strong> — format standard pour chaque couche (.GTL, .GBL, .GTS, etc.)</li>
-    <li><strong>Fichier de perçage</strong> — .DRL au format Excellon</li>
-    <li><strong>BOM</strong> — liste des composants à acheter</li>
-  </ul>
-  <p><strong>Labo 6 :</strong> finaliser le routage, passer le DRC sans erreur, générer les Gerbers et les vérifier dans un visualiseur.</p>
+  <p><strong>Labo 6 :</strong> compléter le routage PCB, passer le DRC sans erreurs, générer les Gerbers, et finaliser la documentation GitHub.</p>
   <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
     <p style="margin: 0 0 8px 0;"><strong>À faire pour la semaine prochaine :</strong></p>
     <ul style="margin: 0; padding-left: 20px;">
       <li>Finaliser tous les livrables du projet de mi-session</li>
       <li>Vérifier les Gerbers dans un visualiseur en ligne</li>
-      <li>Compléter la documentation technique</li>
+      <li>Compléter la documentation technique (README.md, schéma fonctionnel, API MQTT)</li>
       <li>Préparer la remise du projet (20%)</li>
     </ul>
   </div>
