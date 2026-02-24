@@ -268,7 +268,7 @@
       "is_enabled": true,
       "parameters": {
         "tools": null,
-        "message": "## 3. Capture schématique\n\n### 3.1 Ouvrir l'éditeur de schéma\n\n1. Double-cliquer sur `labo3-kicad.kicad_sch` dans le gestionnaire de projet\n2. L'éditeur **Eeschema** s'ouvre\n\n### 3.2 Raccourcis clavier essentiels\n\n| Raccourci | Action |\n|-----------|--------|\n| `A` | Ajouter un symbole |\n| `P` | Ajouter une alimentation (power) |\n| `W` | Tracer un fil (wire) |\n| `L` | Ajouter un label |\n| `R` | Rotation (pendant le placement) |\n| `M` | Déplacer |\n| `C` | Copier |\n| `E` | Éditer les propriétés |\n| `Delete` | Supprimer |\n| `Ctrl+Z` | Annuler |\n| `F` | Zoom fit |\n\n### 3.3 Ajouter les symboles\n\n1. **Appuyer sur `A`** pour ouvrir la bibliothèque de symboles\n2. Rechercher et placer:\n\n| Composant | Bibliothèque | Symbole |\n|-----------|--------------|--------|\n| Résistance | Device | R |\n| LED | Device | LED |\n| Connecteur | Connector_Generic | Conn_01x03 |\n\n3. **Symboles d'alimentation** (appuyer sur `P`):\n   - `+3.3V` (ou `+3V3`)\n   - `GND`\n\n### 3.4 Éditer les valeurs\n\n1. Double-cliquer sur un composant ou appuyer sur `E`\n2. Modifier le champ **Valeur**:\n\n| Référence | Valeur |\n|-----------|--------|\n| R1 | 330 |\n| D1 | LED_Rouge |\n| J1 | Conn_3pin |\n\n### 3.5 Connecter les composants\n\n1. **Appuyer sur `W`** pour tracer des fils\n2. Cliquer sur une broche, puis sur la broche de destination\n\n**Connexions à réaliser:**\n- Broche 1 du connecteur (VCC) → symbole `+3.3V`\n- Broche 1 du connecteur → une patte de R1\n- Autre patte de R1 → Anode de la LED (triangle)\n- Cathode de la LED (barre) → symbole `GND`\n- Broche 3 du connecteur → symbole `GND`\n\n### 3.6 Annoter les composants\n\n1. **Outils → Annoter la schématique...**\n2. Options: Schématique entière, de gauche à droite\n3. Cliquer sur **Annoter**\n\n---\n\nRéalise le schéma avec tous les composants et connexions. Dis-moi quand c'est fait!",
+        "message": "## 3. Capture schématique\n\n### 3.1 Ouvrir l'éditeur de schéma\n\n1. Double-cliquer sur `labo3-kicad.kicad_sch` dans le gestionnaire de projet\n2. L'éditeur **Eeschema** s'ouvre\n\n### 3.2 Raccourcis clavier essentiels\n\n| Raccourci | Action |\n|-----------|--------|\n| `A` | Ajouter un symbole |\n| `P` | Ajouter une alimentation (power) |\n| `W` | Tracer un fil (wire) |\n| `L` | Ajouter un label |\n| `R` | Rotation (pendant le placement) |\n| `M` | Déplacer |\n| `C` | Copier |\n| `E` | Éditer les propriétés |\n| `Delete` | Supprimer |\n| `Ctrl+Z` | Annuler |\n| `F` | Zoom fit |\n\n### 3.3 Ajouter les symboles\n\n1. **Appuyer sur `A`** pour ouvrir la bibliothèque de symboles\n2. Rechercher et placer:\n\n| Composant | Bibliothèque | Symbole |\n|-----------|--------------|--------|\n| Résistance | Device | R |\n| LED | Device | LED |\n| Connecteur | Connector_Generic | Conn_01x03 |\n\n3. **Symboles d'alimentation** (appuyer sur `P`):\n   - `+3.3V` (ou `+3V3`) — à connecter à la broche VCC du connecteur J1\n   - `GND` — à connecter à la broche GND du connecteur J1\n   - `PWR_FLAG` — **placer un sur le net +3.3V et un sur le net GND**\n\n> Pourquoi le PWR_FLAG ? Ton connecteur J1 est une source d'alimentation externe. KiCad ne peut pas le détecter automatiquement : sans PWR_FLAG, l'ERC signalera que ces nets ne sont pas pilotés. Le PWR_FLAG lui indique qu'une source externe prend en charge ce net.\n\n### 3.4 Éditer les valeurs\n\n1. Double-cliquer sur un composant ou appuyer sur `E`\n2. Modifier le champ **Valeur**:\n\n| Référence | Valeur |\n|-----------|--------|\n| R1 | 330 |\n| D1 | LED_Rouge |\n| J1 | Conn_3pin |\n\n### 3.5 Connecter les composants\n\n1. **Appuyer sur `W`** pour tracer des fils\n2. Cliquer sur une broche, puis sur la broche de destination\n\n**Connexions à réaliser:**\n- Broche 1 du connecteur (VCC) → symbole `+3.3V`\n- Broche 1 du connecteur → une patte de R1\n- Autre patte de R1 → Anode de la LED (triangle)\n- Cathode de la LED (barre) → symbole `GND`\n- Broche 3 du connecteur → symbole `GND`\n\n### 3.6 Annoter les composants\n\n1. **Outils → Annoter la schématique...**\n2. Options: Schématique entière, de gauche à droite\n3. Cliquer sur **Annoter**\n\n---\n\nRéalise le schéma avec tous les composants et connexions. Dis-moi quand c'est fait!",
         "simulate_stream_delay_ms": 5
       },
       "metadata": {
@@ -366,7 +366,7 @@
       "is_enabled": true,
       "parameters": {
         "tools": null,
-        "message": "### 📝 Question de compréhension\n\nÀ quoi sert le **PWR_FLAG** dans KiCad et pourquoi est-il nécessaire quand l'alimentation provient d'un connecteur externe?",
+        "message": "### 📝 Question de compréhension\n\nTon connecteur **J1** fournit le VCC et le GND au circuit. Pourquoi dois-tu placer un **PWR_FLAG** sur ces nets dans le schéma?",
         "simulate_stream_delay_ms": 5
       },
       "metadata": {
@@ -422,7 +422,7 @@
       "is_enabled": true,
       "parameters": {
         "model": "gpt-5.2",
-        "instructions": "# Rôle\nÉvaluateur. Produis uniquement un JSON strict.\n\n# Question\n« À quoi sert le PWR_FLAG dans KiCad et pourquoi est-il nécessaire avec un connecteur externe? »\n\n# Critères\nLa réponse doit mentionner:\n- Le PWR_FLAG indique qu'une alimentation externe sera fournie\n- Sans ce flag, KiCad pense qu'aucune source ne \"pilote\" la ligne d'alimentation\n- Nécessaire quand l'alimentation vient d'un connecteur (source externe au schéma)\n- Évite l'erreur \"not driven by any pin\"\n\n# Règles\n- Si correct → `\"ok\": true`\n- Sinon → `\"ok\": false`",
+        "instructions": "# Rôle\nÉvaluateur. Produis uniquement un JSON strict.\n\n# Question\n« Le connecteur J1 fournit le VCC et le GND. Pourquoi faut-il placer un PWR_FLAG sur ces nets? »\n\n# Critères\nUn seul élément essentiel : la réponse doit indiquer que le connecteur est une source externe et que KiCad ne peut pas le détecter automatiquement — sans PWR_FLAG, l'ERC signale que le net d'alimentation n'est pas piloté.\nAccepter toute formulation qui exprime cette idée (source externe, KiCad ne sait pas d'où vient l'alimentation, évite l'erreur ERC, etc.).\n\n# Règles\n- Si correct → `\"ok\": true`\n- Sinon → `\"ok\": false`",
         "model_provider": "openai",
         "model_settings": {
           "text": { "verbosity": "low" },
@@ -568,7 +568,7 @@
       "is_enabled": true,
       "parameters": {
         "model": "gpt-5.2",
-        "instructions": "Aide l'utilisateur à comprendre le rôle du PWR_FLAG. Donne un indice sur le fait que KiCad doit savoir d'où vient l'alimentation, sans donner la réponse complète.",
+        "instructions": "Aide l'utilisateur à comprendre pourquoi le connecteur J1 nécessite un PWR_FLAG. Oriente vers le fait que KiCad ne peut pas détecter automatiquement qu'un connecteur externe fournit l'alimentation. Ne donne pas la réponse complète.",
         "model_provider": "openai",
         "model_settings": {
           "text": { "verbosity": "low" },
@@ -924,7 +924,7 @@
       "is_enabled": true,
       "parameters": {
         "model": "gpt-5.2",
-        "instructions": "# Rôle\nÉvaluateur. Produis uniquement un JSON strict.\n\n# Question\n« Différence entre ERC et DRC? À quelle étape chacun est-il exécuté? »\n\n# Critères\nLa réponse doit mentionner:\n- ERC: vérification des règles électriques (connexions, types de broches, alimentations)\n- ERC: exécuté sur le schéma (schématique), avant le layout PCB\n- DRC: vérification des règles de conception physique (espacement, largeur pistes, perçages)\n- DRC: exécuté sur le PCB, après le routage\n\n# Règles\n- Si correct → `\"ok\": true`\n- Sinon → `\"ok\": false`",
+        "instructions": "# Rôle\nÉvaluateur. Produis uniquement un JSON strict.\n\n# Question\n« Différence entre ERC et DRC? »\n\n# Critères\nDeux éléments suffisent:\n- ERC = vérification électrique (schéma, connexions, broches)\n- DRC = vérification physique/géométrique (PCB, espacements, pistes)\nAccepter toute formulation qui exprime cette distinction, même sans mentionner à quelle étape exacte chacun est lancé.\n\n# Règles\n- Si correct → `\"ok\": true`\n- Sinon → `\"ok\": false`",
         "model_provider": "openai",
         "model_settings": {
           "text": { "verbosity": "low" },
