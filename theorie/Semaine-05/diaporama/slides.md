@@ -530,7 +530,7 @@ Représentation **physique** des composants
 
 <v-click>
 
-Représentation **graphique** d'un composant dans le schéma.
+Représentation **graphique** dans le schéma.
 
 ```
     ┌─────┐
@@ -543,8 +543,54 @@ Représentation **graphique** d'un composant dans le schéma.
 ```
 
 - Broches numérotées
-- Nom du composant
 - Pas de dimensions physiques
+
+</v-click>
+
+</div>
+
+<div>
+
+### Empreinte (PCB)
+
+<v-click>
+
+<img src="https://kicad-info.s3.dualstack.us-west-2.amazonaws.com/original/2X/2/2cc3e9fec3aebf8bb5505a25dc1177e62cac6b6a.png" class="rounded-lg" style="max-height: 220px; width: 100%; object-fit: contain;" />
+
+</v-click>
+
+</div>
+
+</div>
+
+<v-click>
+
+<div class="mt-3 p-2 bg-blue-500 bg-opacity-20 rounded-lg text-center text-sm">
+
+Le **symbole** décrit la logique électrique — l'**empreinte** décrit la forme physique sur le PCB
+
+</div>
+
+</v-click>
+
+---
+
+# Un symbole → plusieurs empreintes
+
+### Exemple : Résistance 10 kΩ
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+<v-click>
+
+| Empreinte | Type | Taille |
+|-----------|------|--------|
+| R_Axial_DIN0207 | **THT** | 6.3 × 2.5 mm |
+| R_0805_2012Metric | SMD | 2.0 × 1.25 mm |
+| R_0603_1608Metric | SMD | 1.6 × 0.8 mm |
+| R_0402_1005Metric | SMD | 1.0 × 0.5 mm |
 
 </v-click>
 
@@ -554,7 +600,12 @@ Représentation **graphique** d'un composant dans le schéma.
 
 <v-click>
 
-<img src="https://kicad-info.s3.dualstack.us-west-2.amazonaws.com/original/2X/2/2cc3e9fec3aebf8bb5505a25dc1177e62cac6b6a.png" class="rounded-lg" style="max-height: 200px; width: 100%; object-fit: contain;" />
+### Comment choisir?
+
+- **THT** → prototype, soudure manuelle facile
+- **0805** → SMD, soudure à la main possible
+- **0603** → SMD compact, fer fin requis
+- **0402** → SMD très petit, four recommandé
 
 </v-click>
 
@@ -564,22 +615,9 @@ Représentation **graphique** d'un composant dans le schéma.
 
 <v-click>
 
-### Exemple : Résistance — un symbole, plusieurs empreintes possibles
+<div class="mt-3 p-2 bg-orange-500 bg-opacity-20 rounded-lg text-center text-sm">
 
-| Empreinte | Type | Taille |
-|-----------|------|--------|
-| R_Axial_DIN0207 | **THT** (traversant) | 6.3 × 2.5 mm |
-| R_0805_2012Metric | SMD | 2.0 × 1.25 mm |
-| R_0603_1608Metric | SMD | 1.6 × 0.8 mm |
-| R_0402_1005Metric | SMD | 1.0 × 0.5 mm |
-
-</v-click>
-
-<v-click>
-
-<div class="mt-2 p-2 bg-orange-500 bg-opacity-20 rounded-lg text-center text-sm">
-
-Même valeur électrique (10 kΩ), formes physiques très différentes — **choisir selon la méthode de soudure**
+Même valeur électrique (10 kΩ), formes physiques très différentes — **pour ce cours : THT (traversant)**
 
 </div>
 
@@ -624,6 +662,10 @@ layout: section
 
 # Placer des composants
 
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
 ### Dans l'éditeur de schéma
 
 <v-clicks>
@@ -635,9 +677,13 @@ layout: section
 
 </v-clicks>
 
-<v-click>
+</div>
 
-### Bibliothèques de symboles
+<div>
+
+### Bibliothèques utiles
+
+<v-click>
 
 | Bibliothèque | Contenu |
 |--------------|---------|
@@ -647,6 +693,10 @@ layout: section
 | Switch | Boutons, interrupteurs |
 
 </v-click>
+
+</div>
+
+</div>
 
 ---
 
