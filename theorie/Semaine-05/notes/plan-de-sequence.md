@@ -86,3 +86,4 @@ MPU6050 (accéléromètre I2C) + connecteurs femelles LilyGO : obligatoires pour
 - S'assurer que les assignations de composants par étudiant sont confirmées avant le labo
 - Prévoir du temps pour le dépannage des bibliothèques KiCad manquantes
 - Le Labo 05 est la première étape concrète du projet de mi-session (shield LilyGO)
+- **Annoncer les dates limites : Gerbers le lundi 16 mars à 8h00, projet complet le lundi 23 mars à 8h00**

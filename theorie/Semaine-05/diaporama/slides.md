@@ -1012,6 +1012,57 @@ Le total de composants variables est **identique pour tous** (7). Voir l'énonc�
 </v-click>
 
 ---
+
+# Dates limites importantes
+
+<div class="grid grid-cols-2 gap-4">
+
+<div class="p-4 bg-red-500 bg-opacity-20 rounded-lg border border-red-400">
+
+### PCB — Gerbers
+
+<v-click>
+
+<div class="text-2xl font-bold text-red-600 mt-2">Lundi 16 mars 2026</div>
+<div class="text-lg font-bold text-red-600">à 8h00</div>
+
+</v-click>
+
+<v-click>
+
+- Remise des fichiers **Gerber** obligatoire
+- La commande groupée est passée ce matin-là
+- **Note de 0** pour la partie PCB si non remis
+
+</v-click>
+
+</div>
+
+<div class="p-4 bg-orange-500 bg-opacity-20 rounded-lg border border-orange-400">
+
+### Projet complet
+
+<v-click>
+
+<div class="text-2xl font-bold text-orange-600 mt-2">Lundi 23 mars 2026</div>
+<div class="text-lg font-bold text-orange-600">à 8h00</div>
+
+</v-click>
+
+<v-click>
+
+- Firmware Arduino
+- Interface Python (RPi)
+- Documentation complète
+- Tout sur GitHub
+
+</v-click>
+
+</div>
+
+</div>
+
+---
 layout: center
 class: text-center
 ---
