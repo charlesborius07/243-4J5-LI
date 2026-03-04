@@ -577,18 +577,7 @@ layout: section
 
 **Top** : Pistes de signal horizontales, composants
 
-<<<<<<< HEAD
 **Bottom** : Plan de masse continu avec vias de connexion
-=======
-       BOTTOM (masse)
-┌─────────────────────┐
-│  ████████████████   │
-│  ████████│███████   │ Plan de masse
-│  ████████│███████   │ avec vias
-│  ████████████████   │
-└─────────────────────┘
-```
->>>>>>> 2ab7333cb9c8b3d9c0d53c27f7f8fbf67d43bdd4
 
 </v-click>
 
@@ -745,7 +734,6 @@ layout: section
 
 </v-click>
 
-<<<<<<< HEAD
 <v-click>
 
 ### Options importantes
@@ -755,8 +743,6 @@ layout: section
 
 </v-click>
 
-=======
->>>>>>> 2ab7333cb9c8b3d9c0d53c27f7f8fbf67d43bdd4
 </div>
 
 <div>
@@ -767,15 +753,7 @@ layout: section
 
 **File → Fabrication Outputs → Drill Files**
 
-<<<<<<< HEAD
 - Format: **Excellon**, Units: **mm**, Zeros: Decimal
-=======
-```
-Format: Excellon
-Units: Millimeters
-Zeros: Decimal format
-```
->>>>>>> 2ab7333cb9c8b3d9c0d53c27f7f8fbf67d43bdd4
 
 </v-click>
 
@@ -783,11 +761,6 @@ Zeros: Decimal format
 
 ### Paramètres fabrication (JLCPCB)
 
-<<<<<<< HEAD
-**Astuce** : Créer un dossier `gerbers/` et y exporter tous les fichiers.
-
-</div>
-=======
 | Paramètre | Valeur |
 |-----------|--------|
 | Couches | 2 |
@@ -795,7 +768,6 @@ Zeros: Decimal format
 | Cuivre | 1 oz (35µm) |
 | Couleur | Vert |
 | Finition | HASL |
->>>>>>> 2ab7333cb9c8b3d9c0d53c27f7f8fbf67d43bdd4
 
 </v-click>
 
@@ -831,127 +803,7 @@ Zeros: Decimal format
 - [ ] DRC passé (0 erreurs)
 - [ ] Plan de masse présent (Bottom GND)
 - [ ] Contour Edge.Cuts fermé
-<<<<<<< HEAD
-- [ ] Dimensions vérifiées
-
-</v-click>
-
-</div>
-
-<div>
-
-### Fichiers
-
-<v-click>
-
-- [ ] Gerbers générés (toutes couches)
-- [ ] Fichier de perçage (.drl)
-- [ ] Vérifié dans Gerber Viewer
-- [ ] BOM exportée
-
-</v-click>
-
-### Documentation
-
-<v-click>
-
-- [ ] README à jour sur GitHub
-- [ ] Schéma PDF exporté
-- [ ] Images/screenshots du PCB
-- [ ] Topics MQTT documentés
-
-</v-click>
-
-</div>
-
-</div>
-
----
-layout: section
----
-
-# Partie 4
-## Erreurs courantes à éviter
-
----
-
-# Top 10 des erreurs PCB
-
-### Apprenez des erreurs des autres!
-
-<div class="grid grid-cols-2 gap-4 text-sm">
-
-<div>
-
-<v-clicks>
-
-1. **Mauvaise empreinte** : Vérifiez la datasheet!
-2. **Polarité inversée** : LEDs, condensateurs
-3. **Pistes trop fines** : Respect des minimums
-4. **Pas de plan de masse** : Bruit garanti
-5. **Connecteur inversé** : Vérifiez l'orientation
-
-</v-clicks>
-
-</div>
-
-<div>
-
-<v-clicks>
-
-6. **DRC ignoré** : Erreurs de fabrication
-7. **Perçages manquants** : Vérifiez le fichier .drl
-8. **Sérigraphie illisible** : Police trop petite
-9. **Composants trop proches** : Impossible à souder
-10. **Mauvaises dimensions** : Ne rentre pas!
-
-</v-clicks>
-
-</div>
-
-</div>
-
-<v-click>
-
-<div class="mt-4 p-2 bg-orange-500 bg-opacity-20 rounded-lg text-center text-sm">
-
-**Conseil** : Faites relire votre design par un collègue avant de commander!
-
-</div>
-
-</v-click>
-
----
-
-# Exemple : Erreur d'empreinte
-
-<div class="grid grid-cols-2 gap-6">
-
-<div>
-
-<v-click>
-
-### Le probleme
-
-```
-Schéma: Condensateur 100µF
-Empreinte choisie: 0805 (SMD)
-Condensateur réel: Radial 5mm (THT)
-→ Impossible à monter!
-```
-
-</v-click>
-
-<v-click>
-
-### La solution
-
-1. Vérifier la **datasheet**
-2. Mesurer le composant physique
-3. Vérifier dans le **3D Viewer**
-=======
 - [ ] Toutes les ratsnest routées
->>>>>>> 2ab7333cb9c8b3d9c0d53c27f7f8fbf67d43bdd4
 
 </v-click>
 
@@ -963,18 +815,9 @@ Condensateur réel: Radial 5mm (THT)
 
 ### Vérification Gerbers
 
-<<<<<<< HEAD
-| Paramètre | Source |
-|-----------|--------|
-| Pitch | Datasheet |
-| Diamètre trous | Datasheet + marge |
-| Boîtier | Mesure physique |
-| Hauteur | Datasheet |
-=======
 - **JLCPCB Gerber Viewer** (en ligne)
 - Aperçu 3D après upload
 - Vérifier : coutures, perçages, sérigraphie
->>>>>>> 2ab7333cb9c8b3d9c0d53c27f7f8fbf67d43bdd4
 
 </v-click>
 
@@ -984,11 +827,7 @@ Condensateur réel: Radial 5mm (THT)
 
 <v-click>
 
-<<<<<<< HEAD
-<div class="mt-2 p-2 bg-red-500 bg-opacity-20 rounded-lg text-center text-sm">
-=======
 ### Vue 3D
->>>>>>> 2ab7333cb9c8b3d9c0d53c27f7f8fbf67d43bdd4
 
 **View → 3D Viewer**
 
@@ -1074,134 +913,51 @@ layout: section
 
 ### Projet de mi-session — 20% du cours
 
-<<<<<<< HEAD
-<div class="grid grid-cols-3 gap-3 text-sm">
+<div class="grid grid-cols-2 gap-3 text-sm">
 
 <div class="p-2 bg-blue-500 bg-opacity-20 rounded-lg">
 
-**Matériel (15%)**
-- Schéma KiCad complet
-- Routage PCB correct
+**Shield PCB (30%)**
+- Schéma KiCad complet (ERC ✓)
+- Routage PCB soigné (DRC ✓)
 - Fichiers Gerber valides
 
 </div>
 
 <div class="p-2 bg-green-500 bg-opacity-20 rounded-lg">
 
-**Logiciel (10%)**
-- Code Arduino fonctionnel
-- Communication MQTT
-- Interface Python sur RPi
+**Programme embarqué (30%)**
+- Lecture capteurs + contrôle LEDs
+- Communication MQTT bidirectionnelle
+- Qualité du code
 
 </div>
 
 <div class="p-2 bg-purple-500 bg-opacity-20 rounded-lg">
-=======
-<div class="grid grid-cols-2 gap-3">
 
-<div class="p-3 bg-blue-500 bg-opacity-20 rounded-lg text-sm">
-
-### Shield PCB (30% du projet)
-
-- Schéma KiCad complet (ERC ✓)
-- Routage PCB soigné (DRC ✓)
-- Fichiers Gerber valides
-- Prototype breadboard fonctionnel
-
-</div>
-
-<div class="p-3 bg-green-500 bg-opacity-20 rounded-lg text-sm">
-
-### Programme embarqué (30% du projet)
-
-- Lecture de tous les capteurs
-- Contrôle des actionneurs (LEDs)
-- Communication MQTT bidirectionnelle
-- Qualité et lisibilité du code
-
-</div>
-
-<div class="p-3 bg-purple-500 bg-opacity-20 rounded-lg text-sm">
-
-### Interface Raspberry Pi (20% du projet)
-
+**Interface RPi (20%)**
 - Affichage temps réel
-- Contrôle des LEDs (tactile)
-- Logique applicative
+- Contrôle des LEDs
 - Démarrage automatique au boot
 
 </div>
 
-<div class="p-3 bg-orange-500 bg-opacity-20 rounded-lg text-sm">
+<div class="p-2 bg-orange-500 bg-opacity-20 rounded-lg">
 
-### Documentation (20% du projet)
->>>>>>> 2ab7333cb9c8b3d9c0d53c27f7f8fbf67d43bdd4
-
-**Documentation (5%)**
+**Documentation (20%)**
 - README complet
 - API MQTT documentée
-<<<<<<< HEAD
-- Organisation du dépôt
-=======
 - Schéma PDF + BOM
-- Photos/captures d'écran
->>>>>>> 2ab7333cb9c8b3d9c0d53c27f7f8fbf67d43bdd4
 
 </div>
 
 </div>
 
-<<<<<<< HEAD
-<div class="mt-3 p-2 bg-orange-500 bg-opacity-20 rounded-lg text-center text-sm">
-
-**Date limite** : Semaine 7 - Remise des fichiers et démonstration
-
-</div>
-
----
-
-# Support disponible
-
-### Comment obtenir de l'aide
-
-<div class="grid grid-cols-2 gap-6">
-
-<div>
-
-### Ressources techniques
-
-- Documentation KiCad officielle
-- Tutoriels vidéo KiCad
-- Forum KiCad
-- ChatGPT / Claude pour questions rapides
-
-</div>
-
-<div>
-
-### En classe
-
-- Questions à l'enseignant
-- Entraide entre étudiants
-- Vérification des Gerbers avant commande
-- Révision des erreurs courantes
-
-</div>
-
-</div>
-
-<v-click>
-
-<div class="mt-4 p-2 bg-blue-500 bg-opacity-20 rounded-lg text-center">
-
-N'attendez pas la dernière minute - les problèmes de conception prennent du temps à résoudre!
-=======
 <v-click>
 
 <div class="mt-3 p-2 bg-red-500 bg-opacity-20 rounded-lg text-center text-sm">
 
 **PCB (Gerbers) → 16 mars à 8h00 | Projet complet → 23 mars à 8h00**
->>>>>>> 2ab7333cb9c8b3d9c0d53c27f7f8fbf67d43bdd4
 
 </div>
 
