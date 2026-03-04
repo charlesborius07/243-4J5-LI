@@ -269,19 +269,10 @@ layout: section
 
 ### Vue de dessus (exemple)
 
-```
-┌─────────────────────────────┐
-│  [POT1]           [POT2]    │
-│                             │
-│  [BTN1] [BTN2]    [LED1]    │
-│                   [LED2]    │
-│  [ACCEL]                    │
-│                             │
-│  ═══════════════════════    │
-│  │ Header LilyGO (bas)  │   │
-│  ═══════════════════════    │
-└─────────────────────────────┘
-```
+- Potentiomètres en haut
+- Boutons et LEDs au centre
+- Accéléromètre proche des broches I2C
+- Headers LilyGO en bas
 
 </v-click>
 
@@ -329,25 +320,9 @@ layout: section
 
 ### Stratégie recommandée
 
-```
-        TOP (signaux)
-┌─────────────────────┐
-│  ──────┬────────    │ Pistes horizontales
-│        │            │
-│  ══════╪════════    │ (composants)
-│        │            │
-│  ──────┴────────    │
-└─────────────────────┘
+**Top** : Pistes de signal horizontales, composants
 
-       BOTTOM (masse)
-┌─────────────────────┐
-│  ████████████████   │
-│  ████████│███████   │ Plan de masse
-│  ████████│███████   │ avec vias
-│  ████████│███████   │
-│  ████████████████   │
-└─────────────────────┘
-```
+**Bottom** : Plan de masse continu avec vias de connexion
 
 </v-click>
 
@@ -677,12 +652,9 @@ layout: section
 ### Couches à exporter
 
 ```
-✓ F.Cu (Front Copper)
-✓ B.Cu (Back Copper)
-✓ F.SilkS (Front Silkscreen)
-✓ B.SilkS (Back Silkscreen)
-✓ F.Mask (Front Solder Mask)
-✓ B.Mask (Back Solder Mask)
+✓ F.Cu / B.Cu (Copper)
+✓ F.SilkS / B.SilkS (Silkscreen)
+✓ F.Mask / B.Mask (Solder Mask)
 ✓ Edge.Cuts (Board Outline)
 ```
 
@@ -692,8 +664,7 @@ layout: section
 
 ### Options importantes
 
-- Format : **Gerber X2** (ou 4.6 pour compatibilité)
-- Coordinate format : **4.6** (mm)
+- Format : **Gerber X2**, coordinate **4.6** (mm)
 - **Cocher** : Use drill/place file origin
 
 </v-click>
@@ -708,12 +679,7 @@ layout: section
 
 **File → Fabrication Outputs → Drill Files**
 
-```
-Format: Excellon
-Units: Millimeters
-Zeros: Decimal format
-Map file: Gerber
-```
+- Format: **Excellon**, Units: **mm**, Zeros: Decimal
 
 </v-click>
 
@@ -721,7 +687,7 @@ Map file: Gerber
 
 <div class="mt-2 p-2 bg-green-500 bg-opacity-20 rounded-lg text-sm">
 
-**Astuce** : Créer un dossier `gerbers/` dans votre projet et y exporter tous les fichiers.
+**Astuce** : Créer un dossier `gerbers/` et y exporter tous les fichiers.
 
 </div>
 
@@ -1299,22 +1265,19 @@ layout: section
 
 # Exemple : Erreur d'empreinte
 
-### Le cauchemar du concepteur
-
 <div class="grid grid-cols-2 gap-6">
 
 <div>
 
 <v-click>
 
-### Le problème
+### Le probleme
 
 ```
 Schéma: Condensateur 100µF
 Empreinte choisie: 0805 (SMD)
 Condensateur réel: Radial 5mm (THT)
-
-Résultat: Impossible à monter!
+→ Impossible à monter!
 ```
 
 </v-click>
@@ -1323,10 +1286,9 @@ Résultat: Impossible à monter!
 
 ### La solution
 
-1. Toujours vérifier la **datasheet**
+1. Vérifier la **datasheet**
 2. Mesurer le composant physique
 3. Vérifier dans le **3D Viewer**
-4. Commander des **composants de test**
 
 </v-click>
 
@@ -1340,26 +1302,26 @@ Résultat: Impossible à monter!
 
 | Paramètre | Source |
 |-----------|--------|
-| Pitch (espacement) | Datasheet |
-| Diamètre des trous | Datasheet + marge |
-| Dimensions du boîtier | Mesure physique |
+| Pitch | Datasheet |
+| Diamètre trous | Datasheet + marge |
+| Boîtier | Mesure physique |
 | Hauteur | Datasheet |
 
 </v-click>
 
+</div>
+
+</div>
+
 <v-click>
 
-<div class="mt-2 p-2 bg-red-500 bg-opacity-20 rounded-lg text-sm">
+<div class="mt-2 p-2 bg-red-500 bg-opacity-20 rounded-lg text-center text-sm">
 
 Une erreur d'empreinte = PCB inutilisable = recommencer!
 
 </div>
 
 </v-click>
-
-</div>
-
-</div>
 
 ---
 layout: section
@@ -1436,52 +1398,42 @@ layout: section
 
 ### Projet de mi-session - 30%
 
-<div class="grid grid-cols-3 gap-3">
+<div class="grid grid-cols-3 gap-3 text-sm">
 
-<div class="p-3 bg-blue-500 bg-opacity-20 rounded-lg text-sm">
+<div class="p-2 bg-blue-500 bg-opacity-20 rounded-lg">
 
-### Matériel (15%)
-
+**Matériel (15%)**
 - Schéma KiCad complet
 - Routage PCB correct
 - Fichiers Gerber valides
-- Respect des contraintes
 
 </div>
 
-<div class="p-3 bg-green-500 bg-opacity-20 rounded-lg text-sm">
+<div class="p-2 bg-green-500 bg-opacity-20 rounded-lg">
 
-### Logiciel (10%)
-
+**Logiciel (10%)**
 - Code Arduino fonctionnel
 - Communication MQTT
 - Interface Python sur RPi
-- Gestion des erreurs
 
 </div>
 
-<div class="p-3 bg-purple-500 bg-opacity-20 rounded-lg text-sm">
+<div class="p-2 bg-purple-500 bg-opacity-20 rounded-lg">
 
-### Documentation (5%)
-
+**Documentation (5%)**
 - README complet
 - API MQTT documentée
-- Schémas et images
 - Organisation du dépôt
 
 </div>
 
 </div>
 
-<v-click>
-
-<div class="mt-4 p-2 bg-orange-500 bg-opacity-20 rounded-lg text-center text-sm">
+<div class="mt-3 p-2 bg-orange-500 bg-opacity-20 rounded-lg text-center text-sm">
 
 **Date limite** : Semaine 7 - Remise des fichiers et démonstration
 
 </div>
-
-</v-click>
 
 ---
 

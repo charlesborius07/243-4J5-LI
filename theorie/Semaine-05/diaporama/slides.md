@@ -624,6 +624,74 @@ Même valeur électrique (10 kΩ), formes physiques très différentes — **pou
 </v-click>
 
 ---
+
+# Pourquoi créer un symbole ou une empreinte?
+
+### Les bibliothèques ne couvrent pas tout
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+<v-click>
+
+### Cas typiques
+
+- **Module sur PCB** (breakout board) comme le MPU6050 sur shield
+- Connecteurs **spécifiques** ou non standards
+- Composants **récents** pas encore dans les librairies
+- Boîtiers avec un **brochage particulier**
+
+</v-click>
+
+<v-click>
+
+### Exemple : MPU6050 breakout
+
+Le capteur **MPU6050** existe dans KiCad comme **puce seule** (QFN-24), mais pas comme **module breakout** avec ses broches VCC, GND, SCL, SDA, etc.
+
+</v-click>
+
+</div>
+
+<div>
+
+<v-click>
+
+### Il faut créer...
+
+| Élément | Raison |
+|---------|--------|
+| **Symbole** | Broches du module (pas de la puce) |
+| **Empreinte** | Dimensions physiques du breakout |
+
+</v-click>
+
+<v-click>
+
+### Où les créer?
+
+1. **Éditeur de symboles** → nouveau symbole avec les broches du module
+2. **Éditeur d'empreintes** → pads selon l'espacement réel des headers
+3. Stocker dans une **bibliothèque locale** au projet
+
+</v-click>
+
+</div>
+
+</div>
+
+<v-click>
+
+<div class="mt-3 p-2 bg-orange-500 bg-opacity-20 rounded-lg text-center text-sm">
+
+Pour votre shield, le **MPU6050 breakout** n'a ni symbole ni empreinte dans les librairies standard — il faudra les créer!
+
+</div>
+
+</v-click>
+
+---
 layout: section
 ---
 
