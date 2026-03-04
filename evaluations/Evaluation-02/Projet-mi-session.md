@@ -397,11 +397,10 @@ Vous pouvez proposer votre propre projet. Il doit :
 
 | Critère | Pondération | Description |
 |---------|:-----------:|-------------|
-| **Shield PCB** | 25% | Schéma complet (ERC propre), routage soigné (DRC propre), plan de masse, silkscreen clair, prototype fonctionnel |
-| **Programme embarqué** | 25% | Lecture de tous les capteurs, publication MQTT, réception des commandes, qualité et lisibilité du code |
-| **Interface Raspberry Pi** | 20% | Affichage temps réel, contrôle des LEDs, ergonomie tactile, apparence professionnelle, démarrage automatique au boot |
-| **Tests et validation** | 15% | Checklists complétées et signées, tests documentés, robustesse démontrée |
-| **Documentation** | 15% | README clair, schéma PDF inclus, BOM, instructions de compilation/exécution, photos/vidéo |
+| **Shield PCB** | 30% | Schéma complet (ERC propre), routage soigné (DRC propre), plan de masse, silkscreen clair, prototype breadboard fonctionnel, fichiers Gerber valides |
+| **Programme embarqué** | 30% | Lecture de tous les capteurs, contrôle des actionneurs, communication MQTT bidirectionnelle, qualité et lisibilité du code |
+| **Interface Raspberry Pi** | 20% | Affichage temps réel, contrôle des LEDs, logique applicative, ergonomie tactile, apparence professionnelle, démarrage automatique au boot |
+| **Documentation** | 20% | README clair, schéma PDF inclus, BOM, topics MQTT documentés, instructions de compilation/exécution, photos/vidéo |
 
 ---
 
@@ -414,7 +413,9 @@ git commit -m "Projet mi-session : système IoT complet"
 git push origin prenom-nom/projet-mi-session
 ```
 
-**Date de remise :** Semaine 7
+**Date de remise :** 23 mars 2026 à 8h00 (lundi matin)
+
+> **Important :** Les fichiers Gerber (PCB) doivent être remis au plus tard le **lundi 16 mars 2026 à 8h00**. Une note de **0** sera appliquée pour la partie Shield PCB si les Gerbers ne sont pas remis à temps, car la commande groupée des PCB est passée ce matin-là.
 
 ---
 
