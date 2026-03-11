@@ -10,49 +10,49 @@
 </head>
 <body>
 <div style="font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;">
-  <p>Semaine consacree au <strong>dessin du PCB</strong> et a la <strong>programmation</strong> du firmware et de l'interface. Pas de presentation theorique cette semaine -- travail en laboratoire sur le projet de mi-session.</p>
+  <p>Semaine consacrée au <strong>dessin du PCB</strong> et à la <strong>programmation</strong> du firmware et de l'interface. Pas de présentation théorique cette semaine — travail en laboratoire sur le projet de mi-session.</p>
   <p><strong>Dessin du PCB (KiCad) :</strong></p>
   <ul style="margin: 10px 0;">
-    <li><strong>Routage final</strong> -- completer le placement et les pistes, angles a 45 deg</li>
-    <li><strong>Plan de masse</strong> -- couche Bottom en GND pour reduire le bruit</li>
-    <li><strong>DRC sans erreurs</strong> -- verifier les clearances, drill sizes et annular rings</li>
-    <li><strong>Silkscreen</strong> -- labels des composants, valeurs, polarites des LEDs</li>
-    <li><strong>Generation des Gerbers</strong> -- fichiers .GTL, .GBL, .DRL, BOM</li>
-    <li><strong>Verification</strong> -- visualiser les Gerbers dans un outil en ligne (JLCPCB, Gerbv)</li>
+    <li><strong>Routage final</strong> — compléter le placement et les pistes, angles à 45°</li>
+    <li><strong>Plan de masse</strong> — couche Bottom en GND pour réduire le bruit</li>
+    <li><strong>DRC sans erreurs</strong> — vérifier les clearances, drill sizes et annular rings</li>
+    <li><strong>Silkscreen</strong> — labels des composants, valeurs, polarités des LEDs</li>
+    <li><strong>Génération des Gerbers</strong> — fichiers .GTL, .GBL, .DRL, BOM</li>
+    <li><strong>Vérification</strong> — visualiser les Gerbers dans un outil en ligne (JLCPCB, Gerbv)</li>
   </ul>
   <p><strong>Programmation :</strong></p>
   <ul style="margin: 10px 0;">
-    <li><strong>Firmware LilyGO</strong> -- lecture des capteurs (boutons, potentiometres, MPU6050), controle des LEDs, publication MQTT via LTE</li>
-    <li><strong>Interface Raspberry Pi</strong> -- affichage temps reel des donnees, controle tactile des LEDs, demarrage automatique (systemd)</li>
-    <li><strong>Communication bidirectionnelle</strong> -- le LilyGO publie les donnees capteurs, le RPi envoie des commandes aux LEDs</li>
+    <li><strong>Firmware LilyGO</strong> — lecture des capteurs (boutons, potentiomètres, MPU6050), contrôle des LEDs, publication MQTT via LTE</li>
+    <li><strong>Interface Raspberry Pi</strong> — affichage temps réel des données, contrôle tactile des LEDs, démarrage automatique (systemd)</li>
+    <li><strong>Communication bidirectionnelle</strong> — le LilyGO publie les données capteurs, le RPi envoie des commandes aux LEDs</li>
   </ul>
   <div style="margin-top: 15px; padding: 10px; background: #ffebee; border-left: 4px solid #f44336; border-radius: 4px;">
     <p style="margin: 0 0 8px 0;"><strong>Dates limites importantes :</strong></p>
     <ul style="margin: 0; padding-left: 20px;">
-      <li><strong>Gerbers (PCB) : lundi 16 mars 2026 a 8h00</strong> -- remise obligatoire pour la commande groupee. Les fichiers Gerber doivent etre <strong>commites sur votre depot GitHub</strong> (dossier <code>fabrication/gerbers/</code>). Note de 0 pour la partie PCB si non remis a temps.</li>
-      <li><strong>Projet complet : lundi 23 mars 2026 a 8h00</strong> -- firmware, interface et documentation.</li>
+      <li><strong>Gerbers (PCB) : lundi 16 mars 2026 à 8h00</strong> — remise obligatoire pour la commande groupée. Les fichiers Gerber doivent être <strong>commités sur votre dépôt GitHub</strong> (dossier <code>fabrication/gerbers/</code>). Note de 0 pour la partie PCB si non remis à temps.</li>
+      <li><strong>Projet complet : lundi 23 mars 2026 à 8h00</strong> — firmware, interface et documentation.</li>
     </ul>
   </div>
   <div style="margin-top: 15px; padding: 10px; background: #e8f5e9; border-left: 4px solid #4CAF50; border-radius: 4px;">
-    <p style="margin: 0 0 8px 0;"><strong>Semaine de lecture (relache) :</strong></p>
+    <p style="margin: 0 0 8px 0;"><strong>Semaine de lecture (relâche) :</strong></p>
     <p style="margin: 0 0 8px 0;">Pas de cours la semaine prochaine. Profitez-en pour avancer sur votre projet de mi-session. Je suis disponible pour vous aider si vous avez des questions ou besoin d'un coup de main :</p>
     <ul style="margin: 0; padding-left: 20px;">
-      <li><strong>Mardi, mercredi et jeudi de 9h a 14h</strong> -- faites-moi signe si vous avez besoin d'aide</li>
+      <li><strong>Mardi, mercredi et jeudi de 9h à 14h</strong> — faites-moi signe si vous avez besoin d'aide</li>
     </ul>
   </div>
   <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px;">
-    <p style="margin: 0 0 8px 0;"><strong>A faire pendant la relache :</strong></p>
+    <p style="margin: 0 0 8px 0;"><strong>À faire pendant la relâche :</strong></p>
     <ul style="margin: 0; padding-left: 20px;">
-      <li><strong>Remettre les Gerbers avant le lundi 16 mars a 8h00</strong> (commit + push sur GitHub)</li>
-      <li>Poursuivre le firmware (lecture capteurs, MQTT) et l'interface (affichage, controle tactile)</li>
-      <li>Completer la documentation technique (README.md, schema fonctionnel, topics MQTT)</li>
-      <li>Preparer la remise finale du projet pour le 23 mars</li>
+      <li><strong>Remettre les Gerbers avant le lundi 17 mars à 8h00</strong> (commit + push sur GitHub)</li>
+      <li>Poursuivre le firmware (lecture capteurs, MQTT) et l'interface (affichage, contrôle tactile)</li>
+      <li>Compléter la documentation technique (README.md, schéma fonctionnel, topics MQTT)</li>
+      <li>Préparer la remise finale du projet pour le 23 mars</li>
     </ul>
   </div>
   <p style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 4px;">
-    <strong>Prochaine evaluation :</strong> Projet de mi-session -- 23 mars 2026 (20%)<br>
-    <em>Matiere couverte :</em> conception PCB KiCad, prototype breadboard, firmware LilyGO, interface RPi, documentation<br>
-    <em>Livrables :</em> Gerbers (16 mars), projet complet (23 mars)
+    <strong>Prochaine évaluation :</strong> Projet de mi-session — 23 mars 2026 (20%)<br>
+    <em>Matière couverte :</em> conception PCB KiCad, prototype breadboard, firmware LilyGO, interface RPi, documentation<br>
+    <em>Livrables :</em> Gerbers (17 mars), projet complet (23 mars)
   </p>
 </div>
 <script>
