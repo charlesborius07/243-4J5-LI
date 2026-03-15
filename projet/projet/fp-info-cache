@@ -1,4 +1,4 @@
-27224337707064462
+27227884361396919
 3386P
 POT_3386P
 
@@ -71820,12 +71820,19 @@ Yellow 5381 Series LED
 2
 2
 LilyGo
-Untitled
+LILYGO_T-A7670E_G_SA R2
 
 
 0
+32
+32
+MPU-6050_Breakout
+MPU-6050_Breakout
+MPU-6050 6-DoF IMU Breakout Board, 12 pins (6 per side), 2.54mm pitch, 20x16mm
+MPU-6050 IMU Gyroscope Accelerometer I2C Sensor
 0
-0
+12
+12
 Module
 A20_OLINUXINO_LIME2
 A20 Olinuxino LIME2, 1.2GHz, 512-1024MB RAM, Micro-SD, NAND or eMMC, 1000Mbit Ethernet
