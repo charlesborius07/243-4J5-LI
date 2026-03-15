@@ -1,0 +1,168 @@
+(kicad_symbol_lib
+  (version 20231120)
+  (generator "kicad_symbol_editor")
+  (generator_version "7.0")
+  (symbol "MPU6050-Breakout"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "U"
+      (at 0 10.16 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "MPU6050-Breakout"
+      (at 0 -10.16 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" ""
+      (at 0 -12.700000000000001 0)
+      (effects (font (size 1.27 1.27)) (hide yes))
+    )
+    (property "Datasheet" "https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf"
+      (at 0 -15.24 0)
+      (effects (font (size 1.27 1.27)) (hide yes))
+    )
+    (property "Description" "MPU-6050 6-DoF Breakout - VIN 3Vo GND AD0 FSYNC SCL SDA INT"
+      (at 0 -17.78 0)
+      (effects (font (size 1.27 1.27)) (hide yes))
+    )
+    (symbol "MPU6050-Breakout_0_1"
+      (rectangle
+        (start -12.7 8.89)
+        (end 12.7 -8.89)
+        (stroke (width 0.254) (type default))
+        (fill (type background))
+      )
+      (text "MPU-6050 6-DoF"
+        (at 0 1.27 0)
+        (effects (font (size 1.397 1.397) (bold yes)))
+      )
+      (text "Accel + Gyro  I2C"
+        (at 0 -1.27 0)
+        (effects (font (size 1.016 1.016)))
+      )
+    )
+    (symbol "MPU6050-Breakout_1_1"
+      (pin power_in line
+        (at -15.24 6.35 0)
+        (length 2.54)
+        (name "VIN"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "1"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin power_out line
+        (at -15.24 3.81 0)
+        (length 2.54)
+        (name "3Vo"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "2"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin power_in line
+        (at -15.24 1.27 0)
+        (length 2.54)
+        (name "GND"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "3"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin input line
+        (at -15.24 -1.27 0)
+        (length 2.54)
+        (name "AD0"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "4"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin input line
+        (at -15.24 -3.81 0)
+        (length 2.54)
+        (name "FSYNC"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "5"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin power_in line
+        (at -15.24 -6.35 0)
+        (length 2.54)
+        (name "GND"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "6"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin bidirectional line
+        (at 15.24 6.35 180)
+        (length 2.54)
+        (name "SCL"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "7"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin bidirectional line
+        (at 15.24 3.81 180)
+        (length 2.54)
+        (name "SDA"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "8"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin output line
+        (at 15.24 1.27 180)
+        (length 2.54)
+        (name "INT"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "9"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin power_in line
+        (at 15.24 -1.27 180)
+        (length 2.54)
+        (name "GND"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "10"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin power_out line
+        (at 15.24 -3.81 180)
+        (length 2.54)
+        (name "3Vo"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "11"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+      (pin power_in line
+        (at 15.24 -6.35 180)
+        (length 2.54)
+        (name "VIN"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "12"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+    )
+  )
+)

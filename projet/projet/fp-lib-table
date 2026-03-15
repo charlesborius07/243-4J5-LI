@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "LilyGo")(type "KiCad")(uri "${KIPRJMOD}/footprint/LilyGo.pretty")(options "")(descr ""))
+)
