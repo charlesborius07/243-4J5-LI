@@ -1,0 +1,4 @@
+"Id";"Designator";"Footprint";"Quantity";"Designation";"Supplier and ref";
+1;"R1";"R_0805_2012Metric";1;"330";;;
+2;"J1";"FanPinHeader_1x03_P2.54mm_Vertical";1;"Conn_3Pin";;;
+3;"D1";"LED_0805_2012Metric";1;"LED_Rouge";;;
