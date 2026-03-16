@@ -1,0 +1,124 @@
+(footprint "LilyGo-T-A7670G-V1.1"
+  (version 20240108)
+  (generator "claude_ai")
+  (generator_version "1.0")
+  (layer "F.Cu")
+  (descr "LilyGo T-A7670G V1.1 ESP32 4G LTE Dev Board, 2x16 pin headers, 2.54mm pitch, 22.86mm row spacing")
+  (tags "LilyGo ESP32 A7670G 4G LTE GPS development board module")
+  (attr through_hole)
+
+  (fp_text reference "REF**"
+    (at 11.43 -4)
+    (layer "F.SilkS")
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value "LilyGo-T-A7670G-V1.1"
+    (at 11.43 42.5)
+    (layer "F.Fab")
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text user "${REFERENCE}"
+    (at 11.43 19.05)
+    (layer "F.Fab")
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+
+  ;; === Board outline - F.SilkS ===
+  (fp_line (start -2.54 -2.54) (end 25.4 -2.54) (stroke (width 0.12) (type default)) (layer "F.SilkS"))
+  (fp_line (start 25.4 -2.54) (end 25.4 40.64) (stroke (width 0.12) (type default)) (layer "F.SilkS"))
+  (fp_line (start 25.4 40.64) (end -2.54 40.64) (stroke (width 0.12) (type default)) (layer "F.SilkS"))
+  (fp_line (start -2.54 40.64) (end -2.54 -2.54) (stroke (width 0.12) (type default)) (layer "F.SilkS"))
+
+  ;; === Pin 1 marker - F.SilkS ===
+  (fp_line (start -1.5 -1.5) (end -1.5 1.0) (stroke (width 0.12) (type default)) (layer "F.SilkS"))
+  (fp_line (start -1.5 -1.5) (end 1.0 -1.5) (stroke (width 0.12) (type default)) (layer "F.SilkS"))
+
+  ;; === Courtyard - F.CrtYd ===
+  (fp_line (start -3.04 -3.04) (end 25.9 -3.04) (stroke (width 0.05) (type default)) (layer "F.CrtYd"))
+  (fp_line (start 25.9 -3.04) (end 25.9 41.14) (stroke (width 0.05) (type default)) (layer "F.CrtYd"))
+  (fp_line (start 25.9 41.14) (end -3.04 41.14) (stroke (width 0.05) (type default)) (layer "F.CrtYd"))
+  (fp_line (start -3.04 41.14) (end -3.04 -3.04) (stroke (width 0.05) (type default)) (layer "F.CrtYd"))
+
+  ;; === Board outline - F.Fab ===
+  (fp_line (start -2.54 -2.54) (end 25.4 -2.54) (stroke (width 0.1) (type default)) (layer "F.Fab"))
+  (fp_line (start 25.4 -2.54) (end 25.4 40.64) (stroke (width 0.1) (type default)) (layer "F.Fab"))
+  (fp_line (start 25.4 40.64) (end -2.54 40.64) (stroke (width 0.1) (type default)) (layer "F.Fab"))
+  (fp_line (start -2.54 40.64) (end -2.54 -2.54) (stroke (width 0.1) (type default)) (layer "F.Fab"))
+  ;; Pin 1 marker on Fab
+  (fp_line (start -2.54 -2.54) (end -1.27 -1.27) (stroke (width 0.1) (type default)) (layer "F.Fab"))
+
+  ;; ========================================
+  ;; LEFT HEADER - Pins 1 to 16 (x=0)
+  ;; ========================================
+
+  ;; Pin 1 - VIN (rectangular pad = pin 1 indicator)
+  (pad "1" thru_hole rect (at 0 0) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 2 - GND
+  (pad "2" thru_hole circle (at 0 2.54) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 3 - IO12
+  (pad "3" thru_hole circle (at 0 5.08) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 4 - IO13
+  (pad "4" thru_hole circle (at 0 7.62) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 5 - IO14
+  (pad "5" thru_hole circle (at 0 10.16) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 6 - IO15
+  (pad "6" thru_hole circle (at 0 12.7) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 7 - IO25
+  (pad "7" thru_hole circle (at 0 15.24) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 8 - IO26
+  (pad "8" thru_hole circle (at 0 17.78) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 9 - IO27
+  (pad "9" thru_hole circle (at 0 20.32) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 10 - IO32
+  (pad "10" thru_hole circle (at 0 22.86) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 11 - IO33
+  (pad "11" thru_hole circle (at 0 25.4) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 12 - IO34
+  (pad "12" thru_hole circle (at 0 27.94) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 13 - IO35/BAT_ADC
+  (pad "13" thru_hole circle (at 0 30.48) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 14 - SOLAR_IN
+  (pad "14" thru_hole circle (at 0 33.02) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 15 - VBAT
+  (pad "15" thru_hole circle (at 0 35.56) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 16 - GND
+  (pad "16" thru_hole circle (at 0 38.1) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+
+  ;; ========================================
+  ;; RIGHT HEADER - Pins 17 to 32 (x=22.86)
+  ;; Row spacing = 22.86mm (900 mil)
+  ;; ========================================
+
+  ;; Pin 17 - 3V3
+  (pad "17" thru_hole circle (at 22.86 0) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 18 - GND
+  (pad "18" thru_hole circle (at 22.86 2.54) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 19 - IO0
+  (pad "19" thru_hole circle (at 22.86 5.08) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 20 - IO2/SD_CS
+  (pad "20" thru_hole circle (at 22.86 7.62) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 21 - IO4
+  (pad "21" thru_hole circle (at 22.86 10.16) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 22 - IO5
+  (pad "22" thru_hole circle (at 22.86 12.7) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 23 - IO18/SD_CLK
+  (pad "23" thru_hole circle (at 22.86 15.24) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 24 - IO19/SD_MISO
+  (pad "24" thru_hole circle (at 22.86 17.78) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 25 - IO21
+  (pad "25" thru_hole circle (at 22.86 20.32) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 26 - IO22
+  (pad "26" thru_hole circle (at 22.86 22.86) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 27 - IO23/SD_MOSI
+  (pad "27" thru_hole circle (at 22.86 25.4) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 28 - RST
+  (pad "28" thru_hole circle (at 22.86 27.94) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 29 - RXD
+  (pad "29" thru_hole circle (at 22.86 30.48) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 30 - TXD
+  (pad "30" thru_hole circle (at 22.86 33.02) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 31 - IO36/SVP
+  (pad "31" thru_hole circle (at 22.86 35.56) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+  ;; Pin 32 - IO39/SVN
+  (pad "32" thru_hole circle (at 22.86 38.1) (size 1.7 1.7) (drill 1.0) (layers "*.Cu" "*.Mask"))
+)

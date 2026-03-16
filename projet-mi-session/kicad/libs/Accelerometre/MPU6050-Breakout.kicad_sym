@@ -1,0 +1,171 @@
+(kicad_symbol_lib
+  (version 20231120)
+  (generator "claude_ai")
+  (generator_version "1.0")
+  (symbol "MPU6050-Breakout"
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "U"
+      (at 0 16.51 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Value" "MPU6050-Breakout"
+      (at 0 -16.51 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+      )
+    )
+    (property "Footprint" ""
+      (at 0 -19.05 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Datasheet" "https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf"
+      (at 0 -21.59 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (property "Description" "MPU-6050 6-DoF IMU Breakout Board - Accelerometer and Gyroscope with I2C"
+      (at 0 -24.13 0)
+      (effects
+        (font
+          (size 1.27 1.27)
+        )
+        (hide yes)
+      )
+    )
+    (symbol "MPU6050-Breakout_0_1"
+      (rectangle
+        (start -12.7 15.24)
+        (end 12.7 -15.24)
+        (stroke
+          (width 0.254)
+          (type default)
+        )
+        (fill
+          (type background)
+        )
+      )
+      (text "MPU-6050"
+        (at 0 2.54 0)
+        (effects
+          (font
+            (size 1.524 1.524)
+            (bold yes)
+          )
+        )
+      )
+      (text "6-DoF IMU"
+        (at 0 0 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+      (text "Breakout"
+        (at 0 -2.54 0)
+        (effects
+          (font
+            (size 1.27 1.27)
+          )
+        )
+      )
+    )
+    (symbol "MPU6050-Breakout_1_1"
+
+      (pin power_in line
+        (at -15.24 12.7 0)
+        (length 2.54)
+        (name "VIN"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "1"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+
+      (pin power_out line
+        (at -15.24 10.16 0)
+        (length 2.54)
+        (name "3VA"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "2"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+
+      (pin power_in line
+        (at -15.24 7.62 0)
+        (length 2.54)
+        (name "GND"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "3"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+
+      (pin bidirectional line
+        (at 15.24 12.7 180)
+        (length 2.54)
+        (name "SCL"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "4"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+
+      (pin bidirectional line
+        (at 15.24 10.16 180)
+        (length 2.54)
+        (name "SDA"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "5"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+
+      (pin output line
+        (at 15.24 7.62 180)
+        (length 2.54)
+        (name "INT"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "6"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+
+      (pin input line
+        (at 15.24 5.08 180)
+        (length 2.54)
+        (name "ADO"
+          (effects (font (size 1.27 1.27)))
+        )
+        (number "7"
+          (effects (font (size 1.27 1.27)))
+        )
+      )
+
+    )
+  )
+)
