@@ -43,7 +43,7 @@ void loop() {
   // 4. Animation des LEDs (chenillard rapide)
   for (int i = 0; i < 4; i++) {
     digitalWrite(ledPins[i], HIGH);
-    delay(50);
+    delay(500);
     digitalWrite(ledPins[i], LOW);
   }
 
