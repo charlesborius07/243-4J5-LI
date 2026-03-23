@@ -14,7 +14,7 @@
 // ============================================================================
 // NOTE : D'après test_mpu6050.ino, on utilise :
 const int LED_PINS[] = {12, 13, 14, 15};
-const int POT_PINS[] = {26, 27};
+const int POT_PINS[] = {32, 33};
 const int BUTTON_PIN = 34;
 
 // CONFIG MODEM A7670G
@@ -41,9 +41,19 @@ int lastButtonState = HIGH;
 // Objets matériels et réseau
 Adafruit_MPU6050 mpu;
 HardwareSerial SerialAT(1);
+
+#define ENABLE_DEBUG
+#define ENABLE_ERROR_STRING
+#define DEBUG_PORT Serial
+#define SSLCLIENT_INSECURE_ONLY
+#include <ESP_SSLClient.h>
+#include "WebSocketClient.h"
+
 TinyGsm modem(SerialAT);
 TinyGsmClient gsmClient(modem, 0);
-PubSubClient mqttClient(gsmClient);
+ESP_SSLClient sslClient;
+WebSocketClient wsClient(&sslClient, "/");
+PubSubClient mqttClient(wsClient);
 
 // Buffers pour les topics
 char topicSensorsButtons[100];
@@ -73,8 +83,8 @@ void initGPIO() {
         digitalWrite(LED_PINS[i], LOW);
     }
     
-    // Bouton (Pull-up interne)
-    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    // Bouton (Pas de pull-up interne sur 34)
+    pinMode(BUTTON_PIN, INPUT);
     
     // Les potentiomètres utilisent l'ADC, pas besoin de pinMode explicite en ESP32
     // analogRead(POT_PINS[i]) gèrera le mode de fonctionnement.
@@ -165,8 +175,16 @@ void connectMQTT() {
         snprintf(topicActuatorsLed[i], sizeof(topicActuatorsLed[i]), "%sactuators/led%d", STUDENT_TOPIC_ROOT, i + 1);
     }
     
-    mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+    // Configuration SSL
+    Serial.println("[SSL] Configuration du client SSL...");
+    sslClient.setClient(&gsmClient);
+    sslClient.setInsecure();
+    sslClient.setBufferSizes(2048, 1024);
+    sslClient.setDebugLevel(1);
+
+    mqttClient.setServer(MQTT_BROKER, 443); // Port WSS (443) pour contourner Cloudflare
     mqttClient.setCallback(mqttCallback);
+    mqttClient.setKeepAlive(60);
 }
 
 // ============================================================================
