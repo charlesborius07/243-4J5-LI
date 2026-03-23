@@ -1,0 +1,17 @@
+[Unit]
+Description=Interface IoT — Projet mi-session
+After=network.target mosquitto.service
+Wants=mosquitto.service
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/243-4J5-LI/projet-mi-session/interface
+ExecStart=/usr/bin/python3 /home/pi/243-4J5-LI/projet-mi-session/interface/main.py
+Restart=on-failure
+RestartSec=5
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+
+[Install]
+WantedBy=graphical.target

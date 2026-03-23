@@ -1,0 +1,23 @@
+#ifndef AUTH_H
+#define AUTH_H
+
+// ====== CONFIGURATION APN (LTE) ======
+#define APN "votre_apn"
+#define APN_USER ""
+#define APN_PASS ""
+
+// ====== CONFIGURATION WIFI (Fallback optionnel) ======
+#define WIFI_SSID "votre_ssid"
+#define WIFI_PASSWORD "votre_mot_de_passe"
+
+// ====== CONFIGURATION MQTT ======
+#define MQTT_BROKER "192.168.1.100" // Remplacez par l'IP de votre Raspberry Pi 5
+#define MQTT_PORT 1883              // Port (1883 pour TCP non chiffré, 8883 pour TLS, 443 pour WSS)
+#define MQTT_CLIENT_ID "lilygo_etudiant1"
+#define MQTT_USER "etudiant"
+#define MQTT_PASS "motdepasse"
+
+// ====== STRUCTURE DES TOPICS ======
+#define STUDENT_TOPIC_ROOT "etudiant/prenom-nom/"
+
+#endif
