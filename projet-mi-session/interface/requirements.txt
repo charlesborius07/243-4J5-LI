@@ -1,2 +1,2 @@
-pygame==2.5.2
-paho-mqtt==1.6.1
+paho-mqtt>=1.6.1
+evdev>=1.6.0
