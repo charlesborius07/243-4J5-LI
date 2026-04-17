@@ -12,47 +12,17 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'interface')))
 from mqtt_config import MQTT_CONFIG
 
-# ---------- GESTION DU TOUCH ----------
+# ---------- VERSION CONSOLE SANS CURSES ----------
 
-class TouchReader(threading.Thread):
-    def __init__(self, event_queue: Queue):
-        super().__init__(daemon=True)
-        self.event_queue = event_queue
-        self.device = self._find_touch_device()
-        # Calibrage simplifié
-        self.min_x, self.max_x = 0, 4096
-        self.min_y, self.max_y = 0, 4096
-        self.current_x, self.current_y = 2048, 2048
-
-    def _find_touch_device(self):
-        for path in list_devices():
-            dev = InputDevice(path)
-            if "touch" in dev.name.lower() or "ft5406" in dev.name.lower():
-                return dev
-        return None
-
-    def run(self):
-        if not self.device: return
-        for event in self.device.read_loop():
-            if event.type == ecodes.EV_ABS:
-                if event.code == ecodes.ABS_MT_POSITION_X: self.current_x = event.value
-                elif event.code == ecodes.ABS_MT_POSITION_Y: self.current_y = event.value
-            elif event.type == ecodes.EV_KEY and event.code == ecodes.BTN_TOUCH and event.value == 1:
-                self.event_queue.put(("tap", self.current_x, self.current_y))
-
-# ---------- UI DU JEU (Curses) ----------
-
-class GameUI:
-    def __init__(self, stdscr, touch_reader, event_queue, mqtt_config):
-        self.stdscr = stdscr
+class GameConsole:
+    def __init__(self, mqtt_config):
         self.running = True
         self.mqtt_connected = False
         self.mqtt_config = mqtt_config
-        self.event_queue = event_queue
         
         # État du jeu
         self.player_pos = [10, 10]
-        self.score = 0
+        self.speed_multiplier = 1.0
         
         self._init_mqtt()
 
@@ -63,52 +33,51 @@ class GameUI:
             self.mqtt_client.tls_set(cert_reqs=ssl.CERT_REQUIRED)
             self.mqtt_client.username_pw_set(self.mqtt_config.get("username"), self.mqtt_config.get("password"))
             self.mqtt_client.ws_set_options(path="/")
-            self.mqtt_client.on_connect = lambda c, u, f, rc: setattr(self, 'mqtt_connected', rc == 0)
+            self.mqtt_client.on_connect = self._on_connect
             self.mqtt_client.on_message = self._on_message
             self.mqtt_client.connect(self.mqtt_config.get("broker"), self.mqtt_config.get("port", 443), 60)
             self.mqtt_client.loop_start()
+            print("MQTT connecté.")
         except Exception as e:
-            self.status_message = f"Erreur MQTT: {str(e)}"
+            print(f"Erreur MQTT: {str(e)}")
+
+    def _on_connect(self, client, userdata, flags, rc):
+        if rc == 0:
+            self.mqtt_connected = True
+            device_id = self.mqtt_config.get("device_id", "")
+            root = device_id if device_id.endswith('/') else f"{device_id}/"
+            self.mqtt_client.subscribe(f"{root}sensors/accel")
+            self.mqtt_client.subscribe(f"{root}sensors/pots")
+            print("Abonné aux capteurs.")
 
     def _on_message(self, client, userdata, msg):
-        # Logique de réception capteurs pour le jeu (Accel, etc.)
-        pass
-
-    def _publish_led(self, led_idx, state):
-        topic = f"{self.mqtt_config.get('device_id')}actuators/led{led_idx+1}"
-        self.mqtt_client.publish(topic, json.dumps({"state": state}))
-
-    def _draw_maze(self):
-        self.stdscr.erase()
-        h, w = self.stdscr.getmaxyx()
-        
-        # Affichage simplifié du labyrinthe
-        self.stdscr.addstr(0, 0, "--- MQTT LABYRINTH GAME ---")
-        self.stdscr.addstr(self.player_pos[1], self.player_pos[0], "O") # Bille
-        
-        self.stdscr.addstr(h-1, 0, f"Score: {self.score} | MQTT: {'ON' if self.mqtt_connected else 'OFF'}")
-        self.stdscr.refresh()
+        try:
+            payload = json.loads(msg.payload.decode('utf-8'))
+            topic = msg.topic
+            
+            if "sensors/accel" in topic:
+                dx = int(payload.get('x', 0) * 2.0 * self.speed_multiplier)
+                dy = int(payload.get('y', 0) * 2.0 * self.speed_multiplier)
+                self.player_pos[0] += dx
+                self.player_pos[1] += dy
+                # Affichage simple de la position
+                print(f"Bille en: {self.player_pos}", end='\r')
+                
+            elif "sensors/pots" in topic:
+                self.speed_multiplier = (payload.get('pot1', 85) / 4095.0) * 5.0
+                
+        except Exception as e:
+            pass
 
     def run(self):
-        self.stdscr.nodelay(True)
+        print("Jeu lancé (Console). Appuyez sur Ctrl+C pour quitter.")
         while self.running:
-            self._draw_maze()
-            
-            # Lecture clavier pour tester sans capteurs
-            ch = self.stdscr.getch()
-            if ch == ord('q'): self.running = False
-            
-            time.sleep(0.05)
+            time.sleep(1)
 
-        self.mqtt_client.loop_stop()
-        self.mqtt_client.disconnect()
-
-def main(stdscr):
-    event_queue = Queue()
-    touch_reader = TouchReader(event_queue)
-    touch_reader.start()
-    ui = GameUI(stdscr, touch_reader, event_queue, MQTT_CONFIG)
+def main():
+    ui = GameConsole(MQTT_CONFIG)
     ui.run()
 
 if __name__ == "__main__":
-    curses.wrapper(main)
+    main()
+
