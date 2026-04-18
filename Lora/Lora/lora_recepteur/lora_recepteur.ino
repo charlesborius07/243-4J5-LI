@@ -1,27 +1,32 @@
 #include <RadioLib.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+#include <Adafruit_SH110X.h>
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-#define OLED_SDA 17
-#define OLED_SCL 18
+#define OLED_RESET -1
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+Adafruit_SH1106G display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-#define LED_STATUS 25
-#define LED_ACTION 26
+#define LED_STATUS 37
 
-// Pins SX1262 du T-Supreme
-SX1262 radio = new Module(10, 33, 5, 36);
+// Pins SX1262 du T-Beam SUPREME (correctes)
+// NSS=10, DIO1=1, NRST=5, BUSY=4
+// SPI: SCK=12, MISO=13, MOSI=11
+SX1262 radio = new Module(10, 1, 5, 4);
 
 void setup() {
+  delay(500);
   Serial.begin(115200);
   Serial.println("=== RECEPTEUR LoRa ===");
-  
+  Serial.flush();
+
+  delay(500);
+
   Wire.begin(OLED_SDA, OLED_SCL);
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  display.begin(0x3C, true);
+  delay(100);
   display.clearDisplay();
   display.setTextSize(1);
   display.setCursor(0, 0);
@@ -29,9 +34,8 @@ void setup() {
   display.display();
   
   pinMode(LED_STATUS, OUTPUT);
-  pinMode(LED_ACTION, OUTPUT);
   
-  int state = radio.begin(868.0, 125.0, 9, 7, 0x12, 22, 8);
+  int state = radio.begin(868.0, 125.0, 9, 7, 0x12, 2, 8);
   if (state == RADIOLIB_ERR_NONE) {
     Serial.println("Radio init OK");
     display.println("Radio OK");
@@ -39,6 +43,7 @@ void setup() {
     Serial.print("Erreur radio: ");
     Serial.println(state);
   }
+  Serial.flush();
   display.display();
 }
 
@@ -81,8 +86,8 @@ void processMessage(String received) {
   Serial.println("TX: " + reply);
   
   // Allumer LED selon action
-  digitalWrite(LED_ACTION, action == "on" ? HIGH : LOW);
-  oledPrint("RX: " + received + "\nRSSI: " + String(radio.getRSSI()) + "\nAction: " + action);
+  digitalWrite(LED_STATUS, HIGH);
+  oledPrint("RX: " + received + "\nRSSI: " + String(radio.getRSSI()) + "\nStatus: " + status);
 }
 
 void loop() {
