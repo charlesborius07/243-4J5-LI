@@ -4,15 +4,15 @@
 // CONFIGURATION WIFI
 // =============================================
 
-#define WIFI_SSID       "MonReseau"
-#define WIFI_PASSWORD   "MonMotDePasse"
+#define WIFI_SSID       "Charles iPhone"
+#define WIFI_PASSWORD   "ThanksGod!"
 
 // =============================================
 // CONFIGURATION GROQ API
 // =============================================
 
 #define GROQ_API_URL    "https://api.groq.com/openai/v1/chat/completions"
-#define GROQ_API_KEY    "gsk_ta_cle_api_groq"
+#define GROQ_API_KEY    "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"
 
 #define GROQ_MODEL      "llama-3.1-8b-instant"
 // Modeles disponibles:
@@ -28,11 +28,11 @@
 // CONFIGURATION MQTT (Mosquitto Broker)
 // =============================================
 
-#define MQTT_BROKER     "192.168.1.100"
-#define MQTT_PORT       1883
+#define MQTT_BROKER     "mqtt.charlesborius07.com"
+#define MQTT_PORT       443
 #define MQTT_TOPIC      "lora/result"
-#define MQTT_USER       ""
-#define MQTT_PASSWORD   ""
+#define MQTT_USER       "telecom"
+#define MQTT_PASSWORD   "Teladmin1$"
 
 // =============================================
 // CONFIGURATION LORA (automatique via LoRaBoards.h)
