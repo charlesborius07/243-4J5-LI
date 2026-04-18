@@ -2,6 +2,9 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
+
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -17,7 +20,14 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 SX1262 radio = new Module(10, 33, 5, 36);
 
 void setup() {
+
+   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); // Désactive le détecteur de brownout
+    // Le reste de votre code..
+
   Serial.begin(115200);
+  delay(3000); 
+  Serial.println("BOD désactivé, le système démarre...");
+
   Serial.println("=== RECEPTEUR LoRa ===");
   
   Wire.begin(OLED_SDA, OLED_SCL);

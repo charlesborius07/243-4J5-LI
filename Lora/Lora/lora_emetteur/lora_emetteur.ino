@@ -1,9 +1,12 @@
 #include <RadioLib.h>
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
 
 // Pins SX1262 du T-Supreme
 SX1262 radio = new Module(10, 33, 5, 36);
 
 void setup() {
+  
   Serial.begin(115200);
   Serial.println("=== EMETTEUR LoRa ===");
   
