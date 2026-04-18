@@ -86,11 +86,11 @@ SX1280 radio = new Module(RADIO_CS_PIN, RADIO_DIO1_PIN, RADIO_RST_PIN, RADIO_BUS
 LR1121 radio = new Module(RADIO_CS_PIN, RADIO_DIO9_PIN, RADIO_RST_PIN, RADIO_BUSY_PIN);
 #endif
 
-#define STATUS_LED      LED
+#define STATUS_LED      45
 
 #ifndef WIFI_SSID
-#define WIFI_SSID       "MonReseau"
-#define WIFI_PASSWORD   "MotDePasse"
+#define WIFI_SSID       "Charles iPhone"
+#define WIFI_PASSWORD   "ThanksGod!"
 #endif
 
 #ifndef GROQ_API_URL
