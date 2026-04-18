@@ -1,12 +1,18 @@
 #include <RadioLib.h>
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
 
 // Pins SX1262 du T-Beam SUPREME (correctes)
 // NSS=10, DIO1=1, NRST=5, BUSY=4
 // SPI: SCK=12, MISO=13, MOSI=11
-SX1262 radio = new Module(10, 1, 5, 4);
+SX1262 radio = new Module(10, 33, 5, 36);
 
 void setup() {
+<<<<<<< HEAD
+  
+=======
   delay(500);
+>>>>>>> 3c383839ffbcf7639501a2704b4eb1a7b4e355fa
   Serial.begin(115200);
   Serial.println("=== EMETTEUR LoRa ===");
   Serial.flush();
