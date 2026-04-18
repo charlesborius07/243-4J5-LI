@@ -1,7 +1,14 @@
 #include <RadioLib.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
+<<<<<<< HEAD
+#include <Adafruit_SSD1306.h>
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
+
+=======
 #include <Adafruit_SH110X.h>
+>>>>>>> 3c383839ffbcf7639501a2704b4eb1a7b4e355fa
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -14,11 +21,21 @@ Adafruit_SH1106G display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // Pins SX1262 du T-Beam SUPREME (correctes)
 // NSS=10, DIO1=1, NRST=5, BUSY=4
 // SPI: SCK=12, MISO=13, MOSI=11
-SX1262 radio = new Module(10, 1, 5, 4);
+SX1262 radio = new Module(10, 33, 5, 36);
 
 void setup() {
+<<<<<<< HEAD
+
+   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); // Désactive le détecteur de brownout
+    // Le reste de votre code..
+
+=======
   delay(500);
+>>>>>>> 3c383839ffbcf7639501a2704b4eb1a7b4e355fa
   Serial.begin(115200);
+  delay(3000); 
+  Serial.println("BOD désactivé, le système démarre...");
+
   Serial.println("=== RECEPTEUR LoRa ===");
   Serial.flush();
 
