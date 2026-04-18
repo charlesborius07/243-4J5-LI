@@ -4,8 +4,8 @@
 // CONFIGURATION WIFI
 // =============================================
 
-#define WIFI_SSID       "Charles iPhone"
-#define WIFI_PASSWORD   "ThanksGod!"
+#define WIFI_SSID       "1975 grandville"
+#define WIFI_PASSWORD   "grandville1975"
 
 // =============================================
 // CONFIGURATION GROQ API

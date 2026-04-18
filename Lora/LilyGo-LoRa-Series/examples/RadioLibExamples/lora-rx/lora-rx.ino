@@ -89,8 +89,8 @@ LR1121 radio = new Module(RADIO_CS_PIN, RADIO_DIO9_PIN, RADIO_RST_PIN, RADIO_BUS
 #define STATUS_LED      45
 
 #ifndef WIFI_SSID
-#define WIFI_SSID       "Charles iPhone"
-#define WIFI_PASSWORD   "ThanksGod!"
+#define WIFI_SSID       "1975 grandville"
+#define WIFI_PASSWORD   "grandville1975"
 #endif
 
 #ifndef GROQ_API_URL
@@ -98,7 +98,7 @@ LR1121 radio = new Module(RADIO_CS_PIN, RADIO_DIO9_PIN, RADIO_RST_PIN, RADIO_BUS
 #endif
 
 #ifndef GROQ_API_KEY
-#define GROQ_API_KEY    "gsk_ta-cle-api-ici"
+#define GROQ_API_KEY    "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"
 #endif
 
 #ifndef GROQ_MODEL
@@ -110,11 +110,11 @@ LR1121 radio = new Module(RADIO_CS_PIN, RADIO_DIO9_PIN, RADIO_RST_PIN, RADIO_BUS
 #endif
 
 #ifndef MQTT_BROKER
-#define MQTT_BROKER     "192.168.1.100"
-#define MQTT_PORT       1883
+#define MQTT_BROKER     "mqtt.charlesborius07.com"
+#define MQTT_PORT       443
 #define MQTT_TOPIC      "lora/result"
-#define MQTT_USER       ""
-#define MQTT_PASSWORD   ""
+#define MQTT_USER       "telecom"
+#define MQTT_PASSWORD   "Teladmin1$"
 #endif
 
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
