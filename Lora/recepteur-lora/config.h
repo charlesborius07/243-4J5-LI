@@ -35,3 +35,16 @@ const char* SYSTEM_PROMPT =
   "'action' ('on' si valeur > 2000, sinon 'off') et "
   "'msg' (un commentaire très court de la valeur, max 20 chars). "
   "Exemple exact: {\"action\":\"on\",\"msg\":\"Niveau OK\"}";
+
+// =============================================
+// CONFIGURATION MQTT
+// =============================================
+
+const char* MQTT_BROKER = "mqtt.charlesborius07.com";
+const int   MQTT_PORT   = 443;
+const char* MQTT_PATH   = "/";
+const char* MQTT_USER   = "telecom";
+const char* MQTT_PASS   = "Teladmin1$";
+const char* MQTT_CLIENT_ID = "esp32-lora-receiver";
+
+const char* TOPIC_PUB_DECISION = "etudiant/charlesboris-feugangfoteu/lora/decision";
