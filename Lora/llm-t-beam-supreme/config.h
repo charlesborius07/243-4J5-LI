@@ -10,10 +10,10 @@
 // =============================================
 
 // Mettre a true pour WPA2 Entreprise, false pour WPA2 Personnel
-#define USE_WPA2_ENTERPRISE  false
+#define USE_WPA2_ENTERPRISE  true
 
 // --- WPA2 Personnel ---
-const char* WIFI_SSID     = "1975 grandville";
+const char* WIFI_SSID     = "climoilou";
 const char* WIFI_PASSWORD = "grandville1975";
 
 // --- WPA2 Entreprise (EAP-PEAP) ---
