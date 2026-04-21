@@ -41,7 +41,7 @@ const char* SYSTEM_PROMPT =
 // CONFIGURATION MQTT
 // =============================================
 
-const char* MQTT_BROKER = "mqtt.charlesborius07.com";
+const char* MQTT_BROKER = "VOTRE_ADRESSE_BROKER";
 const int   MQTT_PORT   = 443;
 const char* MQTT_PATH   = "/";
 const char* MQTT_USER   = "VOTRE_USER_MQTT";
