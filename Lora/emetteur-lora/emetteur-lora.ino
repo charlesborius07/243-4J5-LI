@@ -5,7 +5,8 @@
  * Materiel :
  *   - LilyGO T-Beam Supreme (ESP32-S3, SH1106 OLED, AXP2101 PMU)
  *   - Potentiometre sur GPIO 2 (ADC)
- *   - LED sur GPIO 25
+ *   - LED sur GPIO 46
+ *   - Bouton BOOT sur GPIO 0
  *
  * Dependances (Arduino Library Manager) :
  *   - ArduinoJson (Benoit Blanchon)
@@ -24,20 +25,18 @@
 #include <Wire.h>
 #include <XPowersLib.h>
 #include <RadioLib.h>
+#include <SPI.h>
 
 // =============================================
 // PINS T-Beam Supreme
 // =============================================
 
-#define POT_PIN         2     // GPIO ADC pour le potentiometre
-#define LED_ACTION      25    // LED d'action
-#define PIN_BTN         0     // Bouton integre du T-Beam Supreme
+#define POT_PIN         2     
+#define LED_ACTION      46    
+#define PIN_BTN         0     
 
-// I2C bus 0 : OLED + capteurs (SDA=17, SCL=18)
 #define OLED_SDA        17
 #define OLED_SCL        18
-
-// I2C bus 1 : PMU AXP2101 (SDA=42, SCL=41)
 #define PMU_SDA         42
 #define PMU_SCL         41
 #define PMU_IRQ_PIN     40
@@ -45,8 +44,6 @@
 // =============================================
 // LORA SX1262
 // =============================================
-
-#include <SPI.h>
 
 #define LORA_SCK        12
 #define LORA_MISO       13
@@ -56,7 +53,6 @@
 #define LORA_NRST       5
 #define LORA_BUSY       4
 
-// Pins SX1262 du T-Beam Supreme (NSS, DIO1, NRST, BUSY)
 SX1262 radio = new Module(LORA_CS, LORA_DIO1, LORA_NRST, LORA_BUSY);
 
 // =============================================
@@ -72,11 +68,32 @@ U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 XPowersAXP2101 pmu;
 
 // =============================================
+// ÉTATS ET VARIABLES
+// =============================================
+
+enum State {
+  IDLE,           // Lecture pot en temps réel
+  WAITING_REPLY,  // Trame envoyée affichée, attente réponse LoRa
+  SHOW_RESULT     // Réponse reçue affichée, attente bouton ou timeout pour reset
+};
+
+State currentState = IDLE;
+bool btnPrecedent = HIGH;
+int dernierPot = -1;
+String trameEnvoyee = "";
+String reponseLLM = "";
+
+unsigned long lastCycleTime = 0;
+const unsigned long CYCLE_INTERVAL = 10000; // 10 secondes
+const unsigned long DISPLAY_DURATION = 4000; // Afficher le résultat 4s avant de reset auto
+
+// =============================================
 // PROTOTYPES
 // =============================================
 
 void initPMU();
 void oledPrint(String texte);
+void executerTX();
 
 // =============================================
 // SETUP
@@ -86,39 +103,29 @@ void setup() {
   Serial.begin(115200);
   delay(500);
 
-  // I2C bus 0 : OLED
   Wire.begin(OLED_SDA, OLED_SCL);
-
-  // I2C bus 1 : PMU
   Wire1.begin(PMU_SDA, PMU_SCL);
 
-  // Initialiser le PMU (alimentation OLED, LoRa, GPS, etc.)
   initPMU();
 
-  // Initialiser l'OLED avec support UTF-8 (accents francais)
   u8g2.begin();
   u8g2.enableUTF8Print();
-  oledPrint("Demarrage...");
 
-  // Pins
   pinMode(PIN_BTN, INPUT_PULLUP);
   pinMode(POT_PIN, INPUT);
   pinMode(LED_ACTION, OUTPUT);
-  analogReadResolution(12); // 0-4095
+  digitalWrite(LED_ACTION, LOW);
+  analogReadResolution(12);
 
-  // Initialiser LoRa
   oledPrint("Init LoRa...");
-  // Passer -1 pour le CS afin que RadioLib puisse le contrôler (sinon le driver ESP32 le bloque)
   SPI.begin(LORA_SCK, LORA_MISO, LORA_MOSI, -1);
   int state = radio.begin(915.0, 125.0, 9, 7, 0x12, 22, 8);
-  if (state == RADIOLIB_ERR_NONE) {
-    Serial.println("LoRa init success!");
-    oledPrint("LoRa pret!");
-  } else {
-    Serial.println("LoRa init failed, code " + String(state));
+  if (state != RADIOLIB_ERR_NONE) {
     oledPrint("Erreur LoRa:\n" + String(state));
     while (true);
   }
+
+  lastCycleTime = millis();
 }
 
 // =============================================
@@ -126,42 +133,102 @@ void setup() {
 // =============================================
 
 void loop() {
+  bool btnActuel = digitalRead(PIN_BTN);
+  unsigned long now = millis();
+
+  // Détection appui bouton
+  if (btnPrecedent == HIGH && btnActuel == LOW) {
+    if (currentState == IDLE) {
+      executerTX();
+    } else if (currentState == SHOW_RESULT) {
+      currentState = IDLE;
+      dernierPot = -1; 
+      lastCycleTime = now;
+      Serial.println("Reset manuel - Monitoring");
+    }
+    delay(200);
+  }
+  btnPrecedent = btnActuel;
+
+  // Logique de cycle automatique (10s)
+  if (currentState == IDLE) {
+    // Monitoring Pot
+    int pot = analogRead(POT_PIN);
+    if (abs(pot - dernierPot) > 15) {
+      dernierPot = pot;
+      oledPrint("Monitoring Pot\nVAL: " + String(pot) + "\n\nEnvoi auto dans " + String((CYCLE_INTERVAL - (now - lastCycleTime))/1000) + "s");
+    }
+
+    // Trigger automatique
+    if (now - lastCycleTime >= CYCLE_INTERVAL) {
+      executerTX();
+    }
+  } 
+  else if (currentState == SHOW_RESULT) {
+    // Retour automatique à l'état initial après DISPLAY_DURATION
+    if (now - lastCycleTime >= DISPLAY_DURATION) {
+      currentState = IDLE;
+      dernierPot = -1;
+      lastCycleTime = now;
+      Serial.println("Reset automatique - Monitoring");
+    }
+  }
+
+  delay(20);
+}
+
+// =============================================
+// CYCLE TRANSMISSION
+// =============================================
+
+void executerTX() {
+  currentState = WAITING_REPLY;
+  int pot = analogRead(POT_PIN);
+  
   JsonDocument doc;
-  doc["pot"] = analogRead(POT_PIN);
+  doc["pot"] = pot;
   doc["millis"] = millis();
   
-  String msg; 
-  serializeJson(doc, msg);
+  trameEnvoyee = "";
+  serializeJson(doc, trameEnvoyee);
   
-  Serial.println("TX: " + msg);
-  radio.transmit(msg);
-  oledPrint("TX: " + msg + "\nAttente...");
+  Serial.println("TX LoRa: " + trameEnvoyee);
+  oledPrint("ENVOI LORA:\n" + trameEnvoyee + "\n\nAttente reponse...");
+  
+  int txState = radio.transmit(trameEnvoyee);
+  if (txState != RADIOLIB_ERR_NONE) {
+    oledPrint("Erreur TX: " + String(txState));
+    lastCycleTime = millis();
+    currentState = SHOW_RESULT;
+    return;
+  }
 
-  // Écouter la décision du LLM (retour LoRa)
+  // Écouter la réponse du récepteur
   String reply;
-  int state = radio.receive(reply, 10000);
+  int rxState = radio.receive(reply, 10000); 
   
-  if (state == RADIOLIB_ERR_NONE) {
-    Serial.println("RX: " + reply);
+  if (rxState == RADIOLIB_ERR_NONE) {
+    reponseLLM = reply;
+    Serial.println("RX LoRa: " + reponseLLM);
+    
     JsonDocument r; 
-    DeserializationError err = deserializeJson(r, reply);
+    DeserializationError err = deserializeJson(r, reponseLLM);
     
     String action = "none";
     if (!err) {
       action = r["action"] | "none";
     }
     
-    digitalWrite(LED_ACTION, action == "on" ? HIGH : LOW);
-    oledPrint("TX: " + msg + "\nLLM: " + reply);
-  } else if (state == RADIOLIB_ERR_RX_TIMEOUT) {
-    Serial.println("RX timeout");
-    oledPrint("TX: " + msg + "\nLLM: Timeout!");
+    digitalWrite(LED_ACTION, (action == "on") ? HIGH : LOW);
+    
+    oledPrint("REPONSE LLM:\n" + reponseLLM + "\n\nAuto-reset bientôt");
   } else {
-    Serial.println("RX error, code " + String(state));
-    oledPrint("TX: " + msg + "\nRX Erreur: " + String(state));
+    String errStr = (rxState == RADIOLIB_ERR_RX_TIMEOUT) ? "Timeout!" : "Erreur " + String(rxState);
+    oledPrint("TX OK\n\nResultat RX:\n" + errStr + "\n\nAuto-reset bientôt");
   }
   
-  delay(5000);
+  lastCycleTime = millis(); // On reset le timer pour l'affichage du résultat
+  currentState = SHOW_RESULT;
 }
 
 // =============================================
@@ -169,23 +236,15 @@ void loop() {
 // =============================================
 
 void initPMU() {
-  if (!pmu.init(Wire1, AXP2101_SLAVE_ADDRESS, PMU_SDA, PMU_SCL)) {
-    Serial.println("Avertissement: PMU AXP2101 non detecte");
-    return;
-  }
-  Serial.println("PMU AXP2101 initialise");
-
-  // Alimenter les peripheriques du T-Beam Supreme
-  pmu.setALDO1Voltage(3300);  pmu.enableALDO1();  // capteurs
-  pmu.setALDO2Voltage(3300);  pmu.enableALDO2();  // capteurs
-  pmu.setALDO3Voltage(3300);  pmu.enableALDO3();  // LoRa
-  pmu.setALDO4Voltage(3300);  pmu.enableALDO4();  // GPS
-  pmu.setBLDO1Voltage(3300);  pmu.enableBLDO1();  // SD card
+  if (!pmu.init(Wire1, AXP2101_SLAVE_ADDRESS, PMU_SDA, PMU_SCL)) return;
+  pmu.setALDO1Voltage(3300);  pmu.enableALDO1();
+  pmu.setALDO2Voltage(3300);  pmu.enableALDO2();
+  pmu.setALDO3Voltage(3300);  pmu.enableALDO3();
+  pmu.setALDO4Voltage(3300);  pmu.enableALDO4();
+  pmu.setBLDO1Voltage(3300);  pmu.enableBLDO1();
   pmu.setBLDO2Voltage(3300);  pmu.enableBLDO2();
-  pmu.setDC3Voltage(3300);    pmu.enableDC3();     // M.2
+  pmu.setDC3Voltage(3300);    pmu.enableDC3();
   pmu.setDC5Voltage(3300);    pmu.enableDC5();
-
-  // LED de charge
   pmu.setChargingLedMode(XPOWERS_CHG_LED_CTRL_CHG);
 }
 
@@ -196,35 +255,28 @@ void initPMU() {
 void oledPrint(String texte) {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_helvB08_tf);
-  
   int y = 10;
-  int maxWidth = 128;
   const char* p = texte.c_str();
-
   while (*p && y <= 64) {
     const char* lineStart = p;
     const char* lastSpace = NULL;
     const char* scan = p;
-
     while (*scan && *scan != '\n') {
       const char* next = scan;
       if ((*next & 0x80) == 0) next += 1;
       else if ((*next & 0xE0) == 0xC0) next += 2;
       else if ((*next & 0xF0) == 0xE0) next += 3;
       else next += 4;
-
       int len = next - lineStart;
       char buf[128];
       if (len < (int)sizeof(buf)) {
         memcpy(buf, lineStart, len);
         buf[len] = '\0';
-        if (u8g2.getUTF8Width(buf) > maxWidth) break;
+        if (u8g2.getUTF8Width(buf) > 128) break;
       }
-
       if (*scan == ' ') lastSpace = scan;
       scan = next;
     }
-
     const char* lineEnd;
     if (*scan == '\0' || *scan == '\n') {
       lineEnd = scan;
@@ -236,7 +288,6 @@ void oledPrint(String texte) {
       lineEnd = scan;
       p = scan;
     }
-
     int len = lineEnd - lineStart;
     char lineBuf[128];
     if (len >= (int)sizeof(lineBuf)) len = sizeof(lineBuf) - 1;
@@ -245,6 +296,5 @@ void oledPrint(String texte) {
     u8g2.drawUTF8(0, y, lineBuf);
     y += 11;
   }
-
   u8g2.sendBuffer();
 }

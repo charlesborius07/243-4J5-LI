@@ -1,5 +1,6 @@
 /*
- * config.h - Configuration du récepteur LoRa
+ * config_example.h - Modèle de configuration pour le récepteur LoRa
+ * Copiez ce fichier vers config.h et remplissez vos propres valeurs.
  */
 
 #pragma once
@@ -8,24 +9,24 @@
 // CONFIGURATION WIFI
 // =============================================
 
-// Mettre a true pour WPA2 Entreprise, false pour WPA2 Personnel
+// Mettre à true pour WPA2 Entreprise, false pour WPA2 Personnel
 #define USE_WPA2_ENTERPRISE  false
 
 // --- WPA2 Personnel ---
-const char* WIFI_SSID     = "1975 grandville";
-const char* WIFI_PASSWORD = "grandville1975";
+const char* WIFI_SSID     = "VOTRE_SSID";
+const char* WIFI_PASSWORD = "VOTRE_MOT_DE_PASSE";
 
 // --- WPA2 Entreprise (EAP-PEAP) ---
-const char* EAP_IDENTITY  = "2442832";
-const char* EAP_USERNAME  = "2442832";
-const char* EAP_PASSWORD  = "060313D!@n&ryn";
+const char* EAP_IDENTITY  = "VOTRE_ID_CÉGEP";
+const char* EAP_USERNAME  = "VOTRE_USER_CÉGEP";
+const char* EAP_PASSWORD  = "VOTRE_PASS_CÉGEP";
 
 // =============================================
 // CONFIGURATION LLM
 // =============================================
 
 const char* OPENWEBUI_URL = "https://api.groq.com/openai/v1/chat/completions";
-const char* API_KEY       = "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";
+const char* API_KEY       = "VOTRE_CLE_API_GROQ";
 const char* MODEL_NAME    = "openai/gpt-oss-20b"; 
 
 // System prompt - modifie ce texte !
@@ -43,8 +44,8 @@ const char* SYSTEM_PROMPT =
 const char* MQTT_BROKER = "mqtt.charlesborius07.com";
 const int   MQTT_PORT   = 443;
 const char* MQTT_PATH   = "/";
-const char* MQTT_USER   = "telecom";
-const char* MQTT_PASS   = "Teladmin1$";
+const char* MQTT_USER   = "VOTRE_USER_MQTT";
+const char* MQTT_PASS   = "VOTRE_PASS_MQTT";
 const char* MQTT_CLIENT_ID = "esp32-lora-receiver";
 
-const char* TOPIC_PUB_DECISION = "etudiant/charlesboris-feugangfoteu/lora/decision";
+const char* TOPIC_PUB_DECISION = "etudiant/VOTRE_NOM/lora/decision";
