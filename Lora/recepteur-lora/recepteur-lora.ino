@@ -4,6 +4,7 @@
  *
  * Materiel :
  *   - LilyGO T-Beam Supreme (ESP32-S3, SH1106 OLED, AXP2101 PMU)
+ *   - LED sur GPIO 46
  *
  * Dependances (Arduino Library Manager) :
  *   - ArduinoJson (Benoit Blanchon)
@@ -266,11 +267,10 @@ public:
 // PINS T-Beam Supreme
 // =============================================
 
-// I2C bus 0 : OLED + capteurs (SDA=17, SCL=18)
+#define LED_ACTION      46    
+
 #define OLED_SDA        17
 #define OLED_SCL        18
-
-// I2C bus 1 : PMU AXP2101 (SDA=42, SCL=41)
 #define PMU_SDA         42
 #define PMU_SCL         41
 #define PMU_IRQ_PIN     40
@@ -287,7 +287,6 @@ public:
 #define LORA_NRST       5
 #define LORA_BUSY       4
 
-// Pins SX1262 du T-Beam Supreme (NSS, DIO1, NRST, BUSY)
 SX1262 radio = new Module(LORA_CS, LORA_DIO1, LORA_NRST, LORA_BUSY);
 
 // =============================================
@@ -319,6 +318,7 @@ void oledPrint(String texte);
 void connecterWiFi();
 void connectMQTT();
 String appelLLM(int valeurPot);
+void clignoterLED(int fois);
 
 // =============================================
 // SETUP
@@ -328,40 +328,33 @@ void setup() {
   Serial.begin(115200);
   delay(500);
 
-  // SSL sans vérification du certificat
+  pinMode(LED_ACTION, OUTPUT);
+  digitalWrite(LED_ACTION, LOW);
+
   sslClient.setInsecure();
 
-  // I2C bus 0 : OLED
   Wire.begin(OLED_SDA, OLED_SCL);
-
-  // I2C bus 1 : PMU
   Wire1.begin(PMU_SDA, PMU_SCL);
 
-  // Initialiser le PMU (alimentation OLED, LoRa, GPS, etc.)
   initPMU();
 
-  // Initialiser l'OLED avec support UTF-8 (accents francais)
   u8g2.begin();
   u8g2.enableUTF8Print();
   oledPrint("Demarrage...");
 
-  // WiFi
   connecterWiFi();
 
-  // MQTT
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
   if (WiFi.status() == WL_CONNECTED) {
     connectMQTT();
   }
 
-  // Initialiser LoRa
   oledPrint("Init LoRa...");
-  // Passer -1 pour le CS afin que RadioLib puisse le contrôler
   SPI.begin(LORA_SCK, LORA_MISO, LORA_MOSI, -1);
   int state = radio.begin(915.0, 125.0, 9, 7, 0x12, 22, 8);
   if (state == RADIOLIB_ERR_NONE) {
     Serial.println("LoRa init success!");
-    oledPrint("LoRa pret!\nAttente Rx...");
+    oledPrint("LoRA RX Pret!\nEn attente...");
   } else {
     Serial.println("LoRa init failed, code " + String(state));
     oledPrint("Erreur LoRa:\n" + String(state));
@@ -374,7 +367,6 @@ void setup() {
 // =============================================
 
 void loop() {
-  // Maintenir la connexion MQTT
   if (WiFi.status() == WL_CONNECTED && !mqttClient.connected()) {
     connectMQTT();
   }
@@ -383,17 +375,15 @@ void loop() {
   }
 
   String receivedMsg;
-  // Attente bloquante d'un message (avec timeout de 1 seconde pour garder la boucle active)
   int state = radio.receive(receivedMsg, 1000);
   
   if (state == RADIOLIB_ERR_NONE) {
+    clignoterLED(2); 
+    
     float rssi = radio.getRSSI();
     float snr = radio.getSNR();
     Serial.println("RX: " + receivedMsg + " RSSI: " + String(rssi) + " SNR: " + String(snr));
     
-    oledPrint("RX: " + receivedMsg + "\nRSSI:" + String(rssi, 1) + " SNR:" + String(snr, 1) + "\nTraitement...");
-    
-    // Parser le JSON pour trouver la valeur du potentiometre
     JsonDocument doc;
     DeserializationError err = deserializeJson(doc, receivedMsg);
     int pot = 0;
@@ -401,71 +391,56 @@ void loop() {
       pot = doc["pot"] | 0;
     }
     
-    // Appel du LLM
+    oledPrint("RECU:\n" + receivedMsg + "\nRSSI:" + String(rssi, 1) + " SNR:" + String(snr, 1));
+    
+    clignoterLED(1); 
     String llmReply = appelLLM(pot);
     Serial.println("LLM: " + llmReply);
     
-    // Renvoi de la reponse a l'emetteur via LoRa
-    int txState = radio.transmit(llmReply);
+    oledPrint("RECU:\n" + receivedMsg + "\nRSSI:" + String(rssi,1) + " SNR:" + String(snr,1) + "\nLLM:\n" + llmReply);
     
-    if (txState == RADIOLIB_ERR_NONE) {
-      oledPrint("TX: " + llmReply + "\nSucces!");
-    } else {
-      oledPrint("TX Err: " + String(txState));
-    }
+    radio.transmit(llmReply);
+    clignoterLED(2); 
 
-    // Publication MQTT du résultat LLM
     if (mqttClient.connected()) {
-      if (mqttClient.publish(TOPIC_PUB_DECISION, llmReply.c_str())) {
-        Serial.println("Publié sur MQTT: " + String(TOPIC_PUB_DECISION) + " = " + llmReply);
-      } else {
-        Serial.println("Échec de la publication MQTT");
-      }
+      mqttClient.publish(TOPIC_PUB_DECISION, llmReply.c_str());
     }
     
-    // Petite pause pour bien lire l'ecran
-    delay(2000);
-    oledPrint("Attente Rx...");
+    delay(3000); 
+    oledPrint("LoRA RX Pret!\nEn attente...");
   }
 }
 
 // =============================================
-// INITIALISATION PMU AXP2101
+// FONCTIONS
 // =============================================
 
-void initPMU() {
-  if (!pmu.init(Wire1, AXP2101_SLAVE_ADDRESS, PMU_SDA, PMU_SCL)) {
-    Serial.println("Avertissement: PMU AXP2101 non detecte");
-    return;
+void clignoterLED(int fois) {
+  for (int i = 0; i < fois; i++) {
+    digitalWrite(LED_ACTION, HIGH);
+    delay(100);
+    digitalWrite(LED_ACTION, LOW);
+    if (i < fois - 1) delay(100);
   }
-  Serial.println("PMU AXP2101 initialise");
+}
 
-  // Alimenter les peripheriques du T-Beam Supreme
-  pmu.setALDO1Voltage(3300);  pmu.enableALDO1();  // capteurs
-  pmu.setALDO2Voltage(3300);  pmu.enableALDO2();  // capteurs
-  pmu.setALDO3Voltage(3300);  pmu.enableALDO3();  // LoRa
-  pmu.setALDO4Voltage(3300);  pmu.enableALDO4();  // GPS
-  pmu.setBLDO1Voltage(3300);  pmu.enableBLDO1();  // SD card
-  pmu.setBLDO2Voltage(3300);  pmu.enableBLDO2();
-  pmu.setDC3Voltage(3300);    pmu.enableDC3();     // M.2
-  pmu.setDC5Voltage(3300);    pmu.enableDC5();
-
-  // LED de charge
+void initPMU() {
+  if (!pmu.init(Wire1, AXP2101_SLAVE_ADDRESS, PMU_SDA, PMU_SCL)) return;
+  pmu.setALDO1Voltage(3300); pmu.enableALDO1();
+  pmu.setALDO2Voltage(3300); pmu.enableALDO2();
+  pmu.setALDO3Voltage(3300); pmu.enableALDO3();
+  pmu.setALDO4Voltage(3300); pmu.enableALDO4();
+  pmu.setBLDO1Voltage(3300); pmu.enableBLDO1();
+  pmu.setBLDO2Voltage(3300); pmu.enableBLDO2();
+  pmu.setDC3Voltage(3300);   pmu.enableDC3();
+  pmu.setDC5Voltage(3300);   pmu.enableDC5();
   pmu.setChargingLedMode(XPOWERS_CHG_LED_CTRL_CHG);
 }
 
-// =============================================
-// CONNEXION WIFI
-// =============================================
-
 void connecterWiFi() {
-  Serial.println("Connexion WiFi...");
-  oledPrint("WiFi...\n" + String(WIFI_SSID));
-
   WiFi.disconnect(true);
   WiFi.mode(WIFI_STA);
   delay(100);
-
   if (USE_WPA2_ENTERPRISE) {
     esp_wifi_sta_wpa2_ent_set_identity((uint8_t*)EAP_IDENTITY, strlen(EAP_IDENTITY));
     esp_wifi_sta_wpa2_ent_set_username((uint8_t*)EAP_USERNAME, strlen(EAP_USERNAME));
@@ -475,138 +450,78 @@ void connecterWiFi() {
   } else {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   }
-
   int tentatives = 0;
   while (WiFi.status() != WL_CONNECTED && tentatives < 40) {
     delay(500);
-    Serial.print(".");
     tentatives++;
   }
-
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("\nWiFi connecte : " + WiFi.localIP().toString());
-    oledPrint("WiFi OK\n" + WiFi.localIP().toString());
-    delay(1000);
-  } else {
-    Serial.println("\nErreur WiFi !");
-    oledPrint("Erreur WiFi\nVerifie config");
-    // On ne bloque pas forcement pour que LoRa puisse marcher sans WiFi meme si le LLM va echouer
-  }
 }
-
-// =============================================
-// CONNEXION MQTT
-// =============================================
 
 void connectMQTT() {
-  if (wsClient.connected() || mqttClient.connected()) return;
-  
-  Serial.println("Connexion au broker MQTT WSS...");
   if (mqttClient.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASS)) {
     Serial.println("MQTT Connecté !");
-  } else {
-    Serial.print("Echec connexion MQTT, code ");
-    Serial.println(mqttClient.state());
   }
 }
 
-// =============================================
-// APPEL API OPENWEBUI / GROQ
-// =============================================
-
 String appelLLM(int valeurPot) {
-  if (WiFi.status() != WL_CONNECTED) {
-    return "{\"action\":\"none\",\"msg\":\"No WiFi\"}";
-  }
-
+  if (WiFi.status() != WL_CONNECTED) return "{\"action\":\"none\",\"msg\":\"No WiFi\"}";
   HTTPClient http;
   http.begin(OPENWEBUI_URL);
   http.addHeader("Content-Type", "application/json");
   http.addHeader("Authorization", String("Bearer ") + API_KEY);
   http.setTimeout(30000);
-
-  // Construction du JSON
   JsonDocument doc;
   doc["model"] = MODEL_NAME;
-
   JsonArray messages = doc["messages"].to<JsonArray>();
-
   JsonObject systemMsg = messages.add<JsonObject>();
-  systemMsg["role"]    = "system";
+  systemMsg["role"] = "system";
   systemMsg["content"] = SYSTEM_PROMPT;
-
   JsonObject userMsg = messages.add<JsonObject>();
-  userMsg["role"]    = "user";
+  userMsg["role"] = "user";
   userMsg["content"] = "potentiometre: " + String(valeurPot);
-
   String payload;
   serializeJson(doc, payload);
-
-  Serial.println("Payload LLM: " + payload);
-
   int httpCode = http.POST(payload);
   String reponse = "";
-
   if (httpCode == 200) {
-    String body = http.getString();
-
     JsonDocument rep;
-    DeserializationError err = deserializeJson(rep, body);
-
-    if (!err) {
-      reponse = rep["choices"][0]["message"]["content"].as<String>();
-      // Nettoyer d'eventuelles balises markdown (Groq a tendance a encadrer les JSON)
-      reponse.replace("```json", "");
-      reponse.replace("```", "");
-      reponse.trim();
-    } else {
-      reponse = "{\"action\":\"none\",\"msg\":\"JSON Err\"}";
-    }
+    deserializeJson(rep, http.getString());
+    reponse = rep["choices"][0]["message"]["content"].as<String>();
+    reponse.replace("```json", "");
+    reponse.replace("```", "");
+    reponse.trim();
   } else {
-    reponse = "{\"action\":\"none\",\"msg\":\"HTTP " + String(httpCode) + "\"}";
-    Serial.println(http.getString());
+    reponse = "{\"action\":\"none\",\"msg\":\"HTTP Err\"}";
   }
-
   http.end();
   return reponse;
 }
 
-// =============================================
-// AFFICHAGE OLED MULTILIGNES
-// =============================================
-
 void oledPrint(String texte) {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_helvB08_tf);
-  
   int y = 10;
-  int maxWidth = 128;
   const char* p = texte.c_str();
-
   while (*p && y <= 64) {
     const char* lineStart = p;
     const char* lastSpace = NULL;
     const char* scan = p;
-
     while (*scan && *scan != '\n') {
       const char* next = scan;
       if ((*next & 0x80) == 0) next += 1;
       else if ((*next & 0xE0) == 0xC0) next += 2;
       else if ((*next & 0xF0) == 0xE0) next += 3;
       else next += 4;
-
       int len = next - lineStart;
       char buf[128];
       if (len < (int)sizeof(buf)) {
         memcpy(buf, lineStart, len);
         buf[len] = '\0';
-        if (u8g2.getUTF8Width(buf) > maxWidth) break;
+        if (u8g2.getUTF8Width(buf) > 128) break;
       }
-
       if (*scan == ' ') lastSpace = scan;
       scan = next;
     }
-
     const char* lineEnd;
     if (*scan == '\0' || *scan == '\n') {
       lineEnd = scan;
@@ -618,7 +533,6 @@ void oledPrint(String texte) {
       lineEnd = scan;
       p = scan;
     }
-
     int len = lineEnd - lineStart;
     char lineBuf[128];
     if (len >= (int)sizeof(lineBuf)) len = sizeof(lineBuf) - 1;
@@ -627,6 +541,5 @@ void oledPrint(String texte) {
     u8g2.drawUTF8(0, y, lineBuf);
     y += 11;
   }
-
   u8g2.sendBuffer();
 }

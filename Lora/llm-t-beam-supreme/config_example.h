@@ -1,5 +1,5 @@
 /*
- * config.example.h - Modele de configuration
+ * config_example.h - Modèle de configuration
  * Copie ce fichier vers config.h et remplis tes valeurs.
  */
 
@@ -13,23 +13,20 @@
 #define USE_WPA2_ENTERPRISE  true
 
 // --- WPA2 Personnel ---
-const char* WIFI_SSID     = "climoilou";
-const char* WIFI_PASSWORD = "grandville1975";
+const char* WIFI_SSID     = "VOTRE_SSID";
+const char* WIFI_PASSWORD = "VOTRE_MOT_DE_PASSE";
 
 // --- WPA2 Entreprise (EAP-PEAP) ---
-const char* EAP_IDENTITY  = "2442832";
-const char* EAP_USERNAME  = "2442832";
-const char* EAP_PASSWORD  = "060313D!@n&ryn";
+const char* EAP_IDENTITY  = "VOTRE_ID_CÉGEP";
+const char* EAP_USERNAME  = "VOTRE_USER_CÉGEP";
+const char* EAP_PASSWORD  = "VOTRE_PASS_CÉGEP";
 
 // =============================================
 // CONFIGURATION LLM
 // =============================================
 
-//const char* OPENWEBUI_URL = "https://chat.ve2fpd.com/api/chat/completions";
 const char* OPENWEBUI_URL = "https://api.groq.com/openai/v1/chat/completions";
-//const char* API_KEY       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImUwOWZhNjRhLTdhMzctNDRhNi05NWU4LTAxMzY0MWFjNDhkNiIsImV4cCI6MTc3Njk5NDg5MSwianRpIjoiODJhNTE1MWQtOWM3ZC00N2E4LWJmZDEtYzNjNzA0MWU5YzlhIn0.ig3_rGHIos4znA2_M27_x0Jf1KgeAKJoWL4k6XjfmuA";
-const char* API_KEY       = "REMOVED";
-//const char* MODEL_NAME    = "assistant-iot-v2";
+const char* API_KEY       = "VOTRE_CLE_API_GROQ";
 const char* MODEL_NAME    = "openai/gpt-oss-20b";
 
 // System prompt - modifie ce texte !
