@@ -92,7 +92,7 @@ const unsigned long DISPLAY_DURATION = 4000; // Afficher le résultat 4s avant d
 // =============================================
 
 void initPMU();
-void oledPrint(String texte);
+void oledPrint(String texte, bool small = false);
 void executerTX();
 
 // =============================================
@@ -156,7 +156,8 @@ void loop() {
     int pot = analogRead(POT_PIN);
     if (abs(pot - dernierPot) > 15) {
       dernierPot = pot;
-      oledPrint("Monitoring Pot\nVAL: " + String(pot) + "\n\nEnvoi auto dans " + String((CYCLE_INTERVAL - (now - lastCycleTime))/1000) + "s");
+      String info = "Monitoring Pot\nVAL: " + String(pot) + "\n\nEnvoi auto dans\n" + String((CYCLE_INTERVAL - (now - lastCycleTime))/1000) + "s";
+      oledPrint(info);
     }
 
     // Trigger automatique
@@ -193,7 +194,7 @@ void executerTX() {
   serializeJson(doc, trameEnvoyee);
   
   Serial.println("TX LoRa: " + trameEnvoyee);
-  oledPrint("ENVOI LORA:\n" + trameEnvoyee + "\n\nAttente reponse...");
+  oledPrint("ENVOI LORA:\n" + trameEnvoyee + "\n\nAttente reponse...", true);
   
   int txState = radio.transmit(trameEnvoyee);
   if (txState != RADIOLIB_ERR_NONE) {
@@ -221,13 +222,14 @@ void executerTX() {
     
     digitalWrite(LED_ACTION, (action == "on") ? HIGH : LOW);
     
-    oledPrint("REPONSE LLM:\n" + reponseLLM + "\n\nAuto-reset bientôt");
+    // Affiche SEULEMENT la réponse LLM du récepteur
+    oledPrint("LLM RECU:\n" + reponseLLM, true);
   } else {
     String errStr = (rxState == RADIOLIB_ERR_RX_TIMEOUT) ? "Timeout!" : "Erreur " + String(rxState);
-    oledPrint("TX OK\n\nResultat RX:\n" + errStr + "\n\nAuto-reset bientôt");
+    oledPrint("TX OK\n\nResultat RX:\n" + errStr, true);
   }
   
-  lastCycleTime = millis(); // On reset le timer pour l'affichage du résultat
+  lastCycleTime = millis(); 
   currentState = SHOW_RESULT;
 }
 
@@ -252,10 +254,19 @@ void initPMU() {
 // AFFICHAGE OLED MULTILIGNES
 // =============================================
 
-void oledPrint(String texte) {
+void oledPrint(String texte, bool small) {
   u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_helvB08_tf);
-  int y = 10;
+  
+  int lineStep = 11;
+  if (small) {
+    u8g2.setFont(u8g2_font_6x10_tf);
+    lineStep = 10;
+  } else {
+    u8g2.setFont(u8g2_font_helvB08_tf);
+    lineStep = 11;
+  }
+
+  int y = lineStep;
   const char* p = texte.c_str();
   while (*p && y <= 64) {
     const char* lineStart = p;
@@ -294,7 +305,7 @@ void oledPrint(String texte) {
     memcpy(lineBuf, lineStart, len);
     lineBuf[len] = '\0';
     u8g2.drawUTF8(0, y, lineBuf);
-    y += 11;
+    y += lineStep;
   }
   u8g2.sendBuffer();
 }

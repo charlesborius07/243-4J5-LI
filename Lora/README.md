@@ -5,71 +5,59 @@ Ce projet implémente une liaison de données LoRa bidirectionnelle entre deux c
 ## Architecture du Système
 
 1.  **Émetteur (Node A)** :
-    *   Lit la valeur d'un potentiomètre en temps réel.
-    *   Envoie une trame JSON via LoRa (déclenchement par bouton BOOT ou automatique toutes les 10s).
-    *   Affiche la réponse du LLM sur son écran OLED.
-    *   Actionne une LED (GPIO 46) selon la décision reçue.
+    *   **Monitoring** : Lit la valeur d'un potentiomètre en temps réel et l'affiche sur l'OLED.
+    *   **Transmission** : Envoie une trame JSON via LoRa. Déclenchement manuel via le bouton **BOOT** ou automatique toutes les **10 secondes** (avec compte à rebours à l'écran).
+    *   **Réception** : Affiche la réponse JSON du LLM en plein écran avec une police compacte.
+    *   **Action** : Actionne une LED (**GPIO 46**) selon la décision du LLM (`on`/`off`).
+    *   **Auto-Reset** : Revient en mode monitoring après 4s d'affichage du résultat.
 
 2.  **Récepteur (Node B)** :
-    *   Reçoit la trame LoRa et mesure les performances radio (RSSI/SNR).
-    *   Interroge l'API **Groq (LLM)** avec la valeur reçue.
-    *   Publie la décision du LLM sur un broker **MQTT** (via WebSockets SSL/443).
-    *   Renvoie la décision à l'émetteur via LoRa.
-    *   Indique son activité via des clignotements de LED (GPIO 46).
+    *   **Écoute** : Reçoit la trame LoRa et mesure les performances radio (**RSSI/SNR**).
+    *   **Intelligence** : Interroge l'API **Groq (LLM)**. En cas d'erreur, effectue **3 tentatives** avec un délai croissant. Si l'échec persiste, bascule en mode **Fallback** (`action: off`).
+    *   **IoT & Cloud** : Publie la décision sur un broker **MQTT** (WebSockets SSL sur port 443) et la renvoie à l'émetteur via LoRa.
+    *   **Interface** : OLED affiche simultanément la trame reçue, la télémétrie et la réponse LLM en police compacte. La LED (**GPIO 46**) clignote lors des échanges (RX, LLM, TX).
 
 ## Matériel Requis
 
 *   2x LilyGo T-Beam Supreme (ESP32-S3, SX1262 LoRa, OLED SH1106).
 *   1x Potentiomètre (connecté sur GPIO 2 de l'émetteur).
-*   LEDs connectées sur GPIO 46 (pour le retour d'action).
+*   LEDs connectées sur GPIO 46 sur les deux cartes.
+
+## Robustesse Logicielle
+
+Le code du récepteur intègre des fonctions avancées de fiabilité :
+*   **WiFi & MQTT Watchdog** : Reconnexion automatique et silencieuse en arrière-plan si la connexion est perdue.
+*   **LLM Retry Logic** : Gestion des timeouts API avec exponentiel backoff (2s, 4s).
+*   **WSS MQTT** : Utilisation du protocole WebSocket Secure pour contourner les restrictions de pare-feu (port 443).
 
 ## Installation
 
 ### 1. Dépendances Arduino
 Installez les bibliothèques suivantes via le Library Manager :
-*   **RadioLib** (jgromes)
-*   **ArduinoJson** (Benoit Blanchon)
-*   **U8g2** (olikraus)
-*   **XPowersLib** (Lewis He)
-*   **PubSubClient** (Nick O'Leary)
+*   **RadioLib**, **ArduinoJson**, **U8g2**, **XPowersLib**, **PubSubClient**.
 
-### 2. Configuration
-Pour chaque module (émetteur et récepteur) :
-1.  Allez dans son dossier respectif (`emetteur-lora` ou `recepteur-lora`).
-2.  Copiez le fichier `config_example.h` vers `config.h`.
-3.  Remplissez vos identifiants (WiFi, Clé API Groq, Broker MQTT).
+### 2. Configuration Secrets
+Pour chaque module (`emetteur-lora` et `recepteur-lora`) :
+1.  Copiez `config_example.h` vers `config.h`.
+2.  Remplissez vos identifiants (WiFi, Clé API Groq, Broker MQTT).
+> Les fichiers `config.h` sont protégés par le `.gitignore` du projet.
 
-> **Note :** Les fichiers `config.h` sont ignorés par Git pour protéger vos données secrètes.
-
-### 3. Compilation et Téléversement
-Utilisez les paramètres suivants dans Arduino IDE :
+### 3. Compilation
+Paramètres requis :
 *   **Board** : "ESP32S3 Dev Module"
-*   **USB CDC On Boot** : Enabled (Crucial pour le moniteur série)
+*   **USB CDC On Boot** : Enabled
 *   **PSRAM** : "OPI PSRAM"
-*   **Flash Mode** : QIO 80MHz
-
-Via `arduino-cli` :
-```bash
-arduino-cli compile --fqbn esp32:esp32:esp32s3:CDCOnBoot=cdc,PSRAM=opi --upload -p /dev/ttyACMX
-```
 
 ## Utilisation
 
 ### Émetteur
-*   **Au démarrage** : L'OLED affiche la valeur du potentiomètre en direct ("Monitoring").
-*   **Envoi** : Appuyez sur le bouton **BOOT (0)** ou attendez le décompte de 10s.
-*   **Résultat** : La trame envoyée s'affiche, puis la réponse du LLM apparaît après réception. La LED 46 s'allume si l'action est "on".
-*   **Reset** : Le système revient en mode monitoring après 4s (ou via un appui bouton).
+*   **IDLE** : Affiche "Monitoring Pot" et un décompte de 10s.
+*   **Action** : Appuyez sur **BOOT** pour forcer l'envoi immédiat.
+*   **Résultat** : Affiche le JSON reçu du LLM. La LED s'allume si `action: on`.
 
 ### Récepteur
 *   **Attente** : Affiche "LoRA RX Pret! En attente...".
-*   **Traitement** : À la réception, il affiche le JSON reçu, le RSSI/SNR et lance l'appel LLM.
-*   **Retour** : Il affiche la réponse générée, la renvoie à l'émetteur et publie sur le topic MQTT : `etudiant/VOTRE_NOM/lora/decision`.
-
-## Structure des Dossiers
-*   `emetteur-lora/` : Code source du noeud capteur.
-*   `recepteur-lora/` : Code source du noeud passerelle LLM/MQTT.
-*   `llm-t-beam-supreme/` : Code de référence original.
+*   **Cycle** : À la réception, la LED clignote et l'écran se remplit avec les données brutes et la décision. Il revient au repos après 5s.
 
 ---
 *Projet réalisé dans le cadre du cours Objets Connectés - Cégep de Limoilou.*
