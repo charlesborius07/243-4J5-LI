@@ -314,7 +314,8 @@ PubSubClient mqttClient(wsClient);
 // =============================================
 
 void initPMU();
-void oledPrint(String texte);
+void oledPrint(String texte, bool small = false);
+void verifierConnexions();
 void connecterWiFi();
 void connectMQTT();
 String appelLLM(int valeurPot);
@@ -367,9 +368,9 @@ void setup() {
 // =============================================
 
 void loop() {
-  if (WiFi.status() == WL_CONNECTED && !mqttClient.connected()) {
-    connectMQTT();
-  }
+  // Gestion automatique des connexions
+  verifierConnexions();
+  
   if (mqttClient.connected()) {
     mqttClient.loop();
   }
@@ -391,13 +392,16 @@ void loop() {
       pot = doc["pot"] | 0;
     }
     
-    oledPrint("RECU:\n" + receivedMsg + "\nRSSI:" + String(rssi, 1) + " SNR:" + String(snr, 1));
-    
     clignoterLED(1); 
     String llmReply = appelLLM(pot);
-    Serial.println("LLM: " + llmReply);
+    Serial.println("LLM Final: " + llmReply);
     
-    oledPrint("RECU:\n" + receivedMsg + "\nRSSI:" + String(rssi,1) + " SNR:" + String(snr,1) + "\nLLM:\n" + llmReply);
+    // Affichage compact épuré
+    String fullInfo = receivedMsg + "\n";
+    fullInfo += "RSSI:" + String(rssi, 1) + " SNR:" + String(snr, 1) + "\n";
+    fullInfo += llmReply;
+    
+    oledPrint(fullInfo, true); 
     
     radio.transmit(llmReply);
     clignoterLED(2); 
@@ -406,13 +410,111 @@ void loop() {
       mqttClient.publish(TOPIC_PUB_DECISION, llmReply.c_str());
     }
     
-    delay(3000); 
+    delay(5000); 
     oledPrint("LoRA RX Pret!\nEn attente...");
   }
 }
 
 // =============================================
-// FONCTIONS
+// ROBUSTESSE ET CONNEXIONS
+// =============================================
+
+void verifierConnexions() {
+  static unsigned long lastCheck = 0;
+  if (millis() - lastCheck < 5000) return; // Verifier toutes les 5s
+  lastCheck = millis();
+
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi perdu, reconnexion...");
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  } 
+  else if (!mqttClient.connected()) {
+    connectMQTT();
+  }
+}
+
+void connecterWiFi() {
+  WiFi.mode(WIFI_STA);
+  if (USE_WPA2_ENTERPRISE) {
+    esp_wifi_sta_wpa2_ent_set_identity((uint8_t*)EAP_IDENTITY, strlen(EAP_IDENTITY));
+    esp_wifi_sta_wpa2_ent_set_username((uint8_t*)EAP_USERNAME, strlen(EAP_USERNAME));
+    esp_wifi_sta_wpa2_ent_set_password((uint8_t*)EAP_PASSWORD, strlen(EAP_PASSWORD));
+    esp_wifi_sta_wpa2_ent_enable();
+    WiFi.begin(WIFI_SSID);
+  } else {
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  }
+  int tentatives = 0;
+  while (WiFi.status() != WL_CONNECTED && tentatives < 20) {
+    delay(500);
+    tentatives++;
+  }
+}
+
+void connectMQTT() {
+  if (WiFi.status() != WL_CONNECTED) return;
+  Serial.println("Connexion au broker MQTT...");
+  mqttClient.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASS);
+}
+
+// =============================================
+// APPEL API GROQ AVEC RETRIES
+// =============================================
+
+String appelLLM(int valeurPot) {
+  String fallback = "{\"action\":\"off\",\"msg\":\"Fallback Mode\"}";
+  
+  if (WiFi.status() != WL_CONNECTED) {
+    return fallback;
+  }
+
+  for (int retry = 0; retry < 3; retry++) {
+    HTTPClient http;
+    http.begin(OPENWEBUI_URL);
+    http.addHeader("Content-Type", "application/json");
+    http.addHeader("Authorization", String("Bearer ") + API_KEY);
+    http.setTimeout(15000); // 15s par essai
+
+    JsonDocument doc;
+    doc["model"] = MODEL_NAME;
+    JsonArray messages = doc["messages"].to<JsonArray>();
+    JsonObject systemMsg = messages.add<JsonObject>();
+    systemMsg["role"] = "system";
+    systemMsg["content"] = SYSTEM_PROMPT;
+    JsonObject userMsg = messages.add<JsonObject>();
+    userMsg["role"] = "user";
+    userMsg["content"] = "potentiometre: " + String(valeurPot);
+
+    String payload;
+    serializeJson(doc, payload);
+
+    Serial.println("Essai LLM " + String(retry + 1) + "...");
+    int httpCode = http.POST(payload);
+
+    if (httpCode == 200) {
+      JsonDocument rep;
+      DeserializationError err = deserializeJson(rep, http.getString());
+      http.end();
+      if (!err) {
+        String reponse = rep["choices"][0]["message"]["content"].as<String>();
+        reponse.replace("```json", "");
+        reponse.replace("```", "");
+        reponse.trim();
+        return reponse;
+      }
+    } else {
+      Serial.println("Erreur HTTP: " + String(httpCode));
+      http.end();
+    }
+    
+    delay((retry + 1) * 2000); // Délai croissant : 2s, 4s...
+  }
+
+  return fallback;
+}
+
+// =============================================
+// FONCTIONS UTILES
 // =============================================
 
 void clignoterLED(int fois) {
@@ -437,70 +539,12 @@ void initPMU() {
   pmu.setChargingLedMode(XPOWERS_CHG_LED_CTRL_CHG);
 }
 
-void connecterWiFi() {
-  WiFi.disconnect(true);
-  WiFi.mode(WIFI_STA);
-  delay(100);
-  if (USE_WPA2_ENTERPRISE) {
-    esp_wifi_sta_wpa2_ent_set_identity((uint8_t*)EAP_IDENTITY, strlen(EAP_IDENTITY));
-    esp_wifi_sta_wpa2_ent_set_username((uint8_t*)EAP_USERNAME, strlen(EAP_USERNAME));
-    esp_wifi_sta_wpa2_ent_set_password((uint8_t*)EAP_PASSWORD, strlen(EAP_PASSWORD));
-    esp_wifi_sta_wpa2_ent_enable();
-    WiFi.begin(WIFI_SSID);
-  } else {
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  }
-  int tentatives = 0;
-  while (WiFi.status() != WL_CONNECTED && tentatives < 40) {
-    delay(500);
-    tentatives++;
-  }
-}
-
-void connectMQTT() {
-  if (mqttClient.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASS)) {
-    Serial.println("MQTT Connecté !");
-  }
-}
-
-String appelLLM(int valeurPot) {
-  if (WiFi.status() != WL_CONNECTED) return "{\"action\":\"none\",\"msg\":\"No WiFi\"}";
-  HTTPClient http;
-  http.begin(OPENWEBUI_URL);
-  http.addHeader("Content-Type", "application/json");
-  http.addHeader("Authorization", String("Bearer ") + API_KEY);
-  http.setTimeout(30000);
-  JsonDocument doc;
-  doc["model"] = MODEL_NAME;
-  JsonArray messages = doc["messages"].to<JsonArray>();
-  JsonObject systemMsg = messages.add<JsonObject>();
-  systemMsg["role"] = "system";
-  systemMsg["content"] = SYSTEM_PROMPT;
-  JsonObject userMsg = messages.add<JsonObject>();
-  userMsg["role"] = "user";
-  userMsg["content"] = "potentiometre: " + String(valeurPot);
-  String payload;
-  serializeJson(doc, payload);
-  int httpCode = http.POST(payload);
-  String reponse = "";
-  if (httpCode == 200) {
-    JsonDocument rep;
-    deserializeJson(rep, http.getString());
-    reponse = rep["choices"][0]["message"]["content"].as<String>();
-    reponse.replace("```json", "");
-    reponse.replace("```", "");
-    reponse.trim();
-  } else {
-    reponse = "{\"action\":\"none\",\"msg\":\"HTTP Err\"}";
-  }
-  http.end();
-  return reponse;
-}
-
-void oledPrint(String texte) {
+void oledPrint(String texte, bool small) {
   u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_helvB08_tf);
-  int y = 10;
+  int lineStep = small ? 10 : 11;
+  u8g2.setFont(small ? u8g2_font_6x10_tf : u8g2_font_helvB08_tf);
+
+  int y = lineStep;
   const char* p = texte.c_str();
   while (*p && y <= 64) {
     const char* lineStart = p;
@@ -522,24 +566,16 @@ void oledPrint(String texte) {
       if (*scan == ' ') lastSpace = scan;
       scan = next;
     }
-    const char* lineEnd;
-    if (*scan == '\0' || *scan == '\n') {
-      lineEnd = scan;
-      p = (*scan == '\n') ? scan + 1 : scan;
-    } else if (lastSpace && lastSpace > lineStart) {
-      lineEnd = lastSpace;
-      p = lastSpace + 1;
-    } else {
-      lineEnd = scan;
-      p = scan;
-    }
+    const char* lineEnd = (*scan == '\0' || *scan == '\n') ? scan : (lastSpace && lastSpace > lineStart ? lastSpace : scan);
+    p = (*lineEnd == '\n' || *lineEnd == ' ') ? lineEnd + 1 : lineEnd;
+
     int len = lineEnd - lineStart;
     char lineBuf[128];
     if (len >= (int)sizeof(lineBuf)) len = sizeof(lineBuf) - 1;
     memcpy(lineBuf, lineStart, len);
     lineBuf[len] = '\0';
     u8g2.drawUTF8(0, y, lineBuf);
-    y += 11;
+    y += lineStep;
   }
   u8g2.sendBuffer();
 }
