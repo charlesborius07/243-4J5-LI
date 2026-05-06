@@ -1,0 +1,33 @@
+(footprint "Adafruit_BME280_7Pin"
+  (version 20221018)
+  (generator "chatgpt")
+
+  (descr "Adafruit BME280 breakout - 1x7 header 2.54mm")
+  (tags "BME280 Adafruit Breakout I2C SPI")
+
+  (attr through_hole)
+
+  (fp_text reference "REF**" (at 0 -4) (layer "F.SilkS")
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value "BME280_7Pin" (at 0 4) (layer "F.Fab")
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+
+  ;; Outline approx (20mm x 15mm)
+  (fp_rect (start -11 -7.5) (end 11 7.5) (layer "F.SilkS") (width 0.12))
+  (fp_rect (start -11.2 -7.7) (end 11.2 7.7) (layer "F.CrtYd") (width 0.05))
+
+  ;; Pads 1x7, pitch 2.54mm
+  (pad "1" thru_hole rect   (at -7.62 0) (size 1.8 1.8) (drill 0.9) (layers "*.Cu" "*.Mask"))
+  (pad "2" thru_hole circle (at -5.08 0) (size 1.8 1.8) (drill 0.9) (layers "*.Cu" "*.Mask"))
+  (pad "3" thru_hole circle (at -2.54 0) (size 1.8 1.8) (drill 0.9) (layers "*.Cu" "*.Mask"))
+  (pad "4" thru_hole circle (at  0    0) (size 1.8 1.8) (drill 0.9) (layers "*.Cu" "*.Mask"))
+  (pad "5" thru_hole circle (at  2.54 0) (size 1.8 1.8) (drill 0.9) (layers "*.Cu" "*.Mask"))
+  (pad "6" thru_hole circle (at  5.08 0) (size 1.8 1.8) (drill 0.9) (layers "*.Cu" "*.Mask"))
+  (pad "7" thru_hole circle (at  7.62 0) (size 1.8 1.8) (drill 0.9) (layers "*.Cu" "*.Mask"))
+
+  ;; Pin 1 marker
+  (fp_circle (center -7.62 -2) (end -7.62 -2.7) (layer "F.SilkS") (width 0.15))
+
+)
