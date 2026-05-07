@@ -20,7 +20,7 @@ Adafruit_BME280 bme;
 const char* MQTT_HOST = MQTT_BROKER;
 const int   MQTT_WSS_PORT = 443;
 const char* MQTT_PATH = "/";
-const char* TOPIC_BASE = "hydro-limoilou/poste-08";
+const char* TOPIC_BASE = "hydro-limoilou/poste-05";
 
 char TOPIC_TEMP[60];
 char TOPIC_HUM[60];
