@@ -19,10 +19,11 @@
 #define I2C_SDI 21
 
 // ====== LLM CONFIG ======
-const char* OPENWEBUI_URL = "https://api.groq.com/openai/v1/chat/completions";
-const char* API_KEY       = "REMOVED";
-const char* MODEL_NAME    = "openai/gpt-oss-20b";
+String OPENWEBUI_URL = "https://api.groq.com/openai/v1/chat/completions";
+String API_KEY       = GROQ_API_KEY;
+String MODEL_NAME    = "openai/gpt-oss-20b";
 const char* SYSTEM_PROMPT = "Tu es un contrôleur IoT. Tu reçois les données d'un poste électrique. Si la tension > 250V ou courant > 80A, active l'alarme (led2: 'on'), sinon éteins-la. Renvoie ABSOLUMENT UNIQUEMENT un JSON: {'summary': '...', 'led1': 'on'/'off', 'led2': 'on'/'off'}.";
+
 
 Adafruit_BME280 bme;
 const char* MQTT_HOST = MQTT_BROKER;
