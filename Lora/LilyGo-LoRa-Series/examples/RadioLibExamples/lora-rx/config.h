@@ -12,7 +12,11 @@
 // =============================================
 
 #define GROQ_API_URL    "https://api.groq.com/openai/v1/chat/completions"
+<<<<<<< HEAD
 #define GROQ_API_KEY    "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"
+=======
+#define GROQ_API_KEY    "REMOVED"
+>>>>>>> aa343ff121737cf536f2414c120e7c0f7d365f0b
 
 #define GROQ_MODEL      "llama-3.1-8b-instant"
 // Modeles disponibles:
