@@ -1,0 +1,29 @@
+// auth.h.example - Modèle pour vos identifiants
+#ifndef AUTH_H
+#define AUTH_H
+
+// ====== CONFIGURATION WiFi ======
+// Décommentez pour WPA2-Personal, commentez pour WPA2-Enterprise
+//#define WIFI_SECURITY_WPA2_PERSONAL
+#define WIFI_SECURITY_WPA2_ENTERPRISE
+
+const char* WIFI_SSID = "votre_ssid";
+const char* WIFI_PASSWORD = "votre_mot_de_passe"; 
+
+// Pour WPA2-Enterprise
+const char* EAP_IDENTITY = "votre_id";
+const char* EAP_USERNAME = "votre_user";
+const char* EAP_PASSWORD = "votre_password";
+
+// ====== CONFIGURATION MQTT ======
+#define MQTT_BROKER "votre_broker"
+#define MQTT_PORT 443
+#define MQTT_PATH "/"
+#define MQTT_USER "votre_user"
+#define MQTT_PASS "votre_pass"
+#define MQTT_CLIENT_ID "poste-XX"
+
+// ====== CONFIGURATION API (LLM) ======
+#define GROQ_API_KEY "votre_cle_api"
+
+#endif
