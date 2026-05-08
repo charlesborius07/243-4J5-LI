@@ -26,8 +26,8 @@ const char* SYSTEM_PROMPT = "Tu es un contrôleur IoT. Tu reçois les données d
 
 Adafruit_BME280 bme;
 const char* MQTT_HOST = MQTT_BROKER;
-const int   MQTT_WSS_PORT = 443;
-const char* MQTT_PATH = "/";
+const int   MQTT_WSS_PORT = MQTT_PORT;
+const char* MQTT_PATH = MQTT_PATH_STR;
 const char* TOPIC_BASE = "hydro-limoilou/poste-05";
 
 char TOPIC_TEMP[60];

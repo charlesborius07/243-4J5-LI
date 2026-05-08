@@ -2,6 +2,7 @@
 labo2/led-control/mqtt_config.py
 labo2/code/lilygo_lte_mqtt/auth.h
 **/config.h
+**/auth.h
 
 # Python
 __pycache__/
