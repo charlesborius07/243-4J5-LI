@@ -504,11 +504,7 @@
       "idf": "",
       "netlist": "",
       "plot": "gerbers/",
-<<<<<<< HEAD
       "pos_files": "gerbers/",
-=======
-      "pos_files": "",
->>>>>>> aa343ff121737cf536f2414c120e7c0f7d365f0b
       "specctra_dsn": "",
       "step": "",
       "svg": "",
