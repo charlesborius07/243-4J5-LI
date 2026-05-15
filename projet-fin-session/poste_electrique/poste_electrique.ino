@@ -170,6 +170,8 @@ unsigned long lastLLMCall = 0;
 const unsigned long LLM_INTERVAL = 60000;
 int lastPIRState = LOW;
 bool intrusionActive = false;
+unsigned long lastMotionTime = 0;
+const unsigned long MOTION_TIMEOUT = 5000;
 
 // ====== LLM FUNCTION ======
 String appelLLM(String prompt) {
@@ -274,13 +276,17 @@ void publishAlarm(const char* type, const char* level, float value, const char* 
 
 void checkIntrusion() {
   int pirState = digitalRead(PIN_PIR);
-  if (pirState == HIGH && lastPIRState == LOW) {
-    intrusionActive = true;
-    publishAlarm("motion", "warning", 1.0, "bool");
-  } else if (pirState == LOW && lastPIRState == HIGH) {
+  unsigned long now = millis();
+  if (pirState == HIGH) {
+    lastMotionTime = now;
+    if (!intrusionActive) {
+      intrusionActive = true;
+      publishAlarm("motion", "warning", 1.0, "bool");
+    }
+  } else if (intrusionActive && (now - lastMotionTime > MOTION_TIMEOUT)) {
     intrusionActive = false;
+    publishAlarm("motion", "info", 0.0, "bool");
   }
-  lastPIRState = pirState;
 }
 
 bool reconnectMQTT() {
@@ -310,7 +316,7 @@ void setup() {
     esp_wifi_sta_wpa2_ent_enable();
     WiFi.begin(WIFI_SSID);
   #else
-    WiFi.begin(WIFI_SSID, "votre_mot_de_passe");
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   #endif
   while (WiFi.status() != WL_CONNECTED) delay(500);
   snprintf(TOPIC_TEMP, 60, "%s/telemetry/temperature", TOPIC_BASE);
@@ -334,7 +340,7 @@ void loop() {
     #ifdef WIFI_SECURITY_WPA2_ENTERPRISE
       WiFi.begin(WIFI_SSID);
     #else
-      WiFi.begin(WIFI_SSID, "votre_mot_de_passe");
+      WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     #endif
     while(WiFi.status() != WL_CONNECTED) delay(500);
   }
@@ -373,33 +379,6 @@ void loop() {
 
   unsigned long now = millis();
   if (now - lastTelemetry >= TELEMETRY_INTERVAL) { lastTelemetry = now; publishTelemetry(); }
-  if (now - lastLLMCall >= LLM_INTERVAL) {
-    lastLLMCall = now;
-    int pot1 = analogRead(PIN_POT1); float voltage = map(pot1, 0, 4095, 200, 260);
-    int pot2 = analogRead(PIN_POT2); float current = map(pot2, 0, 4095, 0, 100);
-    
-    String prompt = "Données: Temp=" + String(bme.readTemperature()) + "C, Tension=" + String(voltage) + "V, Courant=" + String(current) + "A, Intrusion=" + (intrusionActive ? "Oui" : "Non");
-    String responseJson = appelLLM(prompt);
-    
-    // Parse LLM JSON
-    JsonDocument doc;
-    deserializeJson(doc, responseJson);
-    
-    // Update LEDs
-    if (doc.containsKey("led1")) {
-      String l1 = doc["led1"];
-      digitalWrite(PIN_LED1, (l1 == "on") ? HIGH : LOW);
-      Serial.print("[Actionneur] LED1 mise à: "); Serial.println(l1);
-    }
-    if (doc.containsKey("led2")) {
-      String l2 = doc["led2"];
-      digitalWrite(PIN_LED2, (l2 == "on") ? HIGH : LOW);
-      Serial.print("[Actionneur] LED2 mise à: "); Serial.println(l2);
-    }
-    
-    // Publish
-    mqttClient.publish(TOPIC_STATUS_LLM, responseJson.c_str(), true);
-    Serial.println("[LLM] Resumé JSON publié: " + responseJson);
-  }
+  
   delay(10);
 }
