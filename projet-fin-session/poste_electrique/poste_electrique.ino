@@ -18,7 +18,7 @@
 #define PIN_POT1 34
 #define PIN_POT2 35
 #define PIN_LED1 14
-#define PIN_LED2 15
+#define PIN_LED2 25
 
 #define I2C_SCK 22
 #define I2C_SDI 21
@@ -32,12 +32,15 @@ const char* MQTT_HOST = MQTT_BROKER;
 const int   MQTT_WSS_PORT = 443;
 const char* MQTT_PATH = "/";
 
-const char* TOPIC_BASE = "hydro-limoilou/poste-01";
+const char* TOPIC_BASE = "hydro-limoilou/poste-05";
 
 char TOPIC_TEMP[60];
 char TOPIC_HUM[60];
 char TOPIC_STATUS[60];
+char TOPIC_STATUS_LLM[60];
 char TOPIC_INTRUSION[60];
+char TOPIC_TENSION_ALARM[60];
+char TOPIC_COURANT_ALARM[60];
 char TOPIC_TENSION[60];
 char TOPIC_COURANT[60];
 char TOPIC_LED1[60];
@@ -263,11 +266,21 @@ PubSubClient mqttClient(wsClient);
 
 // ====== VARIABLES D'ETAT ======
 unsigned long lastTelemetry = 0;
-const unsigned long TELEMETRY_INTERVAL = 5000;
+const unsigned long TELEMETRY_INTERVAL = 10000;
+const unsigned long STATUS_INTERVAL = 30000;
+const unsigned long LLM_INTERVAL = 120000;
 int lastPIRState = LOW;
 bool intrusionActive = false;
+unsigned long lastStatus = 0;
+unsigned long lastLLMCall = 0;
+
+// ====== CONFIGURATION LLM ======
+String MODEL_NAME = "qwen2.5:3b";
+// Remarque: La fonction appelLLM n'est pas implementee ici.
+// Elle devrait etre ajoutee pour que ce code fonctionne.
 
 // ====== CALLBACK MQTT ======
+
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
   String msg = "";
   for (unsigned int i = 0; i < length; i++) {
@@ -297,6 +310,30 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
       Serial.println("[LED2] Eteinte");
     }
   }
+}
+
+// ====== PUBLICATION ALARME (Standardisée) ======
+void publishAlarm(const char* type, const char* level, float value, const char* unit) {
+  unsigned long ts = millis() / 1000;
+  char topic[64];
+  snprintf(topic, sizeof(topic), "%s/alarm/%s", TOPIC_BASE, type);
+  char payload[150];
+  snprintf(payload, sizeof(payload), "{\"level\":\"%s\", \"value\":%.2f, \"unit\":\"%s\", \"ts\":%lu}", level, value, unit, ts);
+  // Publication sans rétention (retain=false)
+  mqttClient.publish(topic, payload, false);
+  Serial.print("[MQTT] Alarme publiee sur "); Serial.print(topic); Serial.print(": "); Serial.println(payload);
+}
+
+// ====== PUBLICATION STATUS ======
+void publishStatus() {
+  if (!mqttClient.connected()) return;
+  long uptime = millis() / 1000;
+  int rssi = WiFi.RSSI();
+  char statusPayload[150];
+  snprintf(statusPayload, sizeof(statusPayload), "{\"uptime\":%lu,\"rssi\":%d,\"link\":\"wifi\",\"ip\":\"%s\"}",
+           uptime, rssi, WiFi.localIP().toString().c_str());
+  mqttClient.publish(TOPIC_STATUS, statusPayload);
+  Serial.print("[MQTT] Status publie: "); Serial.println(statusPayload);
 }
 
 // ====== PUBLICATION TELEMETRIE ======
@@ -340,12 +377,13 @@ void publishTelemetry() {
   Serial.print("[MQTT] -> Courant: ");
   Serial.println(payloadCourant);
 
-  long uptime = millis() / 1000;
-  int rssi = WiFi.RSSI();
-  char statusPayload[150];
-  snprintf(statusPayload, sizeof(statusPayload), "{\"uptime\":%lu,\"rssi\":%d,\"link\":\"wifi\",\"ip\":\"%s\"}",
-           uptime, rssi, WiFi.localIP().toString().c_str());
-  mqttClient.publish(TOPIC_STATUS, statusPayload);
+  // Suppression de la publication status dans publishTelemetry()
+  // Long uptime = millis() / 1000;
+  // int rssi = WiFi.RSSI();
+  // char statusPayload[150];
+  // snprintf(statusPayload, sizeof(statusPayload), "{\"uptime\":%lu,\"rssi\":%d,\"link\":\"wifi\",\"ip\":\"%s\"}",
+  //          uptime, rssi, WiFi.localIP().toString().c_str());
+  // mqttClient.publish(TOPIC_STATUS, statusPayload);
 }
 
 // ====== GESTION INTRUSION ======
@@ -354,26 +392,21 @@ void checkIntrusion() {
 
   if (pirState == HIGH && lastPIRState == LOW) {
     intrusionActive = true;
-    digitalWrite(PIN_LED2, HIGH);
     Serial.println("[PIR] INTRUSION DETECTEE!");
-
-    unsigned long ts = millis() / 1000;
-    char payload[100];
-    snprintf(payload, sizeof(payload), "{\"level\":\"alert\",\"detected\":true,\"ts\":%lu}", ts);
-    mqttClient.publish(TOPIC_INTRUSION, payload);
+    publishAlarm("motion", "warning", 1.0, "bool");
   }
   else if (pirState == LOW && lastPIRState == HIGH) {
     intrusionActive = false;
-    digitalWrite(PIN_LED2, LOW);
     Serial.println("[PIR] Intrusion terminee");
-
-    unsigned long ts = millis() / 1000;
-    char payload[100];
-    snprintf(payload, sizeof(payload), "{\"level\":\"normal\",\"detected\":false,\"ts\":%lu}", ts);
-    mqttClient.publish(TOPIC_INTRUSION, payload);
+    publishAlarm("motion", "info", 0.0, "bool");
   }
 
   lastPIRState = pirState;
+}
+
+String appelLLM(String prompt) {
+  // Simulation d'un appel LLM - a remplacer par l'implementation reelle
+  return "Resume: Climat stable, conditions electriques nominales.";
 }
 
 // ====== RECONNEXION MQTT ======
@@ -396,6 +429,8 @@ bool reconnectMQTT() {
 }
 
 // ====== SETUP ======
+
+
 void setup() {
   Serial.begin(115200);
   delay(2000);
@@ -452,10 +487,13 @@ void setup() {
 
   snprintf(TOPIC_TEMP, sizeof(TOPIC_TEMP), "%s/telemetry/temperature", TOPIC_BASE);
   snprintf(TOPIC_HUM, sizeof(TOPIC_HUM), "%s/telemetry/humidity", TOPIC_BASE);
-  snprintf(TOPIC_TENSION, sizeof(TOPIC_TENSION), "%s/telemetry/voltage", TOPIC_BASE);
-  snprintf(TOPIC_COURANT, sizeof(TOPIC_COURANT), "%s/telemetry/current", TOPIC_BASE);
+  snprintf(TOPIC_TENSION, sizeof(TOPIC_TENSION), "%s/telemetry/voltage_line", TOPIC_BASE);
+  snprintf(TOPIC_COURANT, sizeof(TOPIC_COURANT), "%s/telemetry/current_line", TOPIC_BASE);
   snprintf(TOPIC_STATUS, sizeof(TOPIC_STATUS), "%s/status", TOPIC_BASE);
-  snprintf(TOPIC_INTRUSION, sizeof(TOPIC_INTRUSION), "%s/alarm/intrusion", TOPIC_BASE);
+  snprintf(TOPIC_STATUS_LLM, sizeof(TOPIC_STATUS_LLM), "%s/status/llm", TOPIC_BASE);
+  snprintf(TOPIC_INTRUSION, sizeof(TOPIC_INTRUSION), "%s/alarm/motion", TOPIC_BASE);
+  snprintf(TOPIC_TENSION_ALARM, sizeof(TOPIC_TENSION_ALARM), "%s/alarm/voltage", TOPIC_BASE);
+  snprintf(TOPIC_COURANT_ALARM, sizeof(TOPIC_COURANT_ALARM), "%s/alarm/current", TOPIC_BASE);
   snprintf(TOPIC_LED1, sizeof(TOPIC_LED1), "%s/actuators/led_1", TOPIC_BASE);
   snprintf(TOPIC_LED2, sizeof(TOPIC_LED2), "%s/actuators/led_2", TOPIC_BASE);
 
@@ -511,11 +549,75 @@ void loop() {
 
   checkIntrusion();
 
+  // ====== ALARMES LOCALES (Tension/Courant) ======
+  int pot1 = analogRead(PIN_POT1);
+  float tension = 200.0 + (pot1 / 4095.0) * 60.0;
+  int pot2 = analogRead(PIN_POT2);
+  float courant = (pot2 / 4095.0) * 100.0;
+
+  // LED1 pour alerte tension (> 250V)
+  bool led1Wanted = (tension > 250.0);
+  static int lastLed1State = -1;
+  static float lastTension = -1.0;
+  
+  if (led1Wanted != lastLed1State || abs(tension - lastTension) > 0.5) {
+    digitalWrite(PIN_LED1, led1Wanted ? HIGH : LOW);
+    mqttClient.publish(TOPIC_LED1, led1Wanted ? "{\"state\":\"on\"}" : "{\"state\":\"off\"}", false);
+    
+    // Publication alarme standardisée
+    publishAlarm("voltage", led1Wanted ? "warning" : "info", tension, "V");
+    
+    lastLed1State = led1Wanted;
+    lastTension = tension;
+  }
+
+  // LED2 pour alerte courant (> 80A)
+  bool led2Wanted = (courant > 80.0);
+  static int lastLed2State = -1;
+  static float lastCourant = -1.0;
+  
+  if (led2Wanted != lastLed2State || abs(courant - lastCourant) > 0.1) {
+    digitalWrite(PIN_LED2, led2Wanted ? HIGH : LOW);
+    mqttClient.publish(TOPIC_LED2, led2Wanted ? "{\"state\":\"on\"}" : "{\"state\":\"off\"}", false);
+    
+    // Publication alarme standardisée
+    publishAlarm("current", led2Wanted ? "warning" : "info", courant, "A");
+
+    lastLed2State = led2Wanted;
+    lastCourant = courant;
+  }
+
   unsigned long now = millis();
   if (now - lastTelemetry >= TELEMETRY_INTERVAL) {
     lastTelemetry = now;
     publishTelemetry();
   }
 
+  if (now - lastStatus >= STATUS_INTERVAL) {
+    lastStatus = now;
+    publishStatus();
+  }
+
+  // ====== APPEL LLM ET PUBLICATION SUMMARY ======
+  if (now - lastLLMCall >= LLM_INTERVAL) {
+    lastLLMCall = now;
+    
+    // Construire le prompt avec les dernières valeurs
+    int pot1 = analogRead(PIN_POT1); float tension = pot1 * 3.3 / 4095 * 100;
+    int pot2 = analogRead(PIN_POT2); float courant = pot2 * 3.3 / 4095 * 50;
+    float temp = bme.readTemperature();
+
+    String prompt = "Tension: " + String(tension) + "V, Courant: " + String(courant) + "A, Temp: " + String(temp) + "C.";
+    String summary = appelLLM(prompt);
+    
+    // Publier le résumé sur status/llm avec rétention activée (true)
+    unsigned long ts = millis() / 1000;
+    char payload[256];
+    snprintf(payload, sizeof(payload), "{\"summary\":\"%s\", \"model\":\"%s\", \"ts\":%lu}", summary.c_str(), MODEL_NAME.c_str(), ts);
+    mqttClient.publish(TOPIC_STATUS_LLM, payload, true);
+    Serial.print("[MQTT] LLM Summary publie: "); Serial.println(payload);
+  }
+
   delay(10);
 }
+
