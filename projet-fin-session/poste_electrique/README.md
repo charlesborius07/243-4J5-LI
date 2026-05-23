@@ -53,3 +53,23 @@ Tous les topics sont sous la racine : `hydro-limoilou/poste-05/`
 *   **Action** : Arrêter tout mouvement et attendre 5 secondes.
 *   **Résultat attendu** :
     *   Publication automatique d'un message d'information (valeur 0.0) sur `alarm/motion` confirmant la fin de l'intrusion.
+
+## 5. Configuration et Compilation
+
+### 5.1 Fichier d'authentification
+Le projet nécessite un fichier `auth.h` pour les identifiants Wi-Fi et MQTT. Copiez le fichier d'exemple et remplissez vos informations :
+```bash
+cp auth.h.example auth.h
+# Modifiez ensuite auth.h avec vos identifiants réels
+```
+
+### 5.2 Dépendances (Bibliothèques Arduino)
+Le code utilise les bibliothèques suivantes. Assurez-vous de les installer via le gestionnaire de bibliothèques Arduino :
+- `PubSubClient` (par Nick O'Leary)
+- `Adafruit BME280 Library`
+- `Adafruit Unified Sensor`
+- `ArduinoJson`
+
+### 5.3 Dépannage
+*   **Connexion Série** : Le moniteur série est configuré à **115200 bauds**. Si vous voyez des caractères illisibles, vérifiez que votre terminal série est configuré à cette vitesse.
+*   **Problème de téléversement** : Si l'upload échoue, assurez-vous que le port `/dev/ttyACM0` (ou équivalent) est accessible par votre utilisateur et que la carte est en mode de programmation (maintenir le bouton BOOT si nécessaire lors de la connexion).
