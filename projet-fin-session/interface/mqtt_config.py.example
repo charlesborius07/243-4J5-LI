@@ -1,0 +1,7 @@
+MQTT_CONFIG = {
+    "broker": "votre-broker-mqtt.com",
+    "port": 1883,
+    "username": "votre-utilisateur",
+    "password": "votre-mot-de-passe",
+    "device_id": "votre-id-appareil"
+}
